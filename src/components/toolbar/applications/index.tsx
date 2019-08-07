@@ -4,9 +4,9 @@ import Application from "../application";
 const Applications = () => {
   return (
     <div className="toolbar__applications">
-      <Application name={"Terminal"} />
+      {/* <Application name={"Terminal"} />
       <Application name={"Google Chrome"} />
-      <Application name={"VS Code"} />
+      <Application name={"VS Code"} /> */}
     </div>
   );
 };

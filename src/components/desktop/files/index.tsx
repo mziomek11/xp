@@ -7,7 +7,7 @@ const Files = () => {
   return (
     <div>
       {fileNames.map((name, i) => (
-        <File name={name} left={0} top={50 * i} />
+        <File name={name} key={i} left={0} top={50 * i} />
       ))}
     </div>
   );

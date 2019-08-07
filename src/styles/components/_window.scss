@@ -1,0 +1,51 @@
+.window {
+  position: absolute;
+  z-index: 1;
+
+  background: rgb(75, 25, 25);
+}
+
+.window__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 $window-bar-padding;
+  height: $window-bar-height;
+  background: rgb(14, 14, 65);
+}
+
+.window__title {
+  user-select: none;
+}
+
+.window__actions {
+  display: flex;
+  height: 100%;
+  align-items: center;
+}
+
+.window__action {
+  width: $window-action-size;
+  height: $window-action-size;
+  margin-right: $window-bar-padding;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  &--minimalize {
+    background: rgb(126, 126, 16);
+  }
+
+  &--fullscreen {
+    background: rgb(0, 0, 255);
+  }
+
+  &--exit {
+    background: rgb(107, 6, 6);
+  }
+}

@@ -2,6 +2,5 @@
   background: green;
   width: $start-width;
   height: 100%;
-  user-select: none;
   @include flex-centered;
 }
