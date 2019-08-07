@@ -1,0 +1,7 @@
+.time {
+  background: brown;
+  height: 100%;
+  width: $time-width;
+  user-select: none;
+  @include flex-centered;
+}

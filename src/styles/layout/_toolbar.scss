@@ -1,0 +1,26 @@
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  height: $toolbar-height;
+  background: black;
+  user-select: none;
+}
+
+.toolbar__left-side {
+  display: flex;
+}
+
+.toolbar__applications {
+  @include flex-centered;
+}
+
+.toolbar__application {
+  height: 100%;
+  padding: 0 0.8em;
+  @include flex-centered;
+
+  &:hover {
+    cursor: pointer;
+    background: aquamarine;
+  }
+}
