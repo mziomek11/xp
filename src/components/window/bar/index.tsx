@@ -31,7 +31,7 @@ type State = {
   maxBarY: number;
 };
 
-class Bar extends React.Component<Props, State> {
+export class Bar extends React.Component<Props, State> {
   readonly state: State = {
     barX: 0,
     barY: 0,
@@ -53,8 +53,8 @@ class Bar extends React.Component<Props, State> {
     const { clientX, clientY } = ev;
     const { innerWidth, innerHeight } = window;
     this.setState({
-      barX: lastWindowX - clientX,
-      barY: lastWindowY - clientY,
+      barX: clientX - lastWindowX,
+      barY: clientY - lastWindowY,
       maxBarX: innerWidth - windowWidth,
       maxBarY: innerHeight - windowHeight
     });
@@ -64,28 +64,34 @@ class Bar extends React.Component<Props, State> {
   };
 
   handleMouseUp = () => {
-    window.addEventListener("mouseup", this.handleMouseUp);
+    window.removeEventListener("mouseup", this.handleMouseUp);
     window.removeEventListener("mousemove", this.handleMouseMove);
   };
 
   handleMouseMove = (e: MouseEvent) => {
     const { barX, barY, maxBarX, maxBarY } = this.state;
-    let left: number = Math.max(e.clientX + barX, 0);
-    let top: number = Math.max(e.clientY + barY, 0);
+    let left: number = Math.max(e.clientX - barX, 0);
+    let top: number = Math.max(e.clientY - barY, 0);
     left = Math.min(left, maxBarX);
     top = Math.min(top, maxBarY);
-
+    
     this.props.moveWindow(left, top);
   };
 
   render() {
     return (
-      <div className="window__bar" onMouseDown={this.handleMouseDown}>
-        <h4 className="window__title">{this.props.name}</h4>
-        <div className="window__actions">
-          <Action type={"minimalize"} />
-          <Action type={"fullscreen"} />
-          <Action type={"exit"} />
+      <div
+        className="window__bar"
+        onMouseDown={this.handleMouseDown}
+        data-test="bar"
+      >
+        <h4 className="window__title" data-test="title">
+          {this.props.name}
+        </h4>
+        <div className="window__actions" data-test="actions">
+          <Action type={"minimalize"} data-test="action-minimalize" />
+          <Action type={"fullscreen"} data-test="action-fullscreen" />
+          <Action type={"exit"} data-test="action-exit" />
         </div>
       </div>
     );

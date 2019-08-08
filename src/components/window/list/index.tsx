@@ -8,11 +8,13 @@ type StateProps = {
   windowsIds: string[];
 };
 
-const List: React.FC<StateProps> = ({ windowsIds }) => {
+type Props = StateProps;
+
+export const List: React.FC<Props> = ({ windowsIds }) => {
   return (
     <React.Fragment>
       {windowsIds.map(id => (
-        <Window id={id} key={id} />
+        <Window id={id} key={id} data-test="window" />
       ))}
     </React.Fragment>
   );

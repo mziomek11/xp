@@ -17,12 +17,16 @@ type StateProps = {
 
 type Props = OwnProps & StateProps;
 
-class Window extends React.Component<Props, {}> {
+export class Window extends React.Component<Props, {}> {
   render() {
     const { children, top, left, width, height, id } = this.props;
     return (
-      <div className="window" style={{ top, left, width, height }}>
-        <Bar id={id} />
+      <div
+        className="window"
+        style={{ top, left, width, height }}
+        data-test="window"
+      >
+        <Bar id={id} data-test="bar" />
         {children}
       </div>
     );

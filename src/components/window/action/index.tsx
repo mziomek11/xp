@@ -10,6 +10,7 @@ const Action: React.FC<Props> = ({ type, onClick }) => {
     <div
       className={`window__action window__action--${type}`}
       onClick={onClick}
+      data-test="action"
     />
   );
 };
