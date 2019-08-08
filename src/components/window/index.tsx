@@ -1,44 +1,37 @@
 import React from "react";
-import Bar from "./bar";
+import { connect } from "react-redux";
 
-type Props = {
-  name?: string;
+import Bar from "./bar";
+import { RootState } from "MyTypes";
+
+type OwnProps = {
+  id: string;
 };
 
-type State = {
+type StateProps = {
   top: number;
   left: number;
   width: number;
   height: number;
 };
 
-class Window extends React.Component<Props, State> {
-  readonly state: State = {
-    top: window.innerHeight / 2,
-    left: window.innerWidth / 2,
-    width: 170,
-    height: 170
-  };
+type Props = OwnProps & StateProps;
 
-  setPosition = (left: number, top: number) => this.setState({ top, left });
-
+class Window extends React.Component<Props, {}> {
   render() {
-    const { children, name } = this.props;
-    const { top, left, width, height } = this.state;
+    const { children, top, left, width, height, id } = this.props;
     return (
       <div className="window" style={{ top, left, width, height }}>
-        <Bar
-          name={name}
-          onWindowMove={this.setPosition}
-          lastWindowX={left}
-          lastWindowY={top}
-          windowHeight={height}
-          windowWidth={width}
-        />
+        <Bar id={id} />
         {children}
       </div>
     );
   }
 }
 
-export default Window;
+const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
+  const { left, top, width, height } = state.window.byId[ownProps.id];
+  return { left, top, width, height };
+};
+
+export default connect(mapStateToProps)(Window);

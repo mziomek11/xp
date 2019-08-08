@@ -1,12 +1,12 @@
 import React from "react";
 import Files from "./files";
-import Window from "../window";
+import OpenedWindows from "../window/list";
 
 const Desktop = () => {
   return (
     <div className="desktop">
       <Files />
-      <Window name="Chrome">Siema</Window>
+      <OpenedWindows />
     </div>
   );
 };

@@ -1,17 +1,28 @@
 import React from "react";
-import Action from "../action";
+import { Dispatch } from "redux";
+import { connect } from "react-redux";
 
-type Props = {
-  onWindowMove: (left: number, top: number) => void;
+import Action from "../action";
+import { RootState } from "MyTypes";
+import { moveWindow } from "../../../store/window/actions";
+
+type OwnProps = {
+  id: string;
+};
+
+type StateProps = {
+  name: string;
   lastWindowX: number;
   lastWindowY: number;
   windowWidth: number;
   windowHeight: number;
-  name?: string;
-  onMinimalize?: () => void;
-  onFullscreen?: () => void;
-  onExit?: () => void;
 };
+
+type DispatchProps = {
+  moveWindow: (x: number, y: number) => void;
+};
+
+type Props = OwnProps & StateProps & DispatchProps;
 
 type State = {
   barX: number;
@@ -64,22 +75,44 @@ class Bar extends React.Component<Props, State> {
     left = Math.min(left, maxBarX);
     top = Math.min(top, maxBarY);
 
-    this.props.onWindowMove(left, top);
+    this.props.moveWindow(left, top);
   };
 
   render() {
-    const { name, onMinimalize, onFullscreen, onExit } = this.props;
     return (
       <div className="window__bar" onMouseDown={this.handleMouseDown}>
-        <h4 className="window__title">{name}</h4>
+        <h4 className="window__title">{this.props.name}</h4>
         <div className="window__actions">
-          <Action type={"minimalize"} onClick={onMinimalize} />
-          <Action type={"fullscreen"} onClick={onFullscreen} />
-          <Action type={"exit"} onClick={onExit} />
+          <Action type={"minimalize"} />
+          <Action type={"fullscreen"} />
+          <Action type={"exit"} />
         </div>
       </div>
     );
   }
 }
 
-export default Bar;
+const mapStateToProps = (state: RootState, { id }: OwnProps): StateProps => {
+  const window = state.window.byId[id];
+  return {
+    name: window.name,
+    lastWindowX: window.left,
+    lastWindowY: window.top,
+    windowWidth: window.width,
+    windowHeight: window.height
+  };
+};
+
+const mapDispatchToProps = (
+  dispatch: Dispatch,
+  { id }: OwnProps
+): DispatchProps => {
+  return {
+    moveWindow: (x: number, y: number) => dispatch(moveWindow(id, x, y))
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Bar);
