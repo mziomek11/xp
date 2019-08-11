@@ -7,4 +7,6 @@ export type Window = {
   height: number;
   left: number;
   top: number;
+  minimalized: boolean;
+  fullscreened: boolean;
 };

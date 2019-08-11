@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 
 import Action from "../action";
 import { RootState } from "MyTypes";
-import { moveWindow } from "../../../store/window/actions";
+import { move as moveWindow } from "../../../store/window/actions";
 
 type OwnProps = {
   id: string;
@@ -74,7 +74,7 @@ export class Bar extends React.Component<Props, State> {
     let top: number = Math.max(e.clientY - barY, 0);
     left = Math.min(left, maxBarX);
     top = Math.min(top, maxBarY);
-    
+
     this.props.moveWindow(left, top);
   };
 

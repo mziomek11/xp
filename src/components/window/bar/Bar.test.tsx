@@ -42,8 +42,8 @@ describe("WindowBar Component", () => {
       const { barX, barY, maxBarX, maxBarY } = wrapper.instance().state;
       expect(barX).toBe(evData.clientX - barProps.lastWindowX);
       expect(barY).toBe(evData.clientY - barProps.lastWindowY);
-      expect(maxBarX).toBe(1024 - barProps.windowWidth);
-      expect(maxBarY).toBe(768 - barProps.windowHeight);
+      expect(maxBarX).toBe(window.innerWidth - barProps.windowWidth);
+      expect(maxBarY).toBe(window.innerHeight - barProps.windowHeight);
     });
   });
 
