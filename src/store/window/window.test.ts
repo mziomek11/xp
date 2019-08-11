@@ -249,14 +249,14 @@ describe("Window redux", () => {
       it("should return proper action and payload", () => {
         store.dispatch(actions.open(windowId, windowName, false));
         store.dispatch(actions.open(secondWindowId, windowName, false));
-        let action = actions.changePriority(secondWindowId);
+        let action = actions.changePriority(windowId);
 
         expect(action.type).toBe(WindowAction.CHANGE_PRIORITY);
         expect(action.payload).toEqual({
           allIds: [secondWindowId, windowId]
         });
 
-        action = actions.changePriority(windowId);
+        action = actions.changePriority(secondWindowId);
         expect(action.payload).toEqual({
           allIds: [windowId, secondWindowId]
         });

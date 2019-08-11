@@ -1,5 +1,5 @@
 import React from "react";
-import Application from "../application";
+// import Application from "../application";
 
 const Applications = () => {
   return (

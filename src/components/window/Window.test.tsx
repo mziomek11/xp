@@ -4,8 +4,16 @@ import { Window } from ".";
 import { findByTestAtrr } from "../../utils/testing";
 
 describe("Window Component", () => {
+  const mockChangePriority = jest.fn();
   const comp = (
-    <Window id="abc" top={20} left={40} width={120} height={150}>
+    <Window
+      id="abc"
+      top={20}
+      left={40}
+      width={120}
+      height={150}
+      changePriority={mockChangePriority}
+    >
       <div data-test="child" />
       <div data-test="child" />
     </Window>
@@ -33,5 +41,11 @@ describe("Window Component", () => {
     expect(styles).toHaveProperty("left", 40);
     expect(styles).toHaveProperty("width", 120);
     expect(styles).toHaveProperty("height", 150);
+  });
+
+  it("should call mockChangePriority on mouse down", () => {
+    findByTestAtrr(wrapper, "window").simulate("mousedown");
+
+    expect(mockChangePriority.mock.calls.length).toBe(1);
   });
 });

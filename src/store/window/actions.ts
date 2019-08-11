@@ -20,7 +20,7 @@ export const open = (id: string, name: string, fullscreened: boolean) => {
     fullscreened
   };
   byId[newWindow.id] = newWindow;
-  allIds.unshift(id);
+  allIds.push(id);
 
   return action(WindowAction.OPEN, { byId, allIds });
 };
@@ -28,7 +28,7 @@ export const open = (id: string, name: string, fullscreened: boolean) => {
 export const changePriority = (id: string) => {
   const { allIds } = getCopyOfStore(false, true);
   allIds.splice(allIds.indexOf(id), 1);
-  allIds.unshift(id);
+  allIds.push(id);
 
   return action(WindowAction.CHANGE_PRIORITY, { allIds });
 };

@@ -2,7 +2,9 @@ import React from "react";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
 
-import Action from "../action";
+import ExitAction from "../action/exit";
+import FullscreenAction from "../action/fullscreen";
+import MinimalizeAction from "../action/minimalize";
 import { RootState } from "MyTypes";
 import { move as moveWindow } from "../../../store/window/actions";
 
@@ -89,9 +91,9 @@ export class Bar extends React.Component<Props, State> {
           {this.props.name}
         </h4>
         <div className="window__actions" data-test="actions">
-          <Action type={"minimalize"} data-test="action-minimalize" />
-          <Action type={"fullscreen"} data-test="action-fullscreen" />
-          <Action type={"exit"} data-test="action-exit" />
+          <MinimalizeAction id={this.props.id} data-test="action-minimalize" />
+          <FullscreenAction id={this.props.id} data-test="action-fullscreen" />
+          <ExitAction id={this.props.id} data-test="action-exit" />
         </div>
       </div>
     );
