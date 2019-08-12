@@ -15,8 +15,10 @@ type DispatchProps = {
 
 type Props = OwnProps & DispatchProps;
 
-export const MinimalizeAction: React.FC<Props> = ({ minimalize }) => {
-  return <Action type="minimalize" onClick={minimalize} data-test="action" />;
+export const MinimalizeAction: React.FC<Props> = ({ minimalize, id }) => {
+  return (
+    <Action id={id} type="minimalize" onClick={minimalize} data-test="action" />
+  );
 };
 
 const mapDispatchToProps = (

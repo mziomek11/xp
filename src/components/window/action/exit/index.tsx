@@ -15,8 +15,10 @@ type DispatchProps = {
 
 type Props = OwnProps & DispatchProps;
 
-export const ExitAction: React.FC<Props> = ({ closeWindow }) => {
-  return <Action type="exit" onClick={closeWindow} data-test="action" />;
+export const ExitAction: React.FC<Props> = ({ closeWindow, id }) => {
+  return (
+    <Action id={id} type="exit" onClick={closeWindow} data-test="action" />
+  );
 };
 
 const mapDispatchToProps = (

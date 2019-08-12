@@ -7,6 +7,7 @@ import FullscreenAction from "../action/fullscreen";
 import MinimalizeAction from "../action/minimalize";
 import { RootState } from "MyTypes";
 import { move as moveWindow } from "../../../store/window/actions";
+import { withDoubleClick } from "../../../hoc";
 
 type OwnProps = {
   id: string;
@@ -18,6 +19,7 @@ type StateProps = {
   lastWindowY: number;
   windowWidth: number;
   windowHeight: number;
+  isFullScreened: boolean;
 };
 
 type DispatchProps = {
@@ -51,6 +53,8 @@ export class Bar extends React.Component<Props, State> {
   }
 
   handleMouseDown = (ev: React.MouseEvent<HTMLDivElement>) => {
+    if (this.props.isFullScreened) return;
+
     const { lastWindowX, lastWindowY, windowWidth, windowHeight } = this.props;
     const { clientX, clientY } = ev;
     const { innerWidth, innerHeight } = window;
@@ -107,7 +111,8 @@ const mapStateToProps = (state: RootState, { id }: OwnProps): StateProps => {
     lastWindowX: window.left,
     lastWindowY: window.top,
     windowWidth: window.width,
-    windowHeight: window.height
+    windowHeight: window.height,
+    isFullScreened: window.fullscreened
   };
 };
 
@@ -120,7 +125,9 @@ const mapDispatchToProps = (
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Bar);
+export default withDoubleClick(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Bar)
+);

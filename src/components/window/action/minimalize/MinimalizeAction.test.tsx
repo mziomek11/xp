@@ -15,7 +15,7 @@ describe("ExitAction Component", () => {
     expect(findByTestAtrr(wrapper, "action").length).toBe(1);
   });
 
-  it("should have exit type", () => {
+  it("should have minimalize type", () => {
     expect(findByTestAtrr(wrapper, "action").prop("type")).toBe("minimalize");
   });
 

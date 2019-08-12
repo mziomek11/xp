@@ -1,5 +1,5 @@
 import React from "react";
-import { shallow, ShallowWrapper } from "enzyme";
+import { shallow } from "enzyme";
 import { Bar } from "./";
 import { findByTestAtrr } from "../../../utils/testing";
 
@@ -10,7 +10,8 @@ describe("WindowBar Component", () => {
     lastWindowX: 100,
     lastWindowY: 100,
     windowWidth: 100,
-    windowHeight: 150
+    windowHeight: 150,
+    isFullScreened: false
   };
   let mockMoveWindow = jest.fn();
   let comp = <Bar {...barProps} moveWindow={mockMoveWindow} />;
@@ -44,6 +45,22 @@ describe("WindowBar Component", () => {
       expect(barY).toBe(evData.clientY - barProps.lastWindowY);
       expect(maxBarX).toBe(window.innerWidth - barProps.windowWidth);
       expect(maxBarY).toBe(window.innerHeight - barProps.windowHeight);
+    });
+
+    it("should not update state when is fullscreened", () => {
+      const fullScrProps = { ...barProps, isFullScreened: true };
+      const fullScrComp = <Bar {...fullScrProps} moveWindow={() => {}} />;
+      const fullScrWrapper = shallow(fullScrComp);
+
+      const evData = { clientX: 150, clientY: 110 };
+      findByTestAtrr(fullScrWrapper, "bar").simulate("mousedown", evData);
+
+      expect(fullScrWrapper.instance().state).toEqual({
+        barX: 0,
+        barY: 0,
+        maxBarX: 0,
+        maxBarY: 0
+      });
     });
   });
 

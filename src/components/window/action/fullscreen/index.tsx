@@ -15,9 +15,14 @@ type DispatchProps = {
 
 type Props = OwnProps & DispatchProps;
 
-export const FullscreenAction: React.FC<Props> = ({ fullscreenWindow }) => {
+export const FullscreenAction: React.FC<Props> = ({ fullscreenWindow, id }) => {
   return (
-    <Action type="fullscreen" onClick={fullscreenWindow} data-test="action" />
+    <Action
+      id={id}
+      type="fullscreen"
+      onClick={fullscreenWindow}
+      data-test="action"
+    />
   );
 };
 

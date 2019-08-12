@@ -1,18 +1,44 @@
 import React from "react";
+import { Dispatch } from "redux";
+import { connect } from "react-redux";
 
-type Props = {
+import { changePriority } from "../../../store/window/actions";
+
+type OwnProps = {
+  id: string;
   type: "exit" | "minimalize" | "fullscreen";
-  onClick?: () => void;
+  onClick: () => void;
 };
 
-const Action: React.FC<Props> = ({ type, onClick }) => {
+type DispatchProps = {
+  changePriority: () => void;
+};
+
+type Props = OwnProps & DispatchProps;
+
+export const Action: React.FC<Props> = ({ type, onClick, changePriority }) => {
   return (
     <div
       className={`window__action window__action--${type}`}
-      onClick={onClick}
+      onClick={() => {
+        onClick();
+        if (type !== "exit") changePriority();
+      }}
       data-test="action"
     />
   );
 };
 
-export default Action;
+const mapDispatchToProps = (
+  dispatch: Dispatch,
+  { id }: OwnProps
+): DispatchProps => {
+  return {
+    changePriority: () => dispatch(changePriority(id))
+  };
+};
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(Action);

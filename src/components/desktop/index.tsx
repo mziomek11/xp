@@ -1,5 +1,5 @@
 import React from "react";
-import Files from "./files";
+import Files from "../file/list";
 import OpenedWindows from "../window/list";
 
 const Desktop = () => {
