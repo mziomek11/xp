@@ -1,8 +1,6 @@
 .window {
   position: absolute;
   z-index: 1;
-
-  background: rgb(75, 25, 25);
 }
 
 .window__bar {
@@ -47,5 +45,57 @@
 
   &--exit {
     background: rgb(107, 6, 6);
+  }
+}
+
+.window__content {
+  height: calc(100% - #{$window-bar-height});
+  background: rgb(75, 25, 25);
+  padding: $window-resizer-size;
+  padding-top: 0;
+}
+
+.window__resizer {
+  position: absolute;
+  background: yellow;
+
+  &--left,
+  &--right {
+    width: $window-resizer-size;
+    height: calc(100% - #{$window-bar-height} - #{$window-resizer-size});
+  }
+
+  &--left {
+    left: 0;
+    cursor: w-resize;
+  }
+
+  &--right {
+    right: 0;
+    cursor: e-resize;
+  }
+
+  &--bottom {
+    bottom: 0;
+    width: calc(100% - #{$window-resizer-size} * 2);
+    height: $window-resizer-size;
+    cursor: s-resize;
+  }
+
+  &--bottom-left,
+  &--bottom-right {
+    bottom: 0;
+    width: $window-resizer-size;
+    height: $window-resizer-size;
+  }
+
+  &--bottom-left {
+    left: 0;
+    cursor: sw-resize;
+  }
+
+  &--bottom-right {
+    right: 0;
+    cursor: se-resize;
   }
 }

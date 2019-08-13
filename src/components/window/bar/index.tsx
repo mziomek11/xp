@@ -18,7 +18,6 @@ type StateProps = {
   lastWindowX: number;
   lastWindowY: number;
   windowWidth: number;
-  windowHeight: number;
   isFullScreened: boolean;
 };
 
@@ -31,16 +30,20 @@ type Props = OwnProps & StateProps & DispatchProps;
 type State = {
   barX: number;
   barY: number;
-  maxBarX: number;
-  maxBarY: number;
+  minLeft: number;
+  maxLeft: number;
+  maxTop: number;
 };
+
+export const pixelsToLeave: number = 10;
 
 export class Bar extends React.Component<Props, State> {
   readonly state: State = {
     barX: 0,
     barY: 0,
-    maxBarX: 0,
-    maxBarY: 0
+    minLeft: 0,
+    maxLeft: 0,
+    maxTop: 0
   };
 
   shouldComponentUpdate() {
@@ -53,16 +56,18 @@ export class Bar extends React.Component<Props, State> {
   }
 
   handleMouseDown = (ev: React.MouseEvent<HTMLDivElement>) => {
+    if ((ev.target as Element).classList.contains("window__action")) return;
     if (this.props.isFullScreened) return;
 
-    const { lastWindowX, lastWindowY, windowWidth, windowHeight } = this.props;
+    const { lastWindowX, lastWindowY, windowWidth } = this.props;
     const { clientX, clientY } = ev;
-    const { innerWidth, innerHeight } = window;
+
     this.setState({
       barX: clientX - lastWindowX,
       barY: clientY - lastWindowY,
-      maxBarX: innerWidth - windowWidth,
-      maxBarY: innerHeight - windowHeight
+      minLeft: -windowWidth + pixelsToLeave,
+      maxLeft: window.innerWidth - pixelsToLeave,
+      maxTop: window.innerHeight - pixelsToLeave
     });
 
     window.addEventListener("mouseup", this.handleMouseUp);
@@ -75,11 +80,10 @@ export class Bar extends React.Component<Props, State> {
   };
 
   handleMouseMove = (e: MouseEvent) => {
-    const { barX, barY, maxBarX, maxBarY } = this.state;
-    let left: number = Math.max(e.clientX - barX, 0);
-    let top: number = Math.max(e.clientY - barY, 0);
-    left = Math.min(left, maxBarX);
-    top = Math.min(top, maxBarY);
+    const { max, min } = Math;
+    const { barX, barY, minLeft, maxLeft, maxTop } = this.state;
+    const left = min(max(e.clientX - barX, minLeft), maxLeft);
+    const top = min(max(e.clientY - barY, 0), maxTop);
 
     this.props.moveWindow(left, top);
   };
@@ -110,9 +114,8 @@ const mapStateToProps = (state: RootState, { id }: OwnProps): StateProps => {
     name: window.name,
     lastWindowX: window.left,
     lastWindowY: window.top,
-    windowWidth: window.width,
-    windowHeight: window.height,
-    isFullScreened: window.fullscreened
+    isFullScreened: window.fullscreened,
+    windowWidth: window.width
   };
 };
 

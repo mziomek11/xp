@@ -12,10 +12,10 @@ export const open = (id: string, name: string, fullscreened: boolean) => {
   const newWindow: Window = {
     id,
     name,
-    width: 100,
-    height: 100,
-    left: 100,
-    top: 100,
+    width: 500,
+    height: 300,
+    left: window.innerWidth / 2 - 500 / 2,
+    top: window.innerHeight / 2 - 300 / 2,
     minimalized: false,
     fullscreened
   };
@@ -27,6 +27,10 @@ export const open = (id: string, name: string, fullscreened: boolean) => {
 
 export const changePriority = (id: string) => {
   const { allIds } = getCopyOfStore(false, true);
+  if (allIds.indexOf(id) === -1) {
+    return action(WindowAction.CHANGE_PRIORITY_FAILED);
+  }
+
   allIds.splice(allIds.indexOf(id), 1);
   allIds.push(id);
 
@@ -36,30 +40,66 @@ export const changePriority = (id: string) => {
 export const move = (id: string, x: number, y: number) => {
   const { byId } = getCopyOfStore(true, false);
   const windowToMove = byId[id];
+  if (!windowToMove) return action(WindowAction.CHANGE_PROP_FAILED);
+
   windowToMove.left = x;
   windowToMove.top = y;
-
   return action(WindowAction.MOVE, { byId });
+};
+
+export const resize = (id: string, width: number, height: number) => {
+  const { byId } = getCopyOfStore(true, false);
+  const windowToResize = byId[id];
+  if (!windowToResize) return action(WindowAction.CHANGE_PROP_FAILED);
+
+  windowToResize.width = width;
+  windowToResize.height = height;
+  return action(WindowAction.RESIZE, { byId });
+};
+
+export const moveAndResize = (
+  id: string,
+  x: number,
+  y: number,
+  width: number,
+  height: number
+) => {
+  const { byId } = getCopyOfStore(true, false);
+  const windowChange = byId[id];
+  if (!windowChange) return action(WindowAction.CHANGE_PROP_FAILED);
+
+  windowChange.width = width;
+  windowChange.height = height;
+  windowChange.left = x;
+  windowChange.top = y;
+  return action(WindowAction.MOVE_AND_RESIZE, { byId });
 };
 
 export const toggleMinimalize = (id: string) => {
   const { byId } = getCopyOfStore();
-  byId[id].minimalized = !byId[id].minimalized;
+  const windowToMinimalize = byId[id];
+  if (!windowToMinimalize) return action(WindowAction.CHANGE_PROP_FAILED);
 
+  windowToMinimalize.minimalized = !windowToMinimalize.minimalized;
   return action(WindowAction.TOGGLE_MINIMALIZE, { byId });
 };
 
 export const toggleFullscreen = (id: string) => {
   const { byId } = getCopyOfStore();
-  byId[id].fullscreened = !byId[id].fullscreened;
+  const windowToFullscreen = byId[id];
+  if (!windowToFullscreen) return action(WindowAction.CHANGE_PROP_FAILED);
 
+  windowToFullscreen.fullscreened = !windowToFullscreen.fullscreened;
   return action(WindowAction.TOGGLE_FULLSCREEN, { byId });
 };
 
 export const close = (id: string) => {
   const { byId, allIds } = getCopyOfStore();
+  if (allIds.indexOf(id) === -1) return action(WindowAction.CLOSE_FAILED);
+
   delete byId[id];
-  allIds.splice(allIds.indexOf(id), 1);
+  const posInArray: number = allIds.indexOf(id);
+  if (posInArray >= 0) allIds.splice(allIds.indexOf(id), 1);
 
   return action(WindowAction.CLOSE, { byId, allIds });
 };

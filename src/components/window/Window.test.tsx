@@ -28,6 +28,10 @@ describe("Window Component", () => {
       expect(findByTestAtrr(wrapper, "window").length).toBe(1);
     });
 
+    it("should render content div", () => {
+      expect(findByTestAtrr(wrapper, "content").length).toBe(1);
+    });
+
     it("should render children", () => {
       expect(findByTestAtrr(wrapper, "child").length).toBe(2);
     });

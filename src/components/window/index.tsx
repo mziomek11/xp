@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 
 import Bar from "./bar";
+import Resizers from "./resizer/list";
 import { changePriority, toggleFullscreen } from "../../store/window/actions";
 import { RootState } from "MyTypes";
 
@@ -32,33 +33,32 @@ export class Window extends React.Component<Props, {}> {
 
     this.props.changePriority();
   };
+
+  getStyles = () => {
+    const { fullscreened, minimalized, top, left, width, height } = this.props;
+    return {
+      top: fullscreened ? 0 : top,
+      left: fullscreened ? 0 : left,
+      width: fullscreened ? "100%" : width,
+      height: fullscreened ? "100%" : height,
+      display: minimalized ? "none" : "block"
+    };
+  };
+
   render() {
-    const {
-      children,
-      top,
-      left,
-      width,
-      height,
-      id,
-      minimalized,
-      fullscreened,
-      toggleFullscreen
-    } = this.props;
+    const { children, id, toggleFullscreen } = this.props;
     return (
       <div
         className="window"
-        style={{
-          top: fullscreened ? 0 : top,
-          left: fullscreened ? 0 : left,
-          width: fullscreened ? "100%" : width,
-          height: fullscreened ? "100%" : height,
-          display: minimalized ? "none" : "block"
-        }}
+        style={this.getStyles()}
         data-test="window"
         onMouseDown={this.handleMouseDown}
       >
         <Bar id={id} data-test="bar" onDoubleClick={toggleFullscreen} />
-        {children}
+        <div className="window__content" data-test="content">
+          {children}
+          <Resizers id={id} />
+        </div>
       </div>
     );
   }

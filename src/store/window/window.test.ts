@@ -7,20 +7,27 @@ import * as WindowAction from "./constants";
 import { Window } from "./models";
 import { deepCopy } from "../../utils/";
 
+type AnyAction = {
+  type: any;
+  payload: any;
+};
+
 const windowId = uuid();
 const secondWindowId = uuid();
 const windowName: string = "WindowName";
 const windowChangedLeft: number = 10;
 const windowChangedTop: number = 20;
+const windowChangedWidth: number = 300;
+const windowChangedHeight: number = 250;
 
 const getWindowData = (id: string): Window => {
   return {
     id,
     name: windowName,
-    width: 100,
-    height: 100,
-    left: 100,
-    top: 100,
+    width: 500,
+    height: 300,
+    left: window.innerWidth / 2 - 500 / 2,
+    top: window.innerHeight / 2 - 300 / 2,
     minimalized: false,
     fullscreened: false
   };
@@ -63,6 +70,21 @@ const stateWithChangedLeftAndTop: WindowState = getStateWithChangedProps(
   { left: windowChangedLeft, top: windowChangedTop }
 );
 
+const stateWithChangedWidthAndHeight: WindowState = getStateWithChangedProps(
+  stateWithOneWindow,
+  { width: windowChangedWidth, height: windowChangedHeight }
+);
+
+const stateWithChangedLeftTopWidthHeight: WindowState = getStateWithChangedProps(
+  stateWithOneWindow,
+  {
+    width: windowChangedWidth,
+    height: windowChangedHeight,
+    left: windowChangedLeft,
+    top: windowChangedTop
+  }
+);
+
 const stateWithTwoWidnows: WindowState = {
   byId: {
     [windowId]: getWindowData(windowId),
@@ -83,7 +105,37 @@ describe("Window redux", () => {
       });
     });
 
-    describe("openWindow", () => {
+    describe("changePropFailed", () => {
+      it("should NOT update state", () => {
+        const updatedState = reducer(stateWithOneWindow, {
+          type: WindowAction.CHANGE_PROP_FAILED
+        });
+
+        expect(updatedState).toEqual(stateWithOneWindow);
+      });
+    });
+
+    describe("closeFailed", () => {
+      it("should NOT update state", () => {
+        const updatedState = reducer(stateWithOneWindow, {
+          type: WindowAction.CLOSE_FAILED
+        });
+
+        expect(updatedState).toEqual(stateWithOneWindow);
+      });
+    });
+
+    describe("changePriorityFailed", () => {
+      it("should NOT update state", () => {
+        const updatedState = reducer(stateWithOneWindow, {
+          type: WindowAction.CHANGE_PRIORITY_FAILED
+        });
+
+        expect(updatedState).toEqual(stateWithOneWindow);
+      });
+    });
+
+    describe("open", () => {
       it("should update state", () => {
         const updatedState = reducer(emptyState, {
           type: WindowAction.OPEN,
@@ -93,7 +145,7 @@ describe("Window redux", () => {
       });
     });
 
-    describe("moveWindow", () => {
+    describe("move", () => {
       it("should update state", () => {
         const updatedState = reducer(stateWithOneWindow, {
           type: WindowAction.MOVE,
@@ -101,6 +153,28 @@ describe("Window redux", () => {
         });
 
         expect(updatedState).toEqual(stateWithChangedLeftAndTop);
+      });
+    });
+
+    describe("resize", () => {
+      it("should update state", () => {
+        const updatedState = reducer(stateWithOneWindow, {
+          type: WindowAction.RESIZE,
+          payload: { byId: stateWithChangedWidthAndHeight.byId }
+        });
+
+        expect(updatedState).toEqual(stateWithChangedWidthAndHeight);
+      });
+    });
+
+    describe("moveAndResize", () => {
+      it("should update state", () => {
+        const updatedState = reducer(stateWithOneWindow, {
+          type: WindowAction.MOVE_AND_RESIZE,
+          payload: { byId: stateWithChangedLeftTopWidthHeight.byId }
+        });
+
+        expect(updatedState).toEqual(stateWithChangedLeftTopWidthHeight);
       });
     });
 
@@ -126,7 +200,7 @@ describe("Window redux", () => {
       });
     });
 
-    describe("closeWindow", () => {
+    describe("close", () => {
       it("should update state", () => {
         const updatedState = reducer(stateWithOneWindow, {
           type: WindowAction.CLOSE,
@@ -137,7 +211,7 @@ describe("Window redux", () => {
       });
     });
 
-    describe("changeWindowPriority", () => {
+    describe("changePriority", () => {
       it("should update state", () => {
         const updatedState = reducer(stateWithTwoWidnows, {
           type: WindowAction.CHANGE_PRIORITY,
@@ -153,7 +227,7 @@ describe("Window redux", () => {
   describe("actions", () => {
     beforeEach(() => store.dispatch(actions.closeAll()));
 
-    describe("closeAllWidnows", () => {
+    describe("closeAll", () => {
       it("should return proper type", () => {
         const action = actions.closeAll();
 
@@ -161,104 +235,194 @@ describe("Window redux", () => {
       });
     });
 
-    describe("openWindow", () => {
-      it("should return proper type and payload", () => {
+    describe("open", () => {
+      it("should open new window", () => {
         const action = actions.open(windowId, windowName, false);
 
         expect(action.type).toBe(WindowAction.OPEN);
         expect(action.payload).toEqual(stateWithOneWindow);
       });
 
-      it("should return proper payload when fullscreen is false", () => {
+      it("should open new window fullscreen is false", () => {
         const action = actions.open(windowId, windowName, true);
 
         expect(action.payload).toEqual(stateWithChangedFullscreen);
       });
     });
 
-    describe("closeWindow", () => {
-      it("should return proper type and payload", () => {
-        store.dispatch(actions.open(windowId, windowName, false));
-        const action = actions.close(windowId);
+    describe("close", () => {
+      describe("window exists", () => {
+        it("should return proper type and payload", () => {
+          store.dispatch(actions.open(windowId, windowName, false));
+          const action = actions.close(windowId) as AnyAction;
 
-        expect(action.type).toBe(WindowAction.CLOSE);
-        expect(action.payload).toEqual(emptyState);
+          expect(action.type).toBe(WindowAction.CLOSE);
+          expect(action.payload).toEqual(emptyState);
+        });
+      });
+
+      describe("window does not exists", () => {
+        it("should return error action", () => {
+          const action = actions.close("id-not-exists") as AnyAction;
+
+          expect(action.type).toBe(WindowAction.CLOSE_FAILED);
+          expect(action.payload).toBe(undefined);
+        });
       });
     });
 
-    describe("moveWindow", () => {
-      it("should return proper type and payload", () => {
-        store.dispatch(actions.open(windowId, windowName, false));
-        const action = actions.move(
-          windowId,
-          windowChangedLeft,
-          windowChangedTop
-        );
+    describe("move", () => {
+      describe("window exists", () => {
+        it("should change window top and left", () => {
+          store.dispatch(actions.open(windowId, windowName, false));
+          const action = actions.move(
+            windowId,
+            windowChangedLeft,
+            windowChangedTop
+          ) as AnyAction;
 
-        expect(action.type).toBe(WindowAction.MOVE);
-        expect(action.payload).toEqual({
-          byId: stateWithChangedLeftAndTop.byId
+          expect(action.type).toBe(WindowAction.MOVE);
+          expect(action.payload).toEqual({
+            byId: stateWithChangedLeftAndTop.byId
+          });
+        });
+      });
+
+      describe("window does NOT exists", () => {
+        it("should return error action", () => {
+          const action = actions.move(
+            "id-that-not-exists",
+            windowChangedLeft,
+            windowChangedTop
+          ) as AnyAction;
+
+          expect(action.type).toBe(WindowAction.CHANGE_PROP_FAILED);
+          expect(action.payload).toBe(undefined);
+        });
+      });
+    });
+
+    describe("resize", () => {
+      describe("window exists", () => {
+        it("should change window width and height", () => {
+          store.dispatch(actions.open(windowId, windowName, false));
+          const action = actions.resize(
+            windowId,
+            windowChangedWidth,
+            windowChangedHeight
+          ) as AnyAction;
+
+          expect(action.type).toBe(WindowAction.RESIZE);
+          expect(action.payload).toEqual({
+            byId: stateWithChangedWidthAndHeight.byId
+          });
+        });
+      });
+
+      describe("window does NOT exists", () => {
+        it("should return error action", () => {
+          const action = actions.resize(
+            "id-that-not-exists",
+            windowChangedWidth,
+            windowChangedHeight
+          ) as AnyAction;
+
+          expect(action.type).toBe(WindowAction.CHANGE_PROP_FAILED);
+          expect(action.payload).toBe(undefined);
         });
       });
     });
 
     describe("toggleFullscreen", () => {
-      it("should return proper type and payload when was fullscreened", () => {
-        store.dispatch(actions.open(windowId, windowName, true));
-        const action = actions.toggleFullscreen(windowId);
+      describe("window exists", () => {
+        it("should toggle fullscreen when was fullscreened", () => {
+          store.dispatch(actions.open(windowId, windowName, true));
+          const action = actions.toggleFullscreen(windowId) as AnyAction;
 
-        expect(action.type).toBe(WindowAction.TOGGLE_FULLSCREEN);
-        expect(action.payload).toEqual({ byId: stateWithOneWindow.byId });
+          expect(action.type).toBe(WindowAction.TOGGLE_FULLSCREEN);
+          expect(action.payload).toEqual({ byId: stateWithOneWindow.byId });
+        });
+
+        it("should toggle fullscreen when was NOT fullscreened", () => {
+          store.dispatch(actions.open(windowId, windowName, false));
+          const action = actions.toggleFullscreen(windowId) as AnyAction;
+
+          expect(action.type).toBe(WindowAction.TOGGLE_FULLSCREEN);
+          expect(action.payload).toEqual({
+            byId: stateWithChangedFullscreen.byId
+          });
+        });
       });
 
-      it("should return proper type and payload when was NOT fullscreened", () => {
-        store.dispatch(actions.open(windowId, windowName, false));
-        const action = actions.toggleFullscreen(windowId);
+      describe("window does NOT exists", () => {
+        it("should return error action", () => {
+          const action = actions.toggleFullscreen("id-not-exists") as AnyAction;
 
-        expect(action.type).toBe(WindowAction.TOGGLE_FULLSCREEN);
-        expect(action.payload).toEqual({
-          byId: stateWithChangedFullscreen.byId
+          expect(action.type).toBe(WindowAction.CHANGE_PROP_FAILED);
+          expect(action.payload).toBe(undefined);
         });
       });
     });
 
     describe("toggleMinimalize", () => {
-      it("should return proper type and payload when was NOT minimalized", () => {
-        store.dispatch(actions.open(windowId, windowName, false));
-        const action = actions.toggleMinimalize(windowId);
+      describe("window exists", () => {
+        it("should toggle minimalized when was NOT minimalized", () => {
+          store.dispatch(actions.open(windowId, windowName, false));
+          const action = actions.toggleMinimalize(windowId) as AnyAction;
 
-        expect(action.type).toBe(WindowAction.TOGGLE_MINIMALIZE);
-        expect(action.payload).toEqual({
-          byId: stateWithChangedMinimalize.byId
+          expect(action.type).toBe(WindowAction.TOGGLE_MINIMALIZE);
+          expect(action.payload).toEqual({
+            byId: stateWithChangedMinimalize.byId
+          });
+        });
+
+        it("should toggle minimalized when was minimalized", () => {
+          store.dispatch(actions.open(windowId, windowName, false));
+          store.dispatch(actions.toggleMinimalize(windowId));
+          const action = actions.toggleMinimalize(windowId) as AnyAction;
+
+          expect(action.type).toBe(WindowAction.TOGGLE_MINIMALIZE);
+          expect(action.payload).toEqual({
+            byId: stateWithOneWindow.byId
+          });
         });
       });
 
-      it("should return proper type and payload when was minimalized", () => {
-        store.dispatch(actions.open(windowId, windowName, false));
-        store.dispatch(actions.toggleMinimalize(windowId));
-        const action = actions.toggleMinimalize(windowId);
+      describe("window does NOt exists", () => {
+        it("shoud return error action", () => {
+          const action = actions.toggleMinimalize("id-not-exists") as AnyAction;
 
-        expect(action.type).toBe(WindowAction.TOGGLE_MINIMALIZE);
-        expect(action.payload).toEqual({
-          byId: stateWithOneWindow.byId
+          expect(action.type).toBe(WindowAction.CHANGE_PROP_FAILED);
+          expect(action.payload).toBe(undefined);
         });
       });
     });
 
-    describe("changeWindowPriority", () => {
-      it("should return proper action and payload", () => {
-        store.dispatch(actions.open(windowId, windowName, false));
-        store.dispatch(actions.open(secondWindowId, windowName, false));
-        let action = actions.changePriority(windowId);
+    describe("changePriority", () => {
+      describe("window exists", () => {
+        it("should change priority of window", () => {
+          store.dispatch(actions.open(windowId, windowName, false));
+          store.dispatch(actions.open(secondWindowId, windowName, false));
+          let action = actions.changePriority(windowId) as AnyAction;
 
-        expect(action.type).toBe(WindowAction.CHANGE_PRIORITY);
-        expect(action.payload).toEqual({
-          allIds: [secondWindowId, windowId]
+          expect(action.type).toBe(WindowAction.CHANGE_PRIORITY);
+          expect(action.payload).toEqual({
+            allIds: [secondWindowId, windowId]
+          });
+
+          action = actions.changePriority(secondWindowId) as AnyAction;
+          expect(action.payload).toEqual({
+            allIds: [windowId, secondWindowId]
+          });
         });
+      });
 
-        action = actions.changePriority(secondWindowId);
-        expect(action.payload).toEqual({
-          allIds: [windowId, secondWindowId]
+      describe("window does NOT exists", () => {
+        it("should return error action", () => {
+          const action = actions.changePriority("id-not-exists") as AnyAction;
+
+          expect(action.type).toBe(WindowAction.CHANGE_PRIORITY_FAILED);
+          expect(action.payload).toBe(undefined);
         });
       });
     });
