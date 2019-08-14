@@ -2,8 +2,8 @@ import React from "react";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
 
-import Action from "../";
-import { close as closeWindow } from "../../../../store/window/actions";
+import Action from "./Action";
+import { close as closeWindow } from "../../../store/window/actions";
 
 type OwnProps = {
   id: string;
@@ -15,20 +15,16 @@ type DispatchProps = {
 
 type Props = OwnProps & DispatchProps;
 
-export const ExitAction: React.FC<Props> = ({ closeWindow, id }) => {
-  return (
-    <Action id={id} type="exit" onClick={closeWindow} data-test="action" />
-  );
-};
+export const ExitAction: React.FC<Props> = ({ closeWindow, id }) => (
+  <Action id={id} type="exit" onClick={closeWindow} data-test="action" />
+);
 
 const mapDispatchToProps = (
   dispatch: Dispatch,
   { id }: OwnProps
-): DispatchProps => {
-  return {
-    closeWindow: () => dispatch(closeWindow(id))
-  };
-};
+): DispatchProps => ({
+  closeWindow: () => dispatch(closeWindow(id))
+});
 
 export default connect(
   null,

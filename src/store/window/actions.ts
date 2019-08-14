@@ -2,10 +2,10 @@ import { action } from "typesafe-actions";
 
 import store from "../";
 import windowConfig from "./config";
+import * as WindowAction from "./constants";
 import { WindowState } from "./reducer";
 import { deepCopy } from "../../utils";
 import { Window } from "./models";
-import * as WindowAction from "./constants";
 
 export const open = (id: string, name: string, fullscreened: boolean) => {
   const { byId, allIds } = getCopyOfStore();

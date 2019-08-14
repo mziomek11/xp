@@ -2,8 +2,8 @@ import React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 
-import Bar from "./bar";
-import Resizers from "./resizer/list";
+import Bar from "./bar/Bar";
+import Resizers from "./resizer/List";
 import { changePriority, toggleFullscreen } from "../../store/window/actions";
 import { RootState } from "MyTypes";
 
@@ -29,9 +29,9 @@ type Props = OwnProps & StateProps & DispatchProps;
 
 export class Window extends React.Component<Props, {}> {
   handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    if ((e.target as Element).classList.contains("window__action")) return;
-
-    this.props.changePriority();
+    if (!(e.target as Element).classList.contains("window__action")) {
+      this.props.changePriority();
+    }
   };
 
   getStyles = () => {
@@ -57,7 +57,7 @@ export class Window extends React.Component<Props, {}> {
         <Bar id={id} data-test="bar" onDoubleClick={toggleFullscreen} />
         <div className="window__content" data-test="content">
           {children}
-          <Resizers id={id} />
+          <Resizers id={id} data-test="resizers" />
         </div>
       </div>
     );
@@ -73,12 +73,10 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
 const mapDispatchToProps = (
   dispatch: Dispatch,
   { id }: OwnProps
-): DispatchProps => {
-  return {
-    changePriority: () => dispatch(changePriority(id)),
-    toggleFullscreen: () => dispatch(toggleFullscreen(id))
-  };
-};
+): DispatchProps => ({
+  changePriority: () => dispatch(changePriority(id)),
+  toggleFullscreen: () => dispatch(toggleFullscreen(id))
+});
 
 export default connect(
   mapStateToProps,

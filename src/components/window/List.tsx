@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import Window from "../";
+import Window from "./Window";
 import { RootState } from "MyTypes";
 
 type StateProps = {
@@ -20,10 +20,8 @@ export const List: React.FC<Props> = ({ windowsIds }) => {
   );
 };
 
-const mapStateToProps = (state: RootState): StateProps => {
-  return {
-    windowsIds: state.window.allIds
-  };
-};
+const mapStateToProps = (state: RootState): StateProps => ({
+  windowsIds: state.window.allIds
+});
 
 export default connect(mapStateToProps)(List);

@@ -1,21 +1,17 @@
 import React from "react";
-import { shallow, ShallowWrapper } from "enzyme";
-import { Action } from "./";
-import { findByTestAtrr } from "../../../utils/testing";
+import { shallow } from "enzyme";
+import { Action } from "./Action";
+import { findByTestAtrr } from "../../../../testingUtils";
+
+const actionProps = {
+  id: "pap",
+  type: "exit" as "exit",
+  onClick: jest.fn(),
+  changePriority: jest.fn()
+};
+const wrapper = shallow(<Action {...actionProps} />);
 
 describe("WindowAction Component", () => {
-  let onClickMockFn = jest.fn();
-  let changePriorityMockFn = jest.fn();
-  const comp = (
-    <Action
-      id="pap"
-      type="exit"
-      onClick={onClickMockFn}
-      changePriority={changePriorityMockFn}
-    />
-  );
-  const wrapper = shallow(comp);
-
   describe("render", () => {
     it("should render without throwing an error", () => {
       expect(findByTestAtrr(wrapper, "action").length).toBe(1);
@@ -23,7 +19,7 @@ describe("WindowAction Component", () => {
   });
 
   describe("props", () => {
-    it("should add type to class name", () => {
+    it("should add type to the className", () => {
       const expectedClass = "window__action window__action--exit";
       expect(findByTestAtrr(wrapper, "action").prop("className")).toBe(
         expectedClass
@@ -32,20 +28,20 @@ describe("WindowAction Component", () => {
   });
 
   describe("onClick", () => {
-    beforeEach(() => {
-      onClickMockFn = jest.fn();
-      changePriorityMockFn = jest.fn();
-    });
+    let onClickMockFn: jest.Mock, changePriorityMockFn: jest.Mock;
 
     const getWrapperWithType = (type: "minimalize" | "exit" | "fullscreen") => {
-      return shallow(
-        <Action
-          id="pap"
-          type={type}
-          onClick={onClickMockFn}
-          changePriority={changePriorityMockFn}
-        />
-      );
+      onClickMockFn = jest.fn();
+      changePriorityMockFn = jest.fn();
+
+      const props = {
+        id: "pap",
+        type: type,
+        onClick: onClickMockFn,
+        changePriority: changePriorityMockFn
+      };
+
+      return shallow(<Action {...props} />);
     };
 
     it("should call onClickMock and changePriorityMock once when type is minimalize", () => {

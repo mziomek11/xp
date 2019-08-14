@@ -1,12 +1,11 @@
 import React from "react";
 
-import ResizerList from "./";
+import ResizerList from "./List";
 import { shallow } from "enzyme";
-import { findByTestAtrr } from "../../../../utils/testing";
+import { findByTestAtrr } from "../../../../testingUtils";
 
 const id = "window-id";
-const comp = <ResizerList id={id} />;
-const wrapper = shallow(comp);
+const wrapper = shallow(<ResizerList id={id} />);
 
 describe("WindowResizerList Componenet", () => {
   describe("render", () => {

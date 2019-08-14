@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 
-import Screen from "./components/screen/";
+import Screen from "./components/screen/Screen";
 import store from "./store";
 import "./styles/main.scss";
 

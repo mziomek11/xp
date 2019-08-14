@@ -1,17 +1,17 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import withDoubleClick from "./";
-import { findByTestAtrr } from "../../utils/testing";
+import withDoubleClick from "./withDoubleClick";
+import { findByTestAtrr } from "../../testingUtils";
 
 const timeBetweenClicks: number = 200;
 const TestComponent: React.FC = () => <h1>Text</h1>;
 const EnchancedComponent = withDoubleClick(TestComponent, timeBetweenClicks);
 
-describe("Higher Order Component withDoubleClick", () => {
-  let comp = <EnchancedComponent onDoubleClick={() => console.log("double")} />;
-  let wrapper = shallow(comp);
+let comp = <EnchancedComponent onDoubleClick={() => console.log("double")} />;
+let wrapper = shallow(comp);
 
+describe("Higher Order Component withDoubleClick", () => {
   describe("render", () => {
     it("render without throwing an error", () => {
       expect(findByTestAtrr(wrapper, "container").length).toBe(1);

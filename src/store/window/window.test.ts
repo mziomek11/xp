@@ -1,10 +1,10 @@
 import uuid from "uuid";
 
+import * as actions from "./actions";
+import * as WindowAction from "./constants";
 import store from "../";
 import windowConfig from "./config";
 import reducer, { WindowState } from "./reducer";
-import * as actions from "./actions";
-import * as WindowAction from "./constants";
 import { Window } from "./models";
 import { deepCopy } from "../../utils/";
 
@@ -91,7 +91,7 @@ const stateWithChangedLeftTopWidthHeight: WindowState = getStateWithChangedProps
   }
 );
 
-const stateWithTwoWidnows: WindowState = {
+const stateWithTwoWindows: WindowState = {
   byId: {
     [windowId]: getWindowData(windowId),
     [secondWindowId]: getWindowData(secondWindowId)
@@ -219,12 +219,12 @@ describe("Window redux", () => {
 
     describe("changePriority", () => {
       it("should update state", () => {
-        const updatedState = reducer(stateWithTwoWidnows, {
+        const updatedState = reducer(stateWithTwoWindows, {
           type: WindowAction.CHANGE_PRIORITY,
           payload: { allIds: [secondWindowId, windowId] }
         });
 
-        expect(updatedState.byId).toEqual(stateWithTwoWidnows.byId);
+        expect(updatedState.byId).toEqual(stateWithTwoWindows.byId);
         expect(updatedState.allIds).toEqual([secondWindowId, windowId]);
       });
     });
@@ -249,7 +249,7 @@ describe("Window redux", () => {
         expect(action.payload).toEqual(stateWithOneWindow);
       });
 
-      it("should open new window fullscreen is false", () => {
+      it("should open new window fullscreen is true", () => {
         const action = actions.open(windowId, windowName, true);
 
         expect(action.payload).toEqual(stateWithChangedFullscreen);
@@ -324,7 +324,7 @@ describe("Window redux", () => {
           });
         });
 
-        it("should change window windth and height to minimal", () => {
+        it("should change window width and height to minimal", () => {
           store.dispatch(actions.open(windowId, windowName, false));
           const action = actions.resize(windowId, 10, 10) as AnyAction;
 

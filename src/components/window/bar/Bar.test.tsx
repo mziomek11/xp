@@ -1,32 +1,36 @@
 import React from "react";
 import { shallow } from "enzyme";
-import { Bar, pixelsToLeave } from "./";
-import { findByTestAtrr } from "../../../utils/testing";
+
+import windowConfig from "../../../store/window/config";
+import { Bar, pixelsToLeave, initState } from "./Bar";
+import { findByTestAtrr } from "../../../../testingUtils";
+
+const barProps = {
+  id: "abc",
+  name: "Program",
+  lastWindowX: windowConfig.INITIAL_LEFT,
+  lastWindowY: windowConfig.INITIAL_TOP,
+  windowWidth: windowConfig.INITIAL_WIDTH,
+  windowHeight: windowConfig.INITIAL_HEIGHT,
+  isFullScreened: false,
+  moveWindow: jest.fn()
+};
+let wrapper = shallow<Bar>(<Bar {...barProps} />);
+
+const getMouseEventData = (contains: boolean) => ({
+  clientX: barProps.lastWindowX + barProps.windowWidth / 2,
+  clientY: barProps.windowHeight + 10,
+  target: {
+    classList: {
+      contains: () => contains
+    }
+  }
+});
+
+const mouseDownFalse = getMouseEventData(false);
+const mouseDownTrue = getMouseEventData(true);
 
 describe("WindowBar Component", () => {
-  const barProps = {
-    id: "abc",
-    name: "Program",
-    lastWindowX: 100,
-    lastWindowY: 100,
-    windowWidth: 100,
-    windowHeight: 150,
-    isFullScreened: false
-  };
-  let mockMoveWindow = jest.fn();
-  let comp = <Bar {...barProps} moveWindow={mockMoveWindow} />;
-  let wrapper = shallow<Bar>(comp);
-
-  const mouseDownEventData = {
-    clientX: 150,
-    clientY: 110,
-    target: {
-      classList: {
-        contains: () => false
-      }
-    }
-  };
-
   describe("render", () => {
     it("should render without throwing an error", () => {
       expect(findByTestAtrr(wrapper, "bar").length).toBe(1);
@@ -46,50 +50,31 @@ describe("WindowBar Component", () => {
   });
 
   describe("handleMouseDown", () => {
-    const initState = {
-      barX: 0,
-      barY: 0,
-      minLeft: 0,
-      maxLeft: 0,
-      maxTop: 0
-    };
-
     it("should update state correctly ", () => {
-      findByTestAtrr(wrapper, "bar").simulate("mousedown", mouseDownEventData);
-      const expectedState = {
-        barX: mouseDownEventData.clientX - barProps.lastWindowX,
-        barY: mouseDownEventData.clientY - barProps.lastWindowY,
-        minLeft: -barProps.windowWidth + pixelsToLeave,
-        maxLeft: window.innerWidth - pixelsToLeave,
-        maxTop: window.innerHeight - pixelsToLeave
-      };
+      findByTestAtrr(wrapper, "bar").simulate("mousedown", mouseDownFalse);
 
+      const barX: number = mouseDownFalse.clientX - barProps.lastWindowX;
+      const barY: number = mouseDownFalse.clientY - barProps.lastWindowY;
+      const minLeft: number = -barProps.windowWidth + pixelsToLeave;
+      const maxLeft: number = window.innerWidth - pixelsToLeave;
+      const maxTop: number = window.innerHeight - pixelsToLeave;
+
+      const expectedState = { barX, barY, minLeft, maxLeft, maxTop };
       expect(wrapper.instance().state).toEqual(expectedState);
     });
 
     it("should NOT update state when is fullscreened", () => {
       const fullScrProps = { ...barProps, isFullScreened: true };
-      const fullScrComp = <Bar {...fullScrProps} moveWindow={() => {}} />;
-      const fullScrWrapper = shallow(fullScrComp);
-
-      findByTestAtrr(fullScrWrapper, "bar").simulate(
-        "mousedown",
-        mouseDownEventData
-      );
+      const fullScrWrapper = shallow(<Bar {...fullScrProps} />);
+      const bar = findByTestAtrr(fullScrWrapper, "bar");
+      bar.simulate("mousedown", mouseDownFalse);
 
       expect(fullScrWrapper.instance().state).toEqual(initState);
     });
 
     it("should NOT update state when clicked on action", () => {
-      wrapper = shallow<Bar>(comp);
-      findByTestAtrr(wrapper, "bar").simulate("mousedown", {
-        ...mouseDownEventData,
-        target: {
-          classList: {
-            contains: () => true
-          }
-        }
-      });
+      const wrapper = shallow<Bar>(<Bar {...barProps} />);
+      findByTestAtrr(wrapper, "bar").simulate("mousedown", mouseDownTrue);
 
       expect(wrapper.instance().state).toEqual(initState);
     });
@@ -97,14 +82,15 @@ describe("WindowBar Component", () => {
 
   describe("handleMouseMove", () => {
     const map: any = {};
+    let mockMoveWindow: jest.Mock;
+
     window.addEventListener = jest.fn((event, cb) => {
       map[event] = cb;
     });
 
     beforeEach(() => {
       mockMoveWindow = jest.fn();
-      comp = <Bar {...barProps} moveWindow={mockMoveWindow} />;
-      wrapper = shallow<Bar>(comp);
+      wrapper = shallow<Bar>(<Bar {...barProps} moveWindow={mockMoveWindow} />);
     });
 
     it("should not be called when mouseDown did not occur", () => {
@@ -113,38 +99,34 @@ describe("WindowBar Component", () => {
     });
 
     it("should be called when mouseDown occured", () => {
-      findByTestAtrr(wrapper, "bar").simulate("mousedown", mouseDownEventData);
+      findByTestAtrr(wrapper, "bar").simulate("mousedown", mouseDownFalse);
       map.mousemove({});
 
       expect(mockMoveWindow.mock.calls.length).toBe(1);
     });
 
     it("should send proper argument to mockMoveWindow", () => {
-      const evData = {
-        clientX: 100,
-        clientY: 100,
-        target: mouseDownEventData.target
+      findByTestAtrr(wrapper, "bar").simulate("mousedown", mouseDownFalse);
+      let callCount = 0;
+
+      const checkOutput = (moveX: number, moveY: number) => {
+        const { state } = wrapper.instance();
+        const { barX, barY, minLeft, maxLeft, maxTop } = state;
+        const moveData = { clientX: moveX, clientY: moveY };
+
+        map.mousemove(moveData);
+        const expectedOutput: [number, number] = [
+          Math.min(Math.max(moveData.clientX - barX, minLeft), maxLeft),
+          Math.min(Math.max(moveData.clientY - barY, 0), maxTop)
+        ];
+        expect(mockMoveWindow.mock.calls[callCount]).toEqual(expectedOutput);
+        callCount += 1;
       };
-      findByTestAtrr(wrapper, "bar").simulate("mousedown", evData);
 
-      map.mousemove({ clientX: 100, clientY: 100 });
-      let expectedOutput: [number, number] = [100, 100];
-      expect(mockMoveWindow.mock.calls[0]).toEqual(expectedOutput);
-
-      map.mousemove({ clientX: 250, clientY: 200 });
-      expectedOutput = [250, 200];
-      expect(mockMoveWindow.mock.calls[1]).toEqual(expectedOutput);
-
-      map.mousemove({ clientX: -500, clientY: -500 });
-      expectedOutput = [-barProps.windowWidth + pixelsToLeave, 0];
-      expect(mockMoveWindow.mock.calls[2]).toEqual(expectedOutput);
-
-      map.mousemove({ clientX: 2000, clientY: 2000 });
-      expectedOutput = [
-        window.innerWidth - pixelsToLeave,
-        window.innerHeight - pixelsToLeave
-      ];
-      expect(mockMoveWindow.mock.calls[3]).toEqual(expectedOutput);
+      checkOutput(100, 100);
+      checkOutput(250, 200);
+      checkOutput(-500, -500);
+      checkOutput(2000, 2000);
     });
   });
 });

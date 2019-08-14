@@ -32,11 +32,9 @@ export const Action: React.FC<Props> = ({ type, onClick, changePriority }) => {
 const mapDispatchToProps = (
   dispatch: Dispatch,
   { id }: OwnProps
-): DispatchProps => {
-  return {
-    changePriority: () => dispatch(changePriority(id))
-  };
-};
+): DispatchProps => ({
+  changePriority: () => dispatch(changePriority(id))
+});
 
 export default connect(
   null,

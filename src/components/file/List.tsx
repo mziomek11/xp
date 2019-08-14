@@ -3,8 +3,8 @@ import uuid from "uuid";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 
-import File from "../";
-import { open as openWindow } from "../../../store/window/actions";
+import File from "./File";
+import { open as openWindow } from "../../store/window/actions";
 
 type DispatchProps = {
   openWindow: (name: string) => void;
@@ -29,11 +29,9 @@ export const FileList: React.FC<DispatchProps> = ({ openWindow }) => {
   );
 };
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
-  return {
-    openWindow: (name: string) => dispatch(openWindow(uuid(), name, false))
-  };
-};
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
+  openWindow: (name: string) => dispatch(openWindow(uuid(), name, false))
+});
 
 export default connect(
   null,

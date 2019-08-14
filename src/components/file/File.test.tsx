@@ -1,8 +1,8 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import { File } from "./";
-import { findByTestAtrr } from "../../utils/testing";
+import { File } from "./File";
+import { findByTestAtrr } from "../../../testingUtils";
 
 describe("File Component", () => {
   const comp = <File name="MyFile" left={20} top={40} />;

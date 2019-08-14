@@ -3,8 +3,25 @@ import { shallow } from "enzyme";
 
 import windowConfig from "../../../store/window/config";
 import { Window } from "../../../store/window/models";
-import { WindowResizer } from "./";
-import { findByTestAtrr } from "../../../utils/testing";
+import { WindowResizer, initState } from "./Resizer";
+import { findByTestAtrr } from "../../../../testingUtils";
+
+type ResizerData = {
+  resizesWidth?: boolean;
+  isLeft?: boolean;
+  isBottom?: boolean;
+};
+
+type StatePropsToChange = {
+  endX?: number;
+  edgeDistanceX?: number;
+  edgeDistanceY?: number;
+};
+
+type MoveEvData = {
+  clientX: number;
+  clientY: number;
+};
 
 const { MINIMAL_SIZE, INITIAL_LEFT, INITIAL_TOP } = windowConfig;
 const windowId: string = "this-is-window-id";
@@ -20,21 +37,24 @@ const windowData: Window = {
   top: INITIAL_TOP
 };
 
-const compProps = {
-  id: windowId,
+const compResizerData = {
   resizesWidth: true,
   isLeft: true,
-  isBottom: true,
-  resize: jest.fn(),
-  moveAndResize: jest.fn(),
-  windowData: windowData
+  isBottom: true
 };
 
-const getWindowProps = (resizerData: {
-  resizesWidth?: boolean;
-  isLeft?: boolean;
-  isBottom?: boolean;
-}) => ({ ...compProps, ...resizerData });
+const compProps = {
+  id: windowId,
+  resize: jest.fn(),
+  moveAndResize: jest.fn(),
+  windowData: windowData,
+  ...compResizerData
+};
+
+const getWindowProps = (resizerData: ResizerData) => ({
+  ...compProps,
+  ...resizerData
+});
 
 const checkClassName = (wrapper: any, className: string) => {
   expect(findByTestAtrr(wrapper, "resizer").prop("className")).toContain(
@@ -66,291 +86,253 @@ describe("WindowResizer Component", () => {
     });
   });
 
-  describe("LeftResizer", () => {
-    const mockMoveAndResizeFn = jest.fn();
-    const propsWithoutFn = getWindowProps({ isBottom: false });
-    const props = {
-      ...propsWithoutFn,
-      moveAndResize: mockMoveAndResizeFn
-    };
-    const wrapper = shallow<WindowResizer>(<WindowResizer {...props} />);
-    const instance = wrapper.instance();
-    const mouseDownData = {
-      clientX: INITIAL_LEFT + 2,
-      clientY: INITIAL_TOP + MINIMAL_SIZE / 2
-    };
-    const expectedState = {
-      endX: windowData.left + windowData.width,
-      edgeDistanceX: mouseDownData.clientX - windowData.left,
-      edgeDistanceY: 0
+  describe("direction", () => {
+    let mockResizeFn: jest.Mock;
+    let wrapper: any;
+    let instance: WindowResizer;
+    let mouseDownData: MoveEvData;
+    let expectedState: typeof initState;
+
+    const setTestData = (
+      resizerData: ResizerData,
+      fnName: "resize" | "moveAndResize",
+      evData: MoveEvData,
+      stateToChange: StatePropsToChange
+    ) => {
+      mockResizeFn = jest.fn();
+      const propsWithoutFn = getWindowProps(resizerData);
+      const props = { ...propsWithoutFn, [fnName]: mockResizeFn };
+
+      wrapper = shallow<WindowResizer>(<WindowResizer {...props} />);
+      instance = wrapper.instance();
+      mouseDownData = evData;
+      expectedState = { ...initState, ...stateToChange };
     };
 
-    describe("render", () => {
-      it("should contain window__resizer--left className", () => {
-        checkClassName(wrapper, "window__resizer--left");
+    const resizeToMoveData = (resizeData: ResizerData): MoveEvData => {
+      const { isBottom, isLeft, resizesWidth } = resizeData;
+      const y = INITIAL_TOP + (isBottom ? MINIMAL_SIZE - 2 : MINIMAL_SIZE / 2);
+      const x =
+        INITIAL_LEFT +
+        (resizesWidth ? (isLeft ? 2 : MINIMAL_SIZE - 2) : MINIMAL_SIZE / 2);
+
+      return { clientX: x, clientY: y };
+    };
+
+    const testRender = (classModifier: string) => {
+      describe("render", () => {
+        it(`should contain window__resizer--${classModifier} className`, () => {
+          checkClassName(wrapper, `window__resizer--${classModifier}`);
+        });
       });
-    });
+    };
 
-    describe("onMouseDown", () => {
-      it("should update state correctly", () => {
-        findByTestAtrr(wrapper, "resizer").simulate("mousedown", mouseDownData);
-        expect(instance.state).toEqual(expectedState);
+    const testOnMouseDown = () => {
+      describe("onMouseDown", () => {
+        it("should update state correctly", () => {
+          const resizer = findByTestAtrr(wrapper, "resizer");
+          resizer.simulate("mousedown", mouseDownData);
+
+          expect(instance.state).toEqual(expectedState);
+        });
       });
-    });
+    };
 
-    describe("onMouseMove", () => {
-      it("should be called once and with proper args", () => {
-        const moveData = {
-          clientX: mouseDownData.clientX - 50,
-          clientY: mouseDownData.clientY - 50
+    const testMockResizeFn = (calls: number, args: any) => {
+      expect(mockResizeFn.mock.calls.length).toBe(calls);
+      expect(mockResizeFn.mock.calls[calls - 1]).toEqual(args);
+    };
+
+    describe("LeftResizer", () => {
+      beforeAll(() => {
+        const resizerData: ResizerData = { isBottom: false };
+        const evData = resizeToMoveData(resizerData);
+        const stateChanges = {
+          endX: windowData.left + windowData.width,
+          edgeDistanceX: evData.clientX - windowData.left
         };
-        instance.handleMouseMove(moveData as MouseEvent);
-        const expectedArgs: [number, number, number, number] = [
-          moveData.clientX - expectedState.edgeDistanceX,
-          windowData.top,
-          expectedState.endX - moveData.clientX + expectedState.edgeDistanceX,
-          windowData.height
-        ];
 
-        expect(mockMoveAndResizeFn.mock.calls.length).toBe(1);
-        expect(mockMoveAndResizeFn.mock.calls[0]).toEqual(expectedArgs);
+        setTestData(resizerData, "moveAndResize", evData, stateChanges);
       });
 
-      it("should be called with minimal width and left", () => {
-        const moveData = {
-          clientX: expectedState.endX,
-          clientY: mouseDownData.clientY
+      testRender("left");
+      testOnMouseDown();
+
+      describe("onMouseMove", () => {
+        it("should be called once and with proper args", () => {
+          const moveData = {
+            clientX: mouseDownData.clientX - 50,
+            clientY: mouseDownData.clientY - 50
+          };
+
+          instance.handleMouseMove(moveData as MouseEvent);
+          const expectedArgs: [number, number, number, number] = [
+            moveData.clientX - expectedState.edgeDistanceX,
+            windowData.top,
+            expectedState.endX - moveData.clientX + expectedState.edgeDistanceX,
+            windowData.height
+          ];
+
+          testMockResizeFn(1, expectedArgs);
+        });
+
+        it("should be called with minimal width and left", () => {
+          const moveData = {
+            clientX: expectedState.endX,
+            clientY: mouseDownData.clientY
+          };
+          instance.handleMouseMove(moveData as MouseEvent);
+          const expectedArgs: [number, number, number, number] = [
+            expectedState.endX - windowConfig.MINIMAL_SIZE,
+            windowData.top,
+            expectedState.endX - moveData.clientX + expectedState.edgeDistanceX,
+            windowData.height
+          ];
+
+          testMockResizeFn(2, expectedArgs);
+        });
+      });
+    });
+
+    describe("RightResizer", () => {
+      beforeAll(() => {
+        const resizerData: ResizerData = { isBottom: false, isLeft: false };
+        const evData = resizeToMoveData(resizerData);
+        const stateChanges = {
+          edgeDistanceX: evData.clientX - windowData.left - windowData.width
         };
-        instance.handleMouseMove(moveData as MouseEvent);
-        const expectedArgs: [number, number, number, number] = [
-          expectedState.endX - windowConfig.MINIMAL_SIZE,
-          windowData.top,
-          expectedState.endX - moveData.clientX + expectedState.edgeDistanceX,
-          windowData.height
-        ];
 
-        expect(mockMoveAndResizeFn.mock.calls.length).toBe(2);
-        expect(mockMoveAndResizeFn.mock.calls[1]).toEqual(expectedArgs);
+        setTestData(resizerData, "resize", evData, stateChanges);
       });
-    });
-  });
 
-  describe("RightResizer", () => {
-    const mockResizeFn = jest.fn();
-    const propsWithoutFn = getWindowProps({ isBottom: false, isLeft: false });
-    const props = {
-      ...propsWithoutFn,
-      resize: mockResizeFn
-    };
-    const wrapper = shallow<WindowResizer>(<WindowResizer {...props} />);
-    const instance = wrapper.instance();
-    const mouseDownData = {
-      clientX: INITIAL_LEFT + MINIMAL_SIZE - 2,
-      clientY: INITIAL_TOP + MINIMAL_SIZE / 2
-    };
-    const expectedState = {
-      endX: 0,
-      edgeDistanceX: mouseDownData.clientX - windowData.left - windowData.width,
-      edgeDistanceY: 0
-    };
+      testRender("right");
+      testOnMouseDown();
 
-    describe("render", () => {
-      it("should contain window__resizer--right className", () => {
-        checkClassName(wrapper, "window__resizer--right");
+      describe("onMouseMove", () => {
+        it("should be called once and with proper args", () => {
+          const moveData = {
+            clientX: mouseDownData.clientX + 200,
+            clientY: mouseDownData.clientX - 100
+          };
+          instance.handleMouseMove(moveData as MouseEvent);
+          const expectedArgs: [number, number] = [
+            moveData.clientX - windowData.left - expectedState.edgeDistanceX,
+            windowData.height
+          ];
+
+          testMockResizeFn(1, expectedArgs);
+        });
       });
     });
 
-    describe("onMouseDown", () => {
-      it("should update state correctly", () => {
-        findByTestAtrr(wrapper, "resizer").simulate("mousedown", mouseDownData);
-        expect(instance.state).toEqual(expectedState);
-      });
-    });
-
-    describe("onMouseMove", () => {
-      it("should be called once and with proper args", () => {
-        const moveData = {
-          clientX: mouseDownData.clientX + 200,
-          clientY: mouseDownData.clientX - 100
+    describe("BottomResizer", () => {
+      beforeAll(() => {
+        const resizerData: ResizerData = { resizesWidth: false, isLeft: false };
+        const evData = resizeToMoveData(resizerData);
+        const stateChanges = {
+          edgeDistanceY: evData.clientY - windowData.top - windowData.height
         };
-        instance.handleMouseMove(moveData as MouseEvent);
-        const expectedArgs: [number, number] = [
-          moveData.clientX - windowData.left - expectedState.edgeDistanceX,
-          windowData.height
-        ];
 
-        expect(mockResizeFn.mock.calls.length).toBe(1);
-        expect(mockResizeFn.mock.calls[0]).toEqual(expectedArgs);
+        setTestData(resizerData, "resize", evData, stateChanges);
       });
-    });
-  });
 
-  describe("BottomResizer", () => {
-    const mockResizeFn = jest.fn();
-    const propsWithoutFn = getWindowProps({
-      resizesWidth: false,
-      isLeft: false
-    });
-    const props = {
-      ...propsWithoutFn,
-      resize: mockResizeFn
-    };
-    const wrapper = shallow<WindowResizer>(<WindowResizer {...props} />);
-    const instance = wrapper.instance();
-    const mouseDownData = {
-      clientX: INITIAL_LEFT + MINIMAL_SIZE / 2,
-      clientY: INITIAL_TOP + MINIMAL_SIZE - 2
-    };
-    const expectedState = {
-      endX: 0,
-      edgeDistanceX: 0,
-      edgeDistanceY: mouseDownData.clientY - windowData.top - windowData.height
-    };
+      testRender("bottom");
+      testOnMouseDown();
 
-    describe("render", () => {
-      it("should contain window__resizer--bottom className", () => {
-        checkClassName(wrapper, "window__resizer--bottom");
-      });
-    });
+      describe("onMouseMove", () => {
+        it("should be called once and with proper args", () => {
+          const moveData = {
+            clientX: mouseDownData.clientX - 300,
+            clientY: mouseDownData.clientY + 100
+          };
+          instance.handleMouseMove(moveData as MouseEvent);
+          const expectedArgs: [number, number] = [
+            windowData.width,
+            moveData.clientY - windowData.top - expectedState.edgeDistanceY
+          ];
 
-    describe("onMouseDown", () => {
-      it("should update state correctly", () => {
-        findByTestAtrr(wrapper, "resizer").simulate("mousedown", mouseDownData);
-        expect(instance.state).toEqual(expectedState);
+          testMockResizeFn(1, expectedArgs);
+        });
+
+        it("should be called with proper args when clientY out of window", () => {
+          const moveData = {
+            clientX: mouseDownData.clientX - 300,
+            clientY: mouseDownData.clientY + 5000
+          };
+          instance.handleMouseMove(moveData as MouseEvent);
+          const expectedArgs: [number, number] = [
+            windowData.width,
+            window.innerHeight
+          ];
+
+          testMockResizeFn(2, expectedArgs);
+        });
       });
     });
 
-    describe("onMouseMove", () => {
-      it("should be called once and with proper args", () => {
-        const moveData = {
-          clientX: mouseDownData.clientX - 300,
-          clientY: mouseDownData.clientY + 100
+    describe("BottomLeftResizer", () => {
+      beforeAll(() => {
+        const evData = resizeToMoveData({});
+        const stateChanges = {
+          endX: windowData.left + windowData.width,
+          edgeDistanceX: evData.clientX - windowData.left,
+          edgeDistanceY: evData.clientY - windowData.top - windowData.height
         };
-        instance.handleMouseMove(moveData as MouseEvent);
-        const expectedArgs: [number, number] = [
-          windowData.width,
-          moveData.clientY - windowData.top - expectedState.edgeDistanceY
-        ];
 
-        expect(mockResizeFn.mock.calls.length).toBe(1);
-        expect(mockResizeFn.mock.calls[0]).toEqual(expectedArgs);
+        setTestData({}, "moveAndResize", evData, stateChanges);
       });
 
-      it("should be called with proper args when clientY out of window", () => {
-        const moveData = {
-          clientX: mouseDownData.clientX - 300,
-          clientY: mouseDownData.clientY + 5000
+      testRender("bottom-left");
+      testOnMouseDown();
+
+      describe("onMouseMove", () => {
+        it("should be called once and with proper args", () => {
+          const moveData = {
+            clientX: mouseDownData.clientX - 100,
+            clientY: mouseDownData.clientX - 100
+          };
+          instance.handleMouseMove(moveData as MouseEvent);
+          const expectedArgs: [number, number, number, number] = [
+            moveData.clientX - expectedState.edgeDistanceX,
+            windowData.top,
+            expectedState.endX - moveData.clientX + expectedState.edgeDistanceX,
+            moveData.clientY - windowData.top - expectedState.edgeDistanceY
+          ];
+
+          testMockResizeFn(1, expectedArgs);
+        });
+      });
+    });
+
+    describe("BottomRightResizer", () => {
+      beforeAll(() => {
+        const resizerData: ResizerData = { isLeft: false };
+        const evData = resizeToMoveData(resizerData);
+        const stateChanges = {
+          edgeDistanceX: evData.clientX - windowData.left - windowData.width,
+          edgeDistanceY: evData.clientY - windowData.top - windowData.height
         };
-        instance.handleMouseMove(moveData as MouseEvent);
-        const expectedArgs: [number, number] = [
-          windowData.width,
-          window.innerHeight
-        ];
 
-        expect(mockResizeFn.mock.calls.length).toBe(2);
-        expect(mockResizeFn.mock.calls[1]).toEqual(expectedArgs);
+        setTestData(resizerData, "resize", evData, stateChanges);
       });
-    });
-  });
 
-  describe("BottomLeftResizer", () => {
-    const mockMoveAndResizeFn = jest.fn();
-    const propsWithoutFn = getWindowProps({});
-    const props = {
-      ...propsWithoutFn,
-      moveAndResize: mockMoveAndResizeFn
-    };
-    const wrapper = shallow<WindowResizer>(<WindowResizer {...props} />);
-    const instance = wrapper.instance();
-    const mouseDownData = {
-      clientX: INITIAL_LEFT + 2,
-      clientY: INITIAL_TOP + MINIMAL_SIZE - 2
-    };
-    const expectedState = {
-      endX: windowData.left + windowData.width,
-      edgeDistanceX: mouseDownData.clientX - windowData.left,
-      edgeDistanceY: mouseDownData.clientY - windowData.top - windowData.height
-    };
+      testRender("bottom-right");
+      testOnMouseDown();
 
-    describe("render", () => {
-      it("should contain window__resizer--bottom-left className", () => {
-        checkClassName(wrapper, "window__resizer--bottom-left");
-      });
-    });
+      describe("onMouseMove", () => {
+        it("should be called once and with proper args", () => {
+          const moveData = {
+            clientX: mouseDownData.clientX + 200,
+            clientY: mouseDownData.clientY + 200
+          };
+          instance.handleMouseMove(moveData as MouseEvent);
+          const expectedArgs: [number, number] = [
+            moveData.clientX - windowData.left - expectedState.edgeDistanceX,
+            moveData.clientY - windowData.top - expectedState.edgeDistanceY
+          ];
 
-    describe("onMouseDown", () => {
-      it("should update state correctly", () => {
-        findByTestAtrr(wrapper, "resizer").simulate("mousedown", mouseDownData);
-        expect(instance.state).toEqual(expectedState);
-      });
-    });
-
-    describe("onMouseMove", () => {
-      it("should be called once and with proper args", () => {
-        const moveData = {
-          clientX: mouseDownData.clientX - 100,
-          clientY: mouseDownData.clientX - 100
-        };
-        instance.handleMouseMove(moveData as MouseEvent);
-        const expectedArgs: [number, number, number, number] = [
-          moveData.clientX - expectedState.edgeDistanceX,
-          windowData.top,
-          expectedState.endX - moveData.clientX + expectedState.edgeDistanceX,
-          moveData.clientY - windowData.top - expectedState.edgeDistanceY
-        ];
-
-        expect(mockMoveAndResizeFn.mock.calls.length).toBe(1);
-        expect(mockMoveAndResizeFn.mock.calls[0]).toEqual(expectedArgs);
-      });
-    });
-  });
-
-  describe("BottomRightResizer", () => {
-    const mockResizeFn = jest.fn();
-    const propsWithoutFn = getWindowProps({ isLeft: false });
-    const props = {
-      ...propsWithoutFn,
-      resize: mockResizeFn
-    };
-    const wrapper = shallow<WindowResizer>(<WindowResizer {...props} />);
-    const instance = wrapper.instance();
-    const mouseDownData = {
-      clientX: INITIAL_LEFT + MINIMAL_SIZE - 2,
-      clientY: INITIAL_TOP + MINIMAL_SIZE - 2
-    };
-    const expectedState = {
-      endX: 0,
-      edgeDistanceX: mouseDownData.clientX - windowData.left - windowData.width,
-      edgeDistanceY: mouseDownData.clientY - windowData.top - windowData.height
-    };
-
-    describe("render", () => {
-      it("should contain window__resizer--bottom-right className", () => {
-        checkClassName(wrapper, "window__resizer--bottom-right");
-      });
-    });
-
-    describe("onMouseDown", () => {
-      it("should update state correctly", () => {
-        findByTestAtrr(wrapper, "resizer").simulate("mousedown", mouseDownData);
-        expect(instance.state).toEqual(expectedState);
-      });
-    });
-
-    describe("onMouseMove", () => {
-      it("should be called once and with proper args", () => {
-        const moveData = {
-          clientX: mouseDownData.clientX + 200,
-          clientY: mouseDownData.clientY + 200
-        };
-        instance.handleMouseMove(moveData as MouseEvent);
-        const expectedArgs: [number, number] = [
-          moveData.clientX - windowData.left - expectedState.edgeDistanceX,
-          moveData.clientY - windowData.top - expectedState.edgeDistanceY
-        ];
-
-        expect(mockResizeFn.mock.calls.length).toBe(1);
-        expect(mockResizeFn.mock.calls[0]).toEqual(expectedArgs);
+          testMockResizeFn(1, expectedArgs);
+        });
       });
     });
   });

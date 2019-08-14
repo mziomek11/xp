@@ -1,8 +1,9 @@
 import React from "react";
-import windowConfig from "../../../store/window/config";
 import { RootState } from "MyTypes";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
+
+import windowConfig from "../../../store/window/config";
 import { resize, moveAndResize } from "../../../store/window/actions";
 import { Window } from "../../../store/window/models";
 
@@ -30,12 +31,14 @@ type State = {
   edgeDistanceY: number;
 };
 
+export const initState: State = {
+  endX: 0,
+  edgeDistanceX: 0,
+  edgeDistanceY: 0
+};
+
 export class WindowResizer extends React.Component<Props, State> {
-  readonly state: State = {
-    endX: 0,
-    edgeDistanceX: 0,
-    edgeDistanceY: 0
-  };
+  readonly state: State = initState;
 
   shouldComponentUpdate(nextProps: Props) {
     const { fullscreened } = this.props.windowData;
@@ -43,63 +46,76 @@ export class WindowResizer extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
-    window.removeEventListener("mousemove", this.handleMouseMove);
-    window.removeEventListener("mouseup", this.handleMouseUp);
+    this.removeListeners();
   }
 
-  handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    const { windowData, isLeft, isBottom, resizesWidth } = this.props;
-    const { left, width, top, height } = windowData;
-    const { clientX, clientY } = e;
-    const newState: State = { ...this.state };
-
-    if (isBottom) newState.edgeDistanceY = clientY - top - height;
-    if (resizesWidth) {
-      newState.edgeDistanceX = clientX - left - (isLeft ? 0 : width);
-      if (isLeft) newState.endX = left + width;
-    }
-
-    this.setState(newState);
-
+  addListeners = () => {
     window.addEventListener("mousemove", this.handleMouseMove);
-    window.addEventListener("mouseup", this.handleMouseUp);
+    window.addEventListener("mouseup", this.removeListeners);
   };
 
-  handleMouseMove = (ev: MouseEvent) => {
-    const { clientX, clientY } = ev;
+  removeListeners = () => {
+    window.removeEventListener("mousemove", this.handleMouseMove);
+    window.removeEventListener("mouseup", this.removeListeners);
+  };
+
+  handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    const newState = this.calculateNewState(e);
+
+    this.setState(newState);
+    this.addListeners();
+  };
+
+  calculateNewState = (e: React.MouseEvent<HTMLDivElement>): State => {
+    const { windowData, isLeft, isBottom, resizesWidth } = this.props;
+    const { left, width, top, height } = windowData;
+    const newState: State = { ...this.state };
+
+    if (isBottom) newState.edgeDistanceY = e.clientY - top - height;
+    if (resizesWidth) {
+      if (isLeft) newState.endX = left + width;
+      newState.edgeDistanceX = e.clientX - left - (isLeft ? 0 : width);
+    }
+
+    return newState;
+  };
+
+  handleMouseMove = (e: MouseEvent) => {
+    const { width, height } = this.calculateNewSize(e);
+    this.changeSize(e, width, height);
+  };
+
+  calculateNewSize = (e: MouseEvent): { width: number; height: number } => {
     const { endX, edgeDistanceX, edgeDistanceY } = this.state;
-    const {
-      resize,
-      isLeft,
-      isBottom,
-      resizesWidth,
-      moveAndResize
-    } = this.props;
-    const { top, height, width, left } = this.props.windowData;
+    const { isLeft, isBottom, resizesWidth, windowData } = this.props;
+    const { top, height, width, left } = windowData;
+
     const newSize: { height: number; width: number } = { width, height };
 
     if (resizesWidth) {
-      if (isLeft) newSize.width = endX - clientX + edgeDistanceX;
-      else newSize.width = clientX - left - edgeDistanceX;
+      if (isLeft) newSize.width = endX - e.clientX + edgeDistanceX;
+      else newSize.width = e.clientX - left - edgeDistanceX;
     }
 
     if (isBottom) {
-      const calculatedHeight: number = clientY - top - edgeDistanceY;
+      const calculatedHeight: number = e.clientY - top - edgeDistanceY;
       newSize.height = Math.min(calculatedHeight, window.innerHeight);
     }
 
-    if (resizesWidth && isLeft) {
-      const newLeft: number = Math.min(
-        clientX - edgeDistanceX,
-        endX - windowConfig.MINIMAL_SIZE
-      );
-      moveAndResize(newLeft, top, newSize.width, newSize.height);
-    } else resize(newSize.width, newSize.height);
+    return newSize;
   };
 
-  handleMouseUp = () => {
-    window.removeEventListener("mousemove", this.handleMouseMove);
-    window.removeEventListener("mouseup", this.handleMouseUp);
+  changeSize = (e: MouseEvent, width: number, height: number) => {
+    const { resizesWidth, isLeft, moveAndResize, resize } = this.props;
+    const { edgeDistanceX, endX } = this.state;
+    const { top } = this.props.windowData;
+
+    if (!resizesWidth || !isLeft) resize(width, height);
+    else {
+      const minSize = windowConfig.MINIMAL_SIZE;
+      const newLeft = Math.min(e.clientX - edgeDistanceX, endX - minSize);
+      moveAndResize(newLeft, top, width, height);
+    }
   };
 
   getClassModifier() {
@@ -124,21 +140,17 @@ export class WindowResizer extends React.Component<Props, State> {
   }
 }
 
-const mapStateToProps = (state: RootState, { id }: OwnProps): StateProps => {
-  return {
-    windowData: state.window.byId[id]
-  };
-};
+const mapStateToProps = (state: RootState, { id }: OwnProps): StateProps => ({
+  windowData: state.window.byId[id]
+});
 
 const mapDispatchToProps = (
   dispatch: Dispatch,
   { id }: OwnProps
-): DispatchProps => {
-  return {
-    resize: (width, height) => dispatch(resize(id, width, height)),
-    moveAndResize: (x, y, w, h) => dispatch(moveAndResize(id, x, y, w, h))
-  };
-};
+): DispatchProps => ({
+  resize: (width, height) => dispatch(resize(id, width, height)),
+  moveAndResize: (x, y, w, h) => dispatch(moveAndResize(id, x, y, w, h))
+});
 
 export default connect(
   mapStateToProps,

@@ -1,5 +1,5 @@
 import React from "react";
-import Resizer from "../";
+import Resizer from "./Resizer";
 
 type Props = {
   id: string;

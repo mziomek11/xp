@@ -1,7 +1,7 @@
 import React from "react";
 import { shallow } from "enzyme";
-import { FileList } from "./";
-import { findByTestAtrr } from "../../../utils/testing";
+import { FileList } from "./List";
+import { findByTestAtrr } from "../../../testingUtils";
 
 describe("FileList Component", () => {
   const comp = <FileList openWindow={() => {}} />;

@@ -1,7 +1,7 @@
 import React from "react";
-import Start from "../start";
-import Applications from "./applications";
-import Time from "../time";
+import Start from "../start/Start";
+import Applications from "./application/List";
+import Time from "../time/Time";
 
 const Toolbar = () => {
   return (

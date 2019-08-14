@@ -1,28 +1,30 @@
 import React from "react";
 import { shallow } from "enzyme";
-import { Window } from ".";
-import { findByTestAtrr } from "../../utils/testing";
+
+import windowConfig from "../../store/window/config";
+import { Window } from "./Window";
+import { findByTestAtrr } from "../../../testingUtils";
+
+const windowProps = {
+  id: "abc",
+  top: windowConfig.INITIAL_TOP,
+  left: windowConfig.INITIAL_LEFT,
+  width: windowConfig.INITIAL_WIDTH,
+  height: windowConfig.INITIAL_HEIGHT,
+  minimalized: windowConfig.INITIAL_MINIMALIZED,
+  fullscreened: false,
+  toggleFullscreen: jest.fn(),
+  changePriority: jest.fn()
+};
+let comp = (
+  <Window {...windowProps}>
+    <div data-test="child" />
+    <div data-test="child" />
+  </Window>
+);
+let wrapper = shallow(comp);
 
 describe("Window Component", () => {
-  let mockChangePriority = jest.fn();
-  const windowProps = {
-    id: "abc",
-    top: 20,
-    left: 40,
-    width: 120,
-    height: 150,
-    minimalized: false,
-    fullscreened: false,
-    toggleFullscreen: jest.fn()
-  };
-  let comp = (
-    <Window {...windowProps} changePriority={mockChangePriority}>
-      <div data-test="child" />
-      <div data-test="child" />
-    </Window>
-  );
-  let wrapper = shallow(comp);
-
   describe("render", () => {
     it("should render without throwing an error", () => {
       expect(findByTestAtrr(wrapper, "window").length).toBe(1);
@@ -36,26 +38,28 @@ describe("Window Component", () => {
       expect(findByTestAtrr(wrapper, "child").length).toBe(2);
     });
 
-    it("should render bar", () => {
+    it("should render Bar Component", () => {
       expect(findByTestAtrr(wrapper, "bar").length).toBe(1);
+    });
+
+    it("should render ResizerList Component", () => {
+      expect(findByTestAtrr(wrapper, "resizers").length).toBe(1);
     });
   });
 
-  describe("props", () => {
+  describe("styles", () => {
     it("should apply position styles from props when NOT fullscreened", () => {
       const styles = findByTestAtrr(wrapper, "window").prop("style");
 
-      expect(styles).toHaveProperty("top", 20);
-      expect(styles).toHaveProperty("left", 40);
-      expect(styles).toHaveProperty("width", 120);
-      expect(styles).toHaveProperty("height", 150);
+      expect(styles).toHaveProperty("top", windowProps.top);
+      expect(styles).toHaveProperty("left", windowProps.left);
+      expect(styles).toHaveProperty("width", windowProps.width);
+      expect(styles).toHaveProperty("height", windowProps.height);
     });
 
     it("should apply static style rules when fullscreened", () => {
-      const propsWhenFullScr = { ...windowProps, fullscreened: true };
-      const fullScrComp = (
-        <Window {...propsWhenFullScr} changePriority={mockChangePriority} />
-      );
+      const props = { ...windowProps, fullscreened: true };
+      const fullScrComp = <Window {...props} />;
       const fullScrWrapper = shallow(fullScrComp);
       const styles = findByTestAtrr(fullScrWrapper, "window").prop("style");
 
@@ -72,10 +76,8 @@ describe("Window Component", () => {
     });
 
     it("should have dispaly none when minimalized", () => {
-      const propsWhenMinimalized = { ...windowProps, minimalized: true };
-      const minimaliedComp = (
-        <Window {...propsWhenMinimalized} changePriority={mockChangePriority} />
-      );
+      const props = { ...windowProps, minimalized: true };
+      const minimaliedComp = <Window {...props} />;
       const minimalizedWrapper = shallow(minimaliedComp);
       const styles = findByTestAtrr(minimalizedWrapper, "window").prop("style");
 
@@ -84,37 +86,30 @@ describe("Window Component", () => {
   });
 
   describe("mouseDown", () => {
+    const mouseEv = (contains: boolean) => ({
+      target: {
+        classList: {
+          contains: () => contains
+        }
+      }
+    });
+
+    let mockChangePriority: jest.Mock;
+
     beforeEach(() => {
       mockChangePriority = jest.fn();
-      comp = (
-        <Window {...windowProps} changePriority={mockChangePriority}>
-          <div data-test="child" />
-          <div data-test="child" />
-        </Window>
-      );
-      wrapper = shallow(comp);
+      const props = { ...windowProps, changePriority: mockChangePriority };
+      wrapper = shallow(<Window {...props} />);
     });
 
     it("should call mockChangePriority", () => {
-      findByTestAtrr(wrapper, "window").simulate("mousedown", {
-        target: {
-          classList: {
-            contains: () => false
-          }
-        }
-      });
+      findByTestAtrr(wrapper, "window").simulate("mousedown", mouseEv(false));
 
       expect(mockChangePriority.mock.calls.length).toBe(1);
     });
 
     it("should NOT call mockChangePriority when clicked action", () => {
-      findByTestAtrr(wrapper, "window").simulate("mousedown", {
-        target: {
-          classList: {
-            contains: () => true
-          }
-        }
-      });
+      findByTestAtrr(wrapper, "window").simulate("mousedown", mouseEv(true));
 
       expect(mockChangePriority.mock.calls.length).toBe(0);
     });
