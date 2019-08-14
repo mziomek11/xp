@@ -13,12 +13,16 @@
 }
 
 .window__title {
+  max-width: calc(100% - #{$window-actions-size} - #{$window-bar-padding});
+  overflow: hidden;
   user-select: none;
+  white-space: nowrap;
 }
 
 .window__actions {
   display: flex;
   height: 100%;
+  width: $window-actions-size;
   align-items: center;
 }
 
