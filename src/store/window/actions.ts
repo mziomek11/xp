@@ -1,6 +1,7 @@
 import { action } from "typesafe-actions";
 
 import store from "../";
+import windowConfig from "./config";
 import { WindowState } from "./reducer";
 import { deepCopy } from "../../utils";
 import { Window } from "./models";
@@ -12,11 +13,11 @@ export const open = (id: string, name: string, fullscreened: boolean) => {
   const newWindow: Window = {
     id,
     name,
-    width: 500,
-    height: 300,
-    left: window.innerWidth / 2 - 500 / 2,
-    top: window.innerHeight / 2 - 300 / 2,
-    minimalized: false,
+    width: windowConfig.INITIAL_WIDTH,
+    height: windowConfig.INITIAL_HEIGHT,
+    left: windowConfig.INITIAL_LEFT,
+    top: windowConfig.INITIAL_TOP,
+    minimalized: windowConfig.INITIAL_MINIMALIZED,
     fullscreened
   };
   byId[newWindow.id] = newWindow;
@@ -52,8 +53,8 @@ export const resize = (id: string, width: number, height: number) => {
   const windowToResize = byId[id];
   if (!windowToResize) return action(WindowAction.CHANGE_PROP_FAILED);
 
-  windowToResize.width = width;
-  windowToResize.height = height;
+  windowToResize.width = Math.max(width, windowConfig.MINIMAL_SIZE);
+  windowToResize.height = Math.max(height, windowConfig.MINIMAL_SIZE);
   return action(WindowAction.RESIZE, { byId });
 };
 
@@ -68,8 +69,8 @@ export const moveAndResize = (
   const windowChange = byId[id];
   if (!windowChange) return action(WindowAction.CHANGE_PROP_FAILED);
 
-  windowChange.width = width;
-  windowChange.height = height;
+  windowChange.width = Math.max(width, windowConfig.MINIMAL_SIZE);
+  windowChange.height = Math.max(height, windowConfig.MINIMAL_SIZE);
   windowChange.left = x;
   windowChange.top = y;
   return action(WindowAction.MOVE_AND_RESIZE, { byId });

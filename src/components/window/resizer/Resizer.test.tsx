@@ -1,10 +1,12 @@
 import React from "react";
-import { shallow, ShallowWrapper } from "enzyme";
+import { shallow } from "enzyme";
 
+import windowConfig from "../../../store/window/config";
 import { Window } from "../../../store/window/models";
 import { WindowResizer } from "./";
 import { findByTestAtrr } from "../../../utils/testing";
 
+const { MINIMAL_SIZE, INITIAL_LEFT, INITIAL_TOP } = windowConfig;
 const windowId: string = "this-is-window-id";
 
 const windowData: Window = {
@@ -12,10 +14,10 @@ const windowData: Window = {
   fullscreened: false,
   minimalized: false,
   name: "WindowName",
-  width: 100,
-  height: 100,
-  left: 100,
-  top: 100
+  width: MINIMAL_SIZE,
+  height: MINIMAL_SIZE,
+  left: INITIAL_LEFT,
+  top: INITIAL_TOP
 };
 
 const compProps = {
@@ -73,7 +75,10 @@ describe("WindowResizer Component", () => {
     };
     const wrapper = shallow<WindowResizer>(<WindowResizer {...props} />);
     const instance = wrapper.instance();
-    const mouseDownData = { clientX: 102, clientY: 150 };
+    const mouseDownData = {
+      clientX: INITIAL_LEFT + 2,
+      clientY: INITIAL_TOP + MINIMAL_SIZE / 2
+    };
     const expectedState = {
       endX: windowData.left + windowData.width,
       edgeDistanceX: mouseDownData.clientX - windowData.left,
@@ -95,7 +100,10 @@ describe("WindowResizer Component", () => {
 
     describe("onMouseMove", () => {
       it("should be called once and with proper args", () => {
-        const moveData = { clientX: 52, clientY: 200 };
+        const moveData = {
+          clientX: mouseDownData.clientX - 50,
+          clientY: mouseDownData.clientY - 50
+        };
         instance.handleMouseMove(moveData as MouseEvent);
         const expectedArgs: [number, number, number, number] = [
           moveData.clientX - expectedState.edgeDistanceX,
@@ -106,6 +114,23 @@ describe("WindowResizer Component", () => {
 
         expect(mockMoveAndResizeFn.mock.calls.length).toBe(1);
         expect(mockMoveAndResizeFn.mock.calls[0]).toEqual(expectedArgs);
+      });
+
+      it("should be called with minimal width and left", () => {
+        const moveData = {
+          clientX: expectedState.endX,
+          clientY: mouseDownData.clientY
+        };
+        instance.handleMouseMove(moveData as MouseEvent);
+        const expectedArgs: [number, number, number, number] = [
+          expectedState.endX - windowConfig.MINIMAL_SIZE,
+          windowData.top,
+          expectedState.endX - moveData.clientX + expectedState.edgeDistanceX,
+          windowData.height
+        ];
+
+        expect(mockMoveAndResizeFn.mock.calls.length).toBe(2);
+        expect(mockMoveAndResizeFn.mock.calls[1]).toEqual(expectedArgs);
       });
     });
   });
@@ -119,7 +144,10 @@ describe("WindowResizer Component", () => {
     };
     const wrapper = shallow<WindowResizer>(<WindowResizer {...props} />);
     const instance = wrapper.instance();
-    const mouseDownData = { clientX: 198, clientY: 150 };
+    const mouseDownData = {
+      clientX: INITIAL_LEFT + MINIMAL_SIZE - 2,
+      clientY: INITIAL_TOP + MINIMAL_SIZE / 2
+    };
     const expectedState = {
       endX: 0,
       edgeDistanceX: mouseDownData.clientX - windowData.left - windowData.width,
@@ -141,11 +169,14 @@ describe("WindowResizer Component", () => {
 
     describe("onMouseMove", () => {
       it("should be called once and with proper args", () => {
-        const moveData = { clientX: 300, clientY: 150 };
+        const moveData = {
+          clientX: mouseDownData.clientX + 200,
+          clientY: mouseDownData.clientX - 100
+        };
         instance.handleMouseMove(moveData as MouseEvent);
         const expectedArgs: [number, number] = [
           moveData.clientX - windowData.left - expectedState.edgeDistanceX,
-          windowData.top
+          windowData.height
         ];
 
         expect(mockResizeFn.mock.calls.length).toBe(1);
@@ -166,7 +197,10 @@ describe("WindowResizer Component", () => {
     };
     const wrapper = shallow<WindowResizer>(<WindowResizer {...props} />);
     const instance = wrapper.instance();
-    const mouseDownData = { clientX: 130, clientY: 198 };
+    const mouseDownData = {
+      clientX: INITIAL_LEFT + MINIMAL_SIZE / 2,
+      clientY: INITIAL_TOP + MINIMAL_SIZE - 2
+    };
     const expectedState = {
       endX: 0,
       edgeDistanceX: 0,
@@ -188,10 +222,13 @@ describe("WindowResizer Component", () => {
 
     describe("onMouseMove", () => {
       it("should be called once and with proper args", () => {
-        const moveData = { clientX: 130, clientY: 300 };
+        const moveData = {
+          clientX: mouseDownData.clientX - 300,
+          clientY: mouseDownData.clientY + 100
+        };
         instance.handleMouseMove(moveData as MouseEvent);
         const expectedArgs: [number, number] = [
-          windowData.left,
+          windowData.width,
           moveData.clientY - windowData.top - expectedState.edgeDistanceY
         ];
 
@@ -200,10 +237,13 @@ describe("WindowResizer Component", () => {
       });
 
       it("should be called with proper args when clientY out of window", () => {
-        const moveData = { clientX: 130, clientY: 5000 };
+        const moveData = {
+          clientX: mouseDownData.clientX - 300,
+          clientY: mouseDownData.clientY + 5000
+        };
         instance.handleMouseMove(moveData as MouseEvent);
         const expectedArgs: [number, number] = [
-          windowData.left,
+          windowData.width,
           window.innerHeight
         ];
 
@@ -222,7 +262,10 @@ describe("WindowResizer Component", () => {
     };
     const wrapper = shallow<WindowResizer>(<WindowResizer {...props} />);
     const instance = wrapper.instance();
-    const mouseDownData = { clientX: 102, clientY: 198 };
+    const mouseDownData = {
+      clientX: INITIAL_LEFT + 2,
+      clientY: INITIAL_TOP + MINIMAL_SIZE - 2
+    };
     const expectedState = {
       endX: windowData.left + windowData.width,
       edgeDistanceX: mouseDownData.clientX - windowData.left,
@@ -244,7 +287,10 @@ describe("WindowResizer Component", () => {
 
     describe("onMouseMove", () => {
       it("should be called once and with proper args", () => {
-        const moveData = { clientX: 50, clientY: 300 };
+        const moveData = {
+          clientX: mouseDownData.clientX - 100,
+          clientY: mouseDownData.clientX - 100
+        };
         instance.handleMouseMove(moveData as MouseEvent);
         const expectedArgs: [number, number, number, number] = [
           moveData.clientX - expectedState.edgeDistanceX,
@@ -268,7 +314,10 @@ describe("WindowResizer Component", () => {
     };
     const wrapper = shallow<WindowResizer>(<WindowResizer {...props} />);
     const instance = wrapper.instance();
-    const mouseDownData = { clientX: 198, clientY: 198 };
+    const mouseDownData = {
+      clientX: INITIAL_LEFT + MINIMAL_SIZE - 2,
+      clientY: INITIAL_TOP + MINIMAL_SIZE - 2
+    };
     const expectedState = {
       endX: 0,
       edgeDistanceX: mouseDownData.clientX - windowData.left - windowData.width,
@@ -290,7 +339,10 @@ describe("WindowResizer Component", () => {
 
     describe("onMouseMove", () => {
       it("should be called once and with proper args", () => {
-        const moveData = { clientX: 300, clientY: 300 };
+        const moveData = {
+          clientX: mouseDownData.clientX + 200,
+          clientY: mouseDownData.clientY + 200
+        };
         instance.handleMouseMove(moveData as MouseEvent);
         const expectedArgs: [number, number] = [
           moveData.clientX - windowData.left - expectedState.edgeDistanceX,

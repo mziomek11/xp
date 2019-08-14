@@ -1,4 +1,5 @@
 import React from "react";
+import windowConfig from "../../../store/window/config";
 import { RootState } from "MyTypes";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
@@ -88,7 +89,10 @@ export class WindowResizer extends React.Component<Props, State> {
     }
 
     if (resizesWidth && isLeft) {
-      const newLeft: number = clientX - edgeDistanceX;
+      const newLeft: number = Math.min(
+        clientX - edgeDistanceX,
+        endX - windowConfig.MINIMAL_SIZE
+      );
       moveAndResize(newLeft, top, newSize.width, newSize.height);
     } else resize(newSize.width, newSize.height);
   };

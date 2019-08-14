@@ -1,6 +1,7 @@
 import uuid from "uuid";
 
 import store from "../";
+import windowConfig from "./config";
 import reducer, { WindowState } from "./reducer";
 import * as actions from "./actions";
 import * as WindowAction from "./constants";
@@ -24,11 +25,11 @@ const getWindowData = (id: string): Window => {
   return {
     id,
     name: windowName,
-    width: 500,
-    height: 300,
-    left: window.innerWidth / 2 - 500 / 2,
-    top: window.innerHeight / 2 - 300 / 2,
-    minimalized: false,
+    width: windowConfig.INITIAL_WIDTH,
+    height: windowConfig.INITIAL_HEIGHT,
+    left: windowConfig.INITIAL_LEFT,
+    top: windowConfig.INITIAL_TOP,
+    minimalized: windowConfig.INITIAL_MINIMALIZED,
     fullscreened: false
   };
 };
@@ -73,6 +74,11 @@ const stateWithChangedLeftAndTop: WindowState = getStateWithChangedProps(
 const stateWithChangedWidthAndHeight: WindowState = getStateWithChangedProps(
   stateWithOneWindow,
   { width: windowChangedWidth, height: windowChangedHeight }
+);
+
+const stateWithMinimalWidthAndHeight: WindowState = getStateWithChangedProps(
+  stateWithOneWindow,
+  { width: windowConfig.MINIMAL_SIZE, height: windowConfig.MINIMAL_SIZE }
 );
 
 const stateWithChangedLeftTopWidthHeight: WindowState = getStateWithChangedProps(
@@ -317,12 +323,73 @@ describe("Window redux", () => {
             byId: stateWithChangedWidthAndHeight.byId
           });
         });
+
+        it("should change window windth and height to minimal", () => {
+          store.dispatch(actions.open(windowId, windowName, false));
+          const action = actions.resize(windowId, 10, 10) as AnyAction;
+
+          expect(action.type).toBe(WindowAction.RESIZE);
+          expect(action.payload).toEqual({
+            byId: stateWithMinimalWidthAndHeight.byId
+          });
+        });
       });
 
       describe("window does NOT exists", () => {
         it("should return error action", () => {
           const action = actions.resize(
             "id-that-not-exists",
+            windowChangedWidth,
+            windowChangedHeight
+          ) as AnyAction;
+
+          expect(action.type).toBe(WindowAction.CHANGE_PROP_FAILED);
+          expect(action.payload).toBe(undefined);
+        });
+      });
+    });
+
+    describe("moveAndResize", () => {
+      describe("window exists", () => {
+        it("should change window width and height", () => {
+          store.dispatch(actions.open(windowId, windowName, false));
+          const action = actions.moveAndResize(
+            windowId,
+            windowChangedLeft,
+            windowChangedTop,
+            windowChangedWidth,
+            windowChangedHeight
+          ) as AnyAction;
+
+          expect(action.type).toBe(WindowAction.MOVE_AND_RESIZE);
+          expect(action.payload).toEqual({
+            byId: stateWithChangedLeftTopWidthHeight.byId
+          });
+        });
+
+        it("should change window windth and height to minimal", () => {
+          store.dispatch(actions.open(windowId, windowName, false));
+          const action = actions.moveAndResize(
+            windowId,
+            stateWithOneWindow.byId[windowId].left,
+            stateWithOneWindow.byId[windowId].top,
+            10,
+            10
+          ) as AnyAction;
+
+          expect(action.type).toBe(WindowAction.MOVE_AND_RESIZE);
+          expect(action.payload).toEqual({
+            byId: stateWithMinimalWidthAndHeight.byId
+          });
+        });
+      });
+
+      describe("window does NOT exists", () => {
+        it("should return error action", () => {
+          const action = actions.moveAndResize(
+            "id-that-not-exists",
+            windowChangedLeft,
+            windowChangedTop,
             windowChangedWidth,
             windowChangedHeight
           ) as AnyAction;
