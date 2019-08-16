@@ -1,6 +1,6 @@
 import React from "react";
 import Start from "../start/Start";
-import Applications from "./application/List";
+import ApplicationsList from "./application/List";
 import Time from "../time/Time";
 
 const Toolbar = () => {
@@ -8,7 +8,7 @@ const Toolbar = () => {
     <div className="toolbar">
       <div className="toolbar__left-side">
         <Start />
-        <Applications />
+        <ApplicationsList />
       </div>
       <Time />
     </div>

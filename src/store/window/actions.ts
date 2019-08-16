@@ -1,17 +1,23 @@
 import { action } from "typesafe-actions";
 
 import store from "../";
-import windowConfig from "./config";
+import { windowConfig } from "../../config";
 import * as WindowAction from "./constants";
 import { WindowState } from "./reducer";
 import { deepCopy } from "../../utils";
 import { Window } from "./models";
 
-export const open = (id: string, name: string, fullscreened: boolean) => {
+export const open = (
+  id: string,
+  application: string,
+  name: string,
+  fullscreened: boolean
+) => {
   const { byId, allIds } = getCopyOfStore();
 
   const newWindow: Window = {
     id,
+    application,
     name,
     width: windowConfig.INITIAL_WIDTH,
     height: windowConfig.INITIAL_HEIGHT,
@@ -77,12 +83,17 @@ export const moveAndResize = (
 };
 
 export const toggleMinimalize = (id: string) => {
-  const { byId } = getCopyOfStore();
+  const { byId, allIds } = getCopyOfStore();
   const windowToMinimalize = byId[id];
   if (!windowToMinimalize) return action(WindowAction.CHANGE_PROP_FAILED);
 
+  if (windowToMinimalize.minimalized) {
+    allIds.splice(allIds.indexOf(id), 1);
+    allIds.push(id);
+  }
+
   windowToMinimalize.minimalized = !windowToMinimalize.minimalized;
-  return action(WindowAction.TOGGLE_MINIMALIZE, { byId });
+  return action(WindowAction.TOGGLE_MINIMALIZE, { byId, allIds });
 };
 
 export const toggleFullscreen = (id: string) => {

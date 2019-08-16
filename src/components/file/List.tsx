@@ -7,7 +7,7 @@ import File from "./File";
 import { open as openWindow } from "../../store/window/actions";
 
 type DispatchProps = {
-  openWindow: (name: string) => void;
+  openWindow: (application: string, title: string) => void;
 };
 
 const fileNames: string[] = ["Chrome", "Quake", "VS Code", "Terminal"];
@@ -21,7 +21,7 @@ export const FileList: React.FC<DispatchProps> = ({ openWindow }) => {
           key={i}
           left={0}
           top={50 * i}
-          onDoubleClick={() => openWindow(name)}
+          onDoubleClick={() => openWindow(name, "Untitled " + name)}
           data-test="file"
         />
       ))}
@@ -30,7 +30,8 @@ export const FileList: React.FC<DispatchProps> = ({ openWindow }) => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-  openWindow: (name: string) => dispatch(openWindow(uuid(), name, false))
+  openWindow: (application: string, title: string) =>
+    dispatch(openWindow(uuid(), application, title, false))
 });
 
 export default connect(

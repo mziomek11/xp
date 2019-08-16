@@ -1,7 +1,7 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import windowConfig from "../../store/window/config";
+import { windowConfig } from "../../config";
 import { Window } from "./Window";
 import { findByTestAtrr } from "../../../testingUtils";
 

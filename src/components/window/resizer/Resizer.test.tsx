@@ -1,7 +1,7 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import windowConfig from "../../../store/window/config";
+import { windowConfig } from "../../../config";
 import { Window } from "../../../store/window/models";
 import { WindowResizer, initState } from "./Resizer";
 import { findByTestAtrr } from "../../../../testingUtils";
@@ -30,6 +30,7 @@ const windowData: Window = {
   id: windowId,
   fullscreened: false,
   minimalized: false,
+  application: "ApplicationName",
   name: "WindowName",
   width: MINIMAL_SIZE,
   height: MINIMAL_SIZE,

@@ -2,7 +2,7 @@
   display: flex;
   justify-content: space-between;
   height: $toolbar-height;
-  background: black;
+  background: rgb(29, 29, 29);
   user-select: none;
 }
 
@@ -15,9 +15,42 @@
 }
 
 .toolbar__application {
+  background: black;
+  display: flex;
+  align-items: center;
+  position: relative;
   height: 100%;
   padding: 0 0.8em;
-  @include flex-centered;
+
+  &:hover {
+    cursor: pointer;
+    background: aquamarine;
+  }
+
+  &--with-menu {
+    justify-content: space-between;
+  }
+}
+
+.toolbar__application-arrow {
+  @include icon-list-down(10px);
+}
+
+.toolbar__application-menu {
+  z-index: 10000;
+  position: absolute;
+  left: 0;
+  bottom: 100%;
+  width: 100%;
+  background: blue;
+}
+
+.toolbar__application-menu-item {
+  background: black;
+  white-space: nowrap;
+  width: 100%;
+  overflow: hidden;
+  padding: 0.8em;
 
   &:hover {
     cursor: pointer;

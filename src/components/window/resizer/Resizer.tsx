@@ -3,7 +3,7 @@ import { RootState } from "MyTypes";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
 
-import windowConfig from "../../../store/window/config";
+import { windowConfig } from "../../../config";
 import { resize, moveAndResize } from "../../../store/window/actions";
 import { Window } from "../../../store/window/models";
 
