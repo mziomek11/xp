@@ -1,9 +1,8 @@
 .toolbar {
   display: flex;
+  position: relative;
   justify-content: space-between;
-  height: $toolbar-height;
   background: rgb(29, 29, 29);
-  user-select: none;
 }
 
 .toolbar__left-side {
@@ -37,7 +36,6 @@
 }
 
 .toolbar__application-menu {
-  z-index: 10000;
   position: absolute;
   left: 0;
   bottom: 100%;

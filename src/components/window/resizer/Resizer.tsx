@@ -3,7 +3,7 @@ import { RootState } from "MyTypes";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
 
-import { windowConfig } from "../../../config";
+import { windowConfig, toolbarConfig } from "../../../config";
 import { resize, moveAndResize } from "../../../store/window/actions";
 import { Window } from "../../../store/window/models";
 
@@ -99,7 +99,10 @@ export class WindowResizer extends React.Component<Props, State> {
 
     if (isBottom) {
       const calculatedHeight: number = e.clientY - top - edgeDistanceY;
-      newSize.height = Math.min(calculatedHeight, window.innerHeight);
+      newSize.height = Math.min(
+        calculatedHeight,
+        window.innerHeight - toolbarConfig.HEIGHT
+      );
     }
 
     return newSize;

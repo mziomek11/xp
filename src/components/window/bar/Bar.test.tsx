@@ -1,7 +1,7 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import { windowConfig } from "../../../config";
+import { windowConfig, toolbarConfig } from "../../../config";
 import { Bar, pixelsToLeave, initState } from "./Bar";
 import { findByTestAtrr } from "../../../../testingUtils";
 
@@ -57,7 +57,8 @@ describe("WindowBar Component", () => {
       const barY: number = mouseDownFalse.clientY - barProps.lastWindowY;
       const minLeft: number = -barProps.windowWidth + pixelsToLeave;
       const maxLeft: number = window.innerWidth - pixelsToLeave;
-      const maxTop: number = window.innerHeight - pixelsToLeave;
+      const maxTop: number =
+        window.innerHeight - pixelsToLeave - toolbarConfig.HEIGHT;
 
       const expectedState = { barX, barY, minLeft, maxLeft, maxTop };
       expect(wrapper.instance().state).toEqual(expectedState);

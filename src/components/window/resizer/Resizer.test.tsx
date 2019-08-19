@@ -5,6 +5,7 @@ import { windowConfig } from "../../../config";
 import { Window } from "../../../store/window/models";
 import { WindowResizer, initState } from "./Resizer";
 import { findByTestAtrr } from "../../../../testingUtils";
+import { toolbarConfig } from "../../../config";
 
 type ResizerData = {
   resizesWidth?: boolean;
@@ -263,7 +264,7 @@ describe("WindowResizer Component", () => {
           instance.handleMouseMove(moveData as MouseEvent);
           const expectedArgs: [number, number] = [
             windowData.width,
-            window.innerHeight
+            window.innerHeight - toolbarConfig.HEIGHT
           ];
 
           testMockResizeFn(2, expectedArgs);

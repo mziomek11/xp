@@ -8,6 +8,7 @@ import MinimalizeAction from "../action/MinimalizeAction";
 import { RootState } from "MyTypes";
 import { move as moveWindow } from "../../../store/window/actions";
 import { withDoubleClick } from "../../../hoc";
+import { toolbarConfig } from "../../../config";
 
 type OwnProps = {
   id: string;
@@ -88,7 +89,8 @@ export class Bar extends React.Component<Props, State> {
     const barY: number = e.clientY - lastWindowY;
     const minLeft: number = -windowWidth + pixelsToLeave;
     const maxLeft: number = window.innerWidth - pixelsToLeave;
-    const maxTop: number = window.innerHeight - pixelsToLeave;
+    const maxTop: number =
+      window.innerHeight - pixelsToLeave - toolbarConfig.HEIGHT;
 
     return { barX, barY, minLeft, maxLeft, maxTop };
   };
