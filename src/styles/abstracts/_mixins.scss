@@ -19,3 +19,19 @@
   left: auto;
   right: auto;
 }
+
+@mixin window-border-color($direction) {
+  background: linear-gradient(
+    $direction,
+    map-get($window-colors, "border-start"),
+    map-get($window-colors, "border-end")
+  );
+}
+
+@mixin window-border-color-corner($direction) {
+  background: linear-gradient(
+    $direction,
+    window-color("border-start") 30%,
+    window-color("border-end") 100%
+  );
+}

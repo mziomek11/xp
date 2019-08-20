@@ -1,6 +1,14 @@
 .window {
   position: absolute;
+  overflow: hidden;
   padding: $window-resizer-size;
+  border-top-left-radius: $window-top-border-radius;
+  border-top-right-radius: $window-top-border-radius;
+
+  &--fullscreen {
+    padding: 0;
+    border-radius: 0;
+  }
 }
 
 .window__bar {
@@ -9,13 +17,20 @@
   justify-content: space-between;
   padding: 0 $window-bar-padding;
   height: $window-bar-height;
-  background: rgb(14, 14, 65);
+  background: linear-gradient(
+    to bottom,
+    window-color("bar-1") 5%,
+    window-color("bar-2") 20%,
+    window-color("bar-3") 80%,
+    window-color("bar-4") 95%
+  );
 }
 
 .window__title {
   max-width: calc(100% - #{$window-actions-size} - #{$window-bar-padding});
-  overflow: hidden;
   user-select: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
@@ -29,7 +44,10 @@
 .window__action {
   width: $window-action-size;
   height: $window-action-size;
+  position: relative;
   margin-right: $window-bar-padding;
+  border-radius: 3px;
+  border: 1px solid white;
 
   &:hover {
     cursor: pointer;
@@ -39,16 +57,62 @@
     margin-right: 0;
   }
 
-  &--minimalize {
-    background: rgb(126, 126, 16);
+  &--minimalize,
+  &--fullscreen {
+    background: radial-gradient(
+      ellipse at top left,
+      window-color("blue-icon-start"),
+      window-color("blue-icon-end")
+    );
   }
 
-  &--fullscreen {
-    background: rgb(0, 0, 255);
+  &--minimalize::after {
+    content: "";
+    width: 7px;
+    height: 3px;
+    position: absolute;
+    bottom: 4px;
+    left: 4px;
+    background: white;
+  }
+
+  &--fullscreen::after {
+    content: "";
+    width: $window-action-size - 8px - 2px;
+    height: $window-action-size - 8px - 3px;
+    position: absolute;
+    bottom: 3px;
+    left: 3px;
+    border: 1px solid white;
+    border-top-width: 2px;
   }
 
   &--exit {
-    background: rgb(107, 6, 6);
+    background: radial-gradient(
+      ellipse at top left,
+      window-color("red-icon-start"),
+      window-color("red-icon-end")
+    );
+  }
+
+  &--exit::after,
+  &--exit::before {
+    content: "";
+    width: $window-action-size - 4px;
+    height: 2px;
+    position: absolute;
+    top: $window-action-size / 2 - 2px;
+    left: 1px;
+    border-radius: 5px;
+    background: white;
+  }
+
+  &--exit::before {
+    transform: rotate(45deg);
+  }
+
+  &--exit::after {
+    transform: rotate(-45deg);
   }
 }
 
@@ -61,14 +125,16 @@
 
 .window__resizer {
   position: absolute;
-  background: yellow;
+  background: map-get($window-colors, "border");
 
   &--left {
+    @include window-border-color(to right);
     left: 0;
     cursor: w-resize;
   }
 
   &--right {
+    @include window-border-color(to left);
     right: 0;
     cursor: e-resize;
   }
@@ -81,11 +147,18 @@
   }
 
   &--top {
+    background: linear-gradient(
+      to bottom,
+      window-color("border-top-1") 0,
+      window-color("border-top-2") 25%,
+      window-color("border-top-3") 75%
+    );
     top: 0;
     cursor: n-resize;
   }
 
   &--bottom {
+    @include window-border-color(to top);
     bottom: 0;
     cursor: s-resize;
   }
@@ -102,10 +175,10 @@
   &--top#{&}--right {
     width: $window-resizer-size;
     height: $window-resizer-size;
-    background-color: red;
   }
 
   &--bottom#{&}--left {
+    @include window-border-color-corner(45deg);
     @include reset-relative-postions;
     left: 0;
     bottom: 0;
@@ -113,6 +186,7 @@
   }
 
   &--bottom#{&}--right {
+    @include window-border-color-corner(-45deg);
     @include reset-relative-postions;
     right: 0;
     bottom: 0;
@@ -120,6 +194,7 @@
   }
 
   &--top#{&}--left {
+    @include window-border-color-corner(135deg);
     @include reset-relative-postions;
     left: 0;
     top: 0;
@@ -127,6 +202,7 @@
   }
 
   &--top#{&}--right {
+    @include window-border-color-corner(-135deg);
     @include reset-relative-postions;
     right: 0;
     top: 0;

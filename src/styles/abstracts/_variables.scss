@@ -1,11 +1,28 @@
-$file-size: 4em;
+$file-size: 64px;
 
-$start-width: 3.8em;
+$start-width: 60px;
 
-$time-width: 5em;
+$time-width: 80px;
 
-$window-bar-height: 2em;
-$window-bar-padding: 0.4em;
-$window-action-size: 0.8em;
+$window-colors: (
+  "border-start": #0018ab,
+  "border-end": #0855dd,
+  "border-top-1": #0058ee,
+  "border-top-2": #3f97ff,
+  "border-top-3": #0372ff,
+  "bar-1": #004ebb,
+  "bar-2": #0045bd,
+  "bar-3": #004cb8,
+  "bar-4": #012f92,
+  "blue-icon-start": #7fa3f8,
+  "blue-icon-end": #0045d3,
+  "red-icon-start": #ed957f,
+  "red-icon-end": #c22a00
+);
+
+$window-bar-height: 30px;
+$window-bar-padding: 4px;
+$window-action-size: 20px;
 $window-actions-size: 3 * $window-action-size + 2 * $window-bar-padding;
-$window-resizer-size: 0.8em;
+$window-resizer-size: 4px;
+$window-top-border-radius: 10px;

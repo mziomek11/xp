@@ -49,7 +49,9 @@ export class Window extends React.Component<Props, {}> {
     const { children, id, toggleFullscreen } = this.props;
     return (
       <div
-        className="window"
+        className={`window${
+          this.props.fullscreened ? " window--fullscreen" : ""
+        }`}
         style={this.getStyles()}
         data-test="window"
         onMouseDown={this.handleMouseDown}

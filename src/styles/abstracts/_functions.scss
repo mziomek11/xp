@@ -1,0 +1,3 @@
+@function window-color($name) {
+  @return map-get($window-colors, $name);
+}
