@@ -80,7 +80,7 @@ const stateWithChangedWidthAndHeight: WindowState = getStateWithChangedProps(
 
 const stateWithMinimalWidthAndHeight: WindowState = getStateWithChangedProps(
   stateWithOneWindow,
-  { width: windowConfig.MINIMAL_SIZE, height: windowConfig.MINIMAL_SIZE }
+  { width: windowConfig.MINIMAL_WIDTH, height: windowConfig.MINIMAL_HEIGHT }
 );
 
 const stateWithChangedLeftTopWidthHeight: WindowState = getStateWithChangedProps(

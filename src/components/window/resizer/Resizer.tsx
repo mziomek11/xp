@@ -182,15 +182,16 @@ export class WindowResizer extends React.Component<Props, State> {
       return;
     }
 
-    const minSize = windowConfig.MINIMAL_SIZE;
+    const minWidth = windowConfig.MINIMAL_WIDTH;
+    const minHeight = windowConfig.MINIMAL_HEIGHT;
     const newPos: { x: number; y: number } = { x: left, y: top };
 
     if (isLeft) {
-      newPos.x = Math.min(endX - newSize.width, endX - minSize);
+      newPos.x = Math.min(endX - newSize.width, endX - minWidth);
     }
 
     if (isTop) {
-      newPos.y = Math.min(endY - newSize.height, endY - minSize);
+      newPos.y = Math.min(endY - newSize.height, endY - minHeight);
     }
 
     moveAndResize(newPos.x, newPos.y, newSize.width, newSize.height);

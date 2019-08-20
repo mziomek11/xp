@@ -59,8 +59,8 @@ export const resize = (id: string, width: number, height: number) => {
   const windowToResize = byId[id];
   if (!windowToResize) return action(WindowAction.CHANGE_PROP_FAILED);
 
-  windowToResize.width = Math.max(width, windowConfig.MINIMAL_SIZE);
-  windowToResize.height = Math.max(height, windowConfig.MINIMAL_SIZE);
+  windowToResize.width = Math.max(width, windowConfig.MINIMAL_WIDTH);
+  windowToResize.height = Math.max(height, windowConfig.MINIMAL_HEIGHT);
   return action(WindowAction.RESIZE, { byId });
 };
 
@@ -75,8 +75,8 @@ export const moveAndResize = (
   const windowChange = byId[id];
   if (!windowChange) return action(WindowAction.CHANGE_PROP_FAILED);
 
-  windowChange.width = Math.max(width, windowConfig.MINIMAL_SIZE);
-  windowChange.height = Math.max(height, windowConfig.MINIMAL_SIZE);
+  windowChange.width = Math.max(width, windowConfig.MINIMAL_WIDTH);
+  windowChange.height = Math.max(height, windowConfig.MINIMAL_HEIGHT);
   windowChange.left = x;
   windowChange.top = y;
   return action(WindowAction.MOVE_AND_RESIZE, { byId });

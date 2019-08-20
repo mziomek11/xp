@@ -15,8 +15,8 @@ const windowData: Window = {
   minimalized: false,
   application: "ApplicationName",
   name: "WindowName",
-  width: windowConfig.MINIMAL_SIZE,
-  height: windowConfig.MINIMAL_SIZE,
+  width: windowConfig.MINIMAL_HEIGHT,
+  height: windowConfig.MINIMAL_WIDTH,
   left: windowConfig.INITIAL_LEFT,
   top: windowConfig.INITIAL_TOP
 };
@@ -397,7 +397,7 @@ describe("WindowResizer Component", () => {
 
         const newPosX = Math.min(
           endX - newSize.width,
-          endX - windowConfig.MINIMAL_SIZE
+          endX - windowConfig.MINIMAL_WIDTH
         );
 
         const expectedArgs = [
@@ -425,7 +425,7 @@ describe("WindowResizer Component", () => {
 
         const newPosY = Math.min(
           endY - newSize.width,
-          endY - windowConfig.MINIMAL_SIZE
+          endY - windowConfig.MINIMAL_HEIGHT
         );
 
         const expectedArgs = [
