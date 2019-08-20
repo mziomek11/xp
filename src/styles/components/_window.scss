@@ -1,5 +1,6 @@
 .window {
   position: absolute;
+  padding: $window-resizer-size;
 }
 
 .window__bar {
@@ -62,12 +63,6 @@
   position: absolute;
   background: yellow;
 
-  &--left,
-  &--right {
-    width: $window-resizer-size;
-    height: calc(100% - #{$window-bar-height} - #{$window-resizer-size});
-  }
-
   &--left {
     left: 0;
     cursor: w-resize;
@@ -78,27 +73,63 @@
     cursor: e-resize;
   }
 
+  &--left,
+  &--right {
+    top: $window-resizer-size;
+    width: $window-resizer-size;
+    height: calc(100% - #{$window-resizer-size * 2});
+  }
+
+  &--top {
+    top: 0;
+    cursor: n-resize;
+  }
+
   &--bottom {
     bottom: 0;
-    width: calc(100% - #{$window-resizer-size} * 2);
-    height: $window-resizer-size;
     cursor: s-resize;
   }
-
-  &--bottom-left,
-  &--bottom-right {
-    bottom: 0;
-    width: $window-resizer-size;
+  &--bottom,
+  &--top {
+    left: $window-resizer-size;
+    width: calc(100% - #{$window-resizer-size} * 2);
     height: $window-resizer-size;
   }
 
-  &--bottom-left {
+  &--bottom#{&}--left,
+  &--bottom#{&}--right,
+  &--top#{&}--left,
+  &--top#{&}--right {
+    width: $window-resizer-size;
+    height: $window-resizer-size;
+    background-color: red;
+  }
+
+  &--bottom#{&}--left {
+    @include reset-relative-postions;
     left: 0;
+    bottom: 0;
     cursor: sw-resize;
   }
 
-  &--bottom-right {
+  &--bottom#{&}--right {
+    @include reset-relative-postions;
     right: 0;
+    bottom: 0;
     cursor: se-resize;
+  }
+
+  &--top#{&}--left {
+    @include reset-relative-postions;
+    left: 0;
+    top: 0;
+    cursor: nw-resize;
+  }
+
+  &--top#{&}--right {
+    @include reset-relative-postions;
+    right: 0;
+    top: 0;
+    cursor: ne-resize;
   }
 }

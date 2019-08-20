@@ -57,8 +57,8 @@ export class Window extends React.Component<Props, {}> {
         <Bar id={id} data-test="bar" onDoubleClick={toggleFullscreen} />
         <div className="window__content" data-test="content">
           {children}
-          <Resizers id={id} data-test="resizers" />
         </div>
+        <Resizers id={id} data-test="resizers" />
       </div>
     );
   }

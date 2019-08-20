@@ -4,58 +4,31 @@ import ResizerList from "./List";
 import { shallow } from "enzyme";
 import { findByTestAtrr } from "../../../../testingUtils";
 
-const id = "window-id";
+const id = "asdasdasdasd";
 const wrapper = shallow(<ResizerList id={id} />);
 
+const testRenderResizer = (name: string, testData: string) => {
+  it(`should render ${name}Resizer Component`, () => {
+    const resizer = findByTestAtrr(wrapper, testData);
+
+    expect(resizer.length).toBe(1);
+    expect(resizer.prop("id")).toBe(id);
+  });
+};
+
+const resizerNameWithDataAttr: { [name: string]: string } = {
+  TopLeft: "NW",
+  Top: "N",
+  TopRight: "NE",
+  Right: "N",
+  BottomRight: "SE",
+  Bottom: "S",
+  BottomLeft: "SW",
+  Left: "W"
+};
+
 describe("WindowResizerList Componenet", () => {
-  describe("render", () => {
-    it("should render right resizer", () => {
-      const leftResizer = findByTestAtrr(wrapper, "E");
-
-      expect(leftResizer.length).toBe(1);
-      expect(leftResizer.prop("id")).toBe(id);
-      expect(leftResizer.prop("resizesWidth")).toBe(true);
-      expect(leftResizer.prop("isLeft")).toBe(false);
-      expect(leftResizer.prop("isBottom")).toBe(false);
-    });
-
-    it("should render bottom resizer", () => {
-      const bottomResizer = findByTestAtrr(wrapper, "S");
-
-      expect(bottomResizer.length).toBe(1);
-      expect(bottomResizer.prop("id")).toBe(id);
-      expect(bottomResizer.prop("resizesWidth")).toBe(false);
-      expect(bottomResizer.prop("isBottom")).toBe(true);
-    });
-
-    it("should render left resizer", () => {
-      const leftResizer = findByTestAtrr(wrapper, "W");
-
-      expect(leftResizer.length).toBe(1);
-      expect(leftResizer.prop("id")).toBe(id);
-      expect(leftResizer.prop("resizesWidth")).toBe(true);
-      expect(leftResizer.prop("isLeft")).toBe(true);
-      expect(leftResizer.prop("isBottom")).toBe(false);
-    });
-
-    it("should render bottom left resizer", () => {
-      const leftResizer = findByTestAtrr(wrapper, "SW");
-
-      expect(leftResizer.length).toBe(1);
-      expect(leftResizer.prop("id")).toBe(id);
-      expect(leftResizer.prop("resizesWidth")).toBe(true);
-      expect(leftResizer.prop("isLeft")).toBe(true);
-      expect(leftResizer.prop("isBottom")).toBe(true);
-    });
-
-    it("should render bottom right resizer", () => {
-      const leftResizer = findByTestAtrr(wrapper, "SE");
-
-      expect(leftResizer.length).toBe(1);
-      expect(leftResizer.prop("id")).toBe(id);
-      expect(leftResizer.prop("resizesWidth")).toBe(true);
-      expect(leftResizer.prop("isLeft")).toBe(false);
-      expect(leftResizer.prop("isBottom")).toBe(true);
-    });
+  Object.keys(resizerNameWithDataAttr).forEach(name => {
+    testRenderResizer(name, resizerNameWithDataAttr[name] as string);
   });
 });

@@ -12,3 +12,10 @@
 
   border-top: $size solid $color;
 }
+
+@mixin reset-relative-postions {
+  top: auto;
+  bottom: auto;
+  left: auto;
+  right: auto;
+}

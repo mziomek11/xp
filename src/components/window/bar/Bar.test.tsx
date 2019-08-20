@@ -2,7 +2,7 @@ import React from "react";
 import { shallow } from "enzyme";
 
 import { windowConfig, toolbarConfig } from "../../../config";
-import { Bar, pixelsToLeave, initState } from "./Bar";
+import { Bar, initState } from "./Bar";
 import { findByTestAtrr } from "../../../../testingUtils";
 
 const barProps = {
@@ -51,14 +51,15 @@ describe("WindowBar Component", () => {
 
   describe("handleMouseDown", () => {
     it("should update state correctly ", () => {
+      const { PIXELS_TO_LEAVE } = windowConfig;
       findByTestAtrr(wrapper, "bar").simulate("mousedown", mouseDownFalse);
 
       const barX: number = mouseDownFalse.clientX - barProps.lastWindowX;
       const barY: number = mouseDownFalse.clientY - barProps.lastWindowY;
-      const minLeft: number = -barProps.windowWidth + pixelsToLeave;
-      const maxLeft: number = window.innerWidth - pixelsToLeave;
+      const minLeft: number = -barProps.windowWidth + PIXELS_TO_LEAVE;
+      const maxLeft: number = window.innerWidth - PIXELS_TO_LEAVE;
       const maxTop: number =
-        window.innerHeight - pixelsToLeave - toolbarConfig.HEIGHT;
+        window.innerHeight - PIXELS_TO_LEAVE - toolbarConfig.HEIGHT;
 
       const expectedState = { barX, barY, minLeft, maxLeft, maxTop };
       expect(wrapper.instance().state).toEqual(expectedState);
