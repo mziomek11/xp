@@ -1,10 +1,10 @@
 import React from "react";
+
 import FileList from "../file/List";
 import WindowList from "../window/List";
-
 import { toolbarConfig } from "../../config";
 
-const Desktop = () => {
+export const Desktop = () => {
   const styles = {
     height: window.innerHeight - toolbarConfig.HEIGHT
   };

@@ -12,18 +12,12 @@
 }
 
 .window__bar {
+  @include window-bar-gradient;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 $window-bar-padding;
   height: $window-bar-height;
-  background: linear-gradient(
-    to bottom,
-    window-color("bar-1") 5%,
-    window-color("bar-2") 20%,
-    window-color("bar-3") 80%,
-    window-color("bar-4") 95%
-  );
 }
 
 .window__title {
@@ -49,21 +43,13 @@
   border-radius: 3px;
   border: 1px solid white;
 
-  &:hover {
-    cursor: pointer;
-  }
-
   &:last-child {
     margin-right: 0;
   }
 
   &--minimalize,
   &--fullscreen {
-    background: radial-gradient(
-      ellipse at top left,
-      window-color("blue-icon-start"),
-      window-color("blue-icon-end")
-    );
+    @include window-blue-icon-gradient;
   }
 
   &--minimalize::after {
@@ -88,11 +74,7 @@
   }
 
   &--exit {
-    background: radial-gradient(
-      ellipse at top left,
-      window-color("red-icon-start"),
-      window-color("red-icon-end")
-    );
+    @include window-red-icon-gradient;
   }
 
   &--exit::after,
@@ -125,16 +107,15 @@
 
 .window__resizer {
   position: absolute;
-  background: map-get($window-colors, "border");
 
   &--left {
-    @include window-border-color(to right);
+    @include window-resizer-color($direction: to right);
     left: 0;
     cursor: w-resize;
   }
 
   &--right {
-    @include window-border-color(to left);
+    @include window-resizer-color($direction: to left);
     right: 0;
     cursor: e-resize;
   }
@@ -158,7 +139,7 @@
   }
 
   &--bottom {
-    @include window-border-color(to top);
+    @include window-resizer-color($direction: to top);
     bottom: 0;
     cursor: s-resize;
   }
@@ -178,7 +159,7 @@
   }
 
   &--bottom#{&}--left {
-    @include window-border-color-corner(45deg);
+    @include window-resizer-color-corner($direction: 45deg);
     @include reset-relative-postions;
     left: 0;
     bottom: 0;
@@ -186,7 +167,7 @@
   }
 
   &--bottom#{&}--right {
-    @include window-border-color-corner(-45deg);
+    @include window-resizer-color-corner($direction: -45deg);
     @include reset-relative-postions;
     right: 0;
     bottom: 0;
@@ -194,7 +175,7 @@
   }
 
   &--top#{&}--left {
-    @include window-border-color-corner(135deg);
+    @include window-resizer-color-corner($direction: 135deg);
     @include reset-relative-postions;
     left: 0;
     top: 0;
@@ -202,10 +183,61 @@
   }
 
   &--top#{&}--right {
-    @include window-border-color-corner(-135deg);
+    @include window-resizer-color-corner($direction: -135deg);
     @include reset-relative-postions;
     right: 0;
     top: 0;
     cursor: ne-resize;
+  }
+}
+
+.window--focused {
+  .window__bar {
+    @include window-bar-gradient($focused: true);
+  }
+
+  .window__action {
+    &--minimalize,
+    &--fullscreen {
+      @include window-blue-icon-gradient($focused: true);
+    }
+
+    &--exit {
+      @include window-red-icon-gradient($focused: true);
+    }
+  }
+
+  .window__resizer {
+    &--left {
+      @include window-resizer-color($direction: to right, $focused: true);
+    }
+
+    &--right {
+      @include window-resizer-color($direction: to left, $focused: true);
+    }
+
+    &--top {
+      @include window-resizer-top-color($focused: true);
+    }
+
+    &--bottom {
+      @include window-resizer-color($direction: to top, $focused: true);
+    }
+
+    &--bottom.window__resizer--left {
+      @include window-resizer-color-corner($direction: 45deg, $focused: true);
+    }
+
+    &--bottom.window__resizer--right {
+      @include window-resizer-color-corner($direction: -45deg, $focused: true);
+    }
+
+    &--top.window__resizer--left {
+      @include window-resizer-color-corner($direction: 135deg, $focused: true);
+    }
+
+    &--top.window__resizer--right {
+      @include window-resizer-color-corner($direction: -135deg, $focused: true);
+    }
   }
 }

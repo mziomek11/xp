@@ -3,8 +3,8 @@ import uuid from "uuid";
 import * as actions from "./actions";
 import * as WindowAction from "./constants";
 import store from "../";
-import { windowConfig } from "../../config";
 import reducer, { WindowState } from "./reducer";
+import { windowConfig } from "../../config";
 import { Window } from "./models";
 import { deepCopy } from "../../utils/";
 
@@ -48,14 +48,16 @@ const getStateWithChangedProps = (
 
 const emptyState: WindowState = {
   byId: {},
-  allIds: []
+  allIds: [],
+  focused: null
 };
 
 const stateWithOneWindow: WindowState = {
   byId: {
     [windowId]: getWindowData(windowId)
   },
-  allIds: [windowId]
+  allIds: [windowId],
+  focused: windowId
 };
 
 const stateWithChangedFullscreen: WindowState = getStateWithChangedProps(
@@ -93,12 +95,18 @@ const stateWithChangedLeftTopWidthHeight: WindowState = getStateWithChangedProps
   }
 );
 
+const stateWithFocusedNull: WindowState = {
+  ...stateWithOneWindow,
+  focused: null
+};
+
 const stateWithTwoWindows: WindowState = {
   byId: {
     [windowId]: getWindowData(windowId),
     [secondWindowId]: getWindowData(secondWindowId)
   },
-  allIds: [windowId, secondWindowId]
+  allIds: [windowId, secondWindowId],
+  focused: windowId
 };
 
 describe("Window redux", () => {
@@ -147,7 +155,11 @@ describe("Window redux", () => {
       it("should update state", () => {
         const updatedState = reducer(emptyState, {
           type: WindowAction.OPEN,
-          payload: stateWithOneWindow
+          payload: {
+            allIds: stateWithOneWindow.allIds,
+            byId: stateWithOneWindow.byId,
+            focused: stateWithOneWindow.focused as string
+          }
         });
         expect(updatedState).toEqual(stateWithOneWindow);
       });
@@ -223,11 +235,24 @@ describe("Window redux", () => {
       it("should update state", () => {
         const updatedState = reducer(stateWithTwoWindows, {
           type: WindowAction.CHANGE_PRIORITY,
-          payload: { allIds: [secondWindowId, windowId] }
+          payload: {
+            allIds: [secondWindowId, windowId],
+            focused: secondWindowId
+          }
         });
 
         expect(updatedState.byId).toEqual(stateWithTwoWindows.byId);
         expect(updatedState.allIds).toEqual([secondWindowId, windowId]);
+      });
+    });
+
+    describe("removeFocus", () => {
+      it("should update state", () => {
+        const updatedState = reducer(stateWithOneWindow, {
+          type: WindowAction.REMOVE_FOCUS
+        });
+
+        expect(updatedState).toEqual(stateWithFocusedNull);
       });
     });
   });
@@ -240,6 +265,14 @@ describe("Window redux", () => {
         const action = actions.closeAll();
 
         expect(action.type).toBe(WindowAction.CLOSE_ALL);
+      });
+    });
+
+    describe("removeFocus", () => {
+      it("should return proper type", () => {
+        const action = actions.removeFocus();
+
+        expect(action.type).toBe(WindowAction.REMOVE_FOCUS);
       });
     });
 
@@ -506,12 +539,14 @@ describe("Window redux", () => {
 
           expect(action.type).toBe(WindowAction.CHANGE_PRIORITY);
           expect(action.payload).toEqual({
-            allIds: [secondWindowId, windowId]
+            allIds: [secondWindowId, windowId],
+            focused: windowId
           });
 
           action = actions.changePriority(secondWindowId) as AnyAction;
           expect(action.payload).toEqual({
-            allIds: [windowId, secondWindowId]
+            allIds: [windowId, secondWindowId],
+            focused: secondWindowId
           });
         });
       });

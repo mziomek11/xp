@@ -1,3 +1,7 @@
-@function window-color($name) {
-  @return map-get($window-colors, $name);
+@function window-color($name, $focused: false) {
+  $map: $window-colors;
+  @if $focused {
+    $map: $window-colors-focused;
+  }
+  @return map-get($map, $name);
 }

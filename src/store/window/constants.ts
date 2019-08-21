@@ -10,3 +10,4 @@ export const CHANGE_PROP_FAILED = "@@widnow/CHANGE_PROP_FAILED";
 export const CLOSE = "@@window/CLOSE";
 export const CLOSE_FAILED = "@@window/CLOSE_FAILED";
 export const CLOSE_ALL = "@@window/CLOSE_ALL";
+export const REMOVE_FOCUS = "@@window/REMOVE_FOCUS";

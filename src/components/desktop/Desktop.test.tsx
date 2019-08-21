@@ -1,7 +1,7 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import Desktop from "./Desktop";
+import { Desktop } from "./Desktop";
 import { toolbarConfig } from "../../config";
 import { findByTestAtrr } from "../../../testingUtils";
 

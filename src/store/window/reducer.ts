@@ -8,11 +8,13 @@ type WindowAction = ActionType<typeof actions>;
 export type WindowState = Readonly<{
   byId: WindowById;
   allIds: string[];
+  focused: string | null;
 }>;
 
 const initState: WindowState = {
   byId: {},
-  allIds: []
+  allIds: [],
+  focused: null
 };
 
 export default combineReducers<WindowState, WindowAction>({
@@ -45,6 +47,20 @@ export default combineReducers<WindowState, WindowAction>({
         return [];
       case WindowAction.CLOSE_FAILED:
       case WindowAction.CHANGE_PRIORITY_FAILED:
+      default:
+        return state;
+    }
+  },
+  focused: (state = initState.focused, action) => {
+    switch (action.type) {
+      case WindowAction.CLOSE_ALL:
+      case WindowAction.REMOVE_FOCUS:
+        return null;
+      case WindowAction.OPEN:
+      case WindowAction.CHANGE_PRIORITY:
+      case WindowAction.TOGGLE_MINIMALIZE:
+      case WindowAction.CLOSE:
+        return action.payload.focused;
       default:
         return state;
     }

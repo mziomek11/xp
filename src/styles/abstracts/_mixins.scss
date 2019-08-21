@@ -20,18 +20,61 @@
   right: auto;
 }
 
-@mixin window-border-color($direction) {
+@mixin window-resizer-color($direction, $focused: false) {
   background: linear-gradient(
     $direction,
-    map-get($window-colors, "border-start"),
-    map-get($window-colors, "border-end")
+    window-color("border-start", $focused),
+    window-color("border-end", $focused)
   );
 }
 
-@mixin window-border-color-corner($direction) {
+@mixin window-resizer-top-color($focused: false) {
+  background: linear-gradient(
+    to bottom,
+    window-color("border-top-1", $focused) 0,
+    window-color("border-top-2", $focused) 25%,
+    window-color("border-top-3", $focused) 75%
+  );
+}
+
+@mixin window-resizer-color-corner($direction, $focused: false) {
   background: linear-gradient(
     $direction,
-    window-color("border-start") 30%,
-    window-color("border-end") 100%
+    window-color("border-start", $focused) 30%,
+    window-color("border-end", $focused) 100%
   );
+}
+
+@mixin window-bar-gradient($focused: false) {
+  background: linear-gradient(
+    to bottom,
+    window-color("bar-1", $focused) 5%,
+    window-color("bar-2", $focused) 20%,
+    window-color("bar-3", $focused) 80%,
+    window-color("bar-4", $focused) 95%
+  );
+}
+
+@mixin window-icon-gradient($color, $focused: false) {
+  background: radial-gradient(
+    ellipse at top left,
+    window-color(#{$color + "-icon-start"}, $focused),
+    window-color(#{$color + "-icon-end"}, $focused)
+  );
+
+  &:hover {
+    background: radial-gradient(
+      ellipse at top left,
+      window-color(#{$color + "-icon-start-hover"}, $focused),
+      window-color(#{$color + "-icon-end-hover"}, $focused)
+    );
+  }
+}
+
+@mixin window-blue-icon-gradient($focused: false) {
+  @include window-icon-gradient("blue", $focused);
+}
+
+@mixin window-red-icon-gradient($focused: false) {
+  @include window-icon-gradient("red", $focused);
 }

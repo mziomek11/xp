@@ -4,7 +4,28 @@ $start-width: 60px;
 
 $time-width: 80px;
 
+$window-icon-color-lightness-hover: 7%;
 $window-colors: (
+  "border-start": #5764c4,
+  "border-end": #7389d8,
+  "border-top-1": #6a91e0,
+  "border-top-2": #9db9eb,
+  "border-top-3": #8bb0e9,
+  "bar-1": #8aace7,
+  "bar-2": #7a99e0,
+  "bar-3": #80a5e7,
+  "bar-4": #5764c4,
+  "blue-icon-start": #809bea,
+  "blue-icon-end": #3f6ddc,
+  "blue-icon-start-hover": lighten(#7fa3f8, $window-icon-color-lightness-hover),
+  "blue-icon-end-hover": lighten(#0045d3, $window-icon-color-lightness-hover),
+  "red-icon-start": #b49cba,
+  "red-icon-end": #a06072,
+  "red-icon-start-hover": lighten(#ed957f, $window-icon-color-lightness-hover),
+  "red-icon-end-hover": lighten(#c22a00, $window-icon-color-lightness-hover)
+);
+
+$window-colors-focused: (
   "border-start": #0018ab,
   "border-end": #0855dd,
   "border-top-1": #0058ee,
@@ -16,8 +37,12 @@ $window-colors: (
   "bar-4": #012f92,
   "blue-icon-start": #7fa3f8,
   "blue-icon-end": #0045d3,
+  "blue-icon-start-hover": map-get($window-colors, "blue-icon-start-hover"),
+  "blue-icon-end-hover": map-get($window-colors, "blue-icon-end-hover"),
   "red-icon-start": #ed957f,
-  "red-icon-end": #c22a00
+  "red-icon-end": #c22a00,
+  "red-icon-start-hover": map-get($window-colors, "red-icon-start-hover"),
+  "red-icon-end-hover": map-get($window-colors, "red-icon-end-hover")
 );
 
 $window-bar-height: 30px;

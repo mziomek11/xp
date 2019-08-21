@@ -5,6 +5,7 @@ import { windowConfig } from "../../config";
 import { Window } from "./Window";
 import { findByTestAtrr } from "../../../testingUtils";
 
+const mockRemoveFocusFn = jest.fn();
 const windowProps = {
   id: "abc",
   top: windowConfig.INITIAL_TOP,
@@ -14,7 +15,9 @@ const windowProps = {
   minimalized: windowConfig.INITIAL_MINIMALIZED,
   fullscreened: false,
   toggleFullscreen: jest.fn(),
-  changePriority: jest.fn()
+  changePriority: jest.fn(),
+  removeFocus: mockRemoveFocusFn,
+  focused: false
 };
 let comp = (
   <Window {...windowProps}>
@@ -22,7 +25,7 @@ let comp = (
     <div data-test="child" />
   </Window>
 );
-let wrapper = shallow(comp);
+let wrapper = shallow<Window>(comp);
 
 describe("Window Component", () => {
   describe("render", () => {
@@ -69,13 +72,13 @@ describe("Window Component", () => {
       expect(styles).toHaveProperty("height", "100%");
     });
 
-    it("should have dispaly block when NOT minimalized", () => {
+    it("should have display block when NOT minimalized", () => {
       const styles = findByTestAtrr(wrapper, "window").prop("style");
 
       expect(styles).toHaveProperty("display", "block");
     });
 
-    it("should have dispaly none when minimalized", () => {
+    it("should have display none when minimalized", () => {
       const props = { ...windowProps, minimalized: true };
       const minimaliedComp = <Window {...props} />;
       const minimalizedWrapper = shallow(minimaliedComp);
@@ -112,6 +115,91 @@ describe("Window Component", () => {
       findByTestAtrr(wrapper, "window").simulate("mousedown", mouseEv(true));
 
       expect(mockChangePriority.mock.calls.length).toBe(0);
+    });
+  });
+
+  describe("getClassName", () => {
+    const baseClass: string = "window";
+    const fullscreenModifier: string = " " + baseClass + "--fullscreen";
+    const focusModifier: string = " " + baseClass + "--focused";
+
+    it("should return base class", () => {
+      const instance = wrapper.instance();
+      const expectedClass = baseClass;
+
+      expect(instance.getClassName()).toBe(expectedClass);
+    });
+
+    it("should return base class with fullscreen modifier", () => {
+      const props = { ...windowProps, fullscreened: true };
+      const instance = shallow<Window>(<Window {...props} />).instance();
+      const expectedClass = baseClass + fullscreenModifier;
+
+      expect(instance.getClassName()).toBe(expectedClass);
+    });
+
+    it("should return base class with focus modifier", () => {
+      const props = { ...windowProps, focused: true };
+      const instance = shallow<Window>(<Window {...props} />).instance();
+      const expectedClass = baseClass + focusModifier;
+
+      expect(instance.getClassName()).toBe(expectedClass);
+    });
+
+    it("should return base class with fullscreen and focus modifier", () => {
+      const props = { ...windowProps, focused: true, fullscreened: true };
+      const instance = shallow<Window>(<Window {...props} />).instance();
+      const expectedClass = baseClass + fullscreenModifier + focusModifier;
+
+      expect(instance.getClassName()).toBe(expectedClass);
+    });
+  });
+
+  describe("checkForClickOutsideWindow", () => {
+    let mockRemoveFocusFocusedFn: jest.Mock;
+    let instance: any;
+
+    beforeEach(() => {
+      mockRemoveFocusFocusedFn = jest.fn();
+      const props = {
+        ...windowProps,
+        focused: true,
+        removeFocus: mockRemoveFocusFocusedFn
+      };
+      instance = shallow<Window>(<Window {...props} />).instance();
+    });
+    describe("should NOT call removeFocus when", () => {
+      it("element has NOT focus", () => {
+        wrapper.instance().ckeckForClickOutsideWindow({} as MouseEvent);
+
+        expect(mockRemoveFocusFn.mock.calls.length).toBe(0);
+      });
+
+      it("element has window class", () => {
+        let e = { target: { classList: ["window"] } } as any;
+        instance.ckeckForClickOutsideWindow(e);
+
+        e = { target: { classList: ["window__action"] } } as any;
+        instance.ckeckForClickOutsideWindow(e);
+
+        expect(mockRemoveFocusFocusedFn.mock.calls.length).toBe(0);
+      });
+    });
+
+    describe("should call removeFocus when", () => {
+      it("element has NOT class", () => {
+        const e = { target: { classList: [] } } as any;
+        instance.ckeckForClickOutsideWindow(e);
+
+        expect(mockRemoveFocusFocusedFn.mock.calls.length).toBe(1);
+      });
+
+      it("element has NOT window class", () => {
+        const e = { target: { classList: ["example"] } } as any;
+        instance.ckeckForClickOutsideWindow(e);
+
+        expect(mockRemoveFocusFocusedFn.mock.calls.length).toBe(1);
+      });
     });
   });
 });

@@ -4,8 +4,12 @@ import { Dispatch } from "redux";
 
 import Bar from "./bar/Bar";
 import Resizers from "./resizer/List";
-import { changePriority, toggleFullscreen } from "../../store/window/actions";
 import { RootState } from "MyTypes";
+import {
+  changePriority,
+  toggleFullscreen,
+  removeFocus
+} from "../../store/window/actions";
 
 type OwnProps = {
   id: string;
@@ -14,6 +18,7 @@ type OwnProps = {
 type DispatchProps = {
   changePriority: () => void;
   toggleFullscreen: () => void;
+  removeFocus: () => void;
 };
 
 type StateProps = {
@@ -23,18 +28,52 @@ type StateProps = {
   height: number;
   minimalized: boolean;
   fullscreened: boolean;
+  focused: boolean;
 };
 
 type Props = OwnProps & StateProps & DispatchProps;
 
 export class Window extends React.Component<Props, {}> {
+  componentDidMount() {
+    window.addEventListener("mousedown", this.ckeckForClickOutsideWindow);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("mousedown", this.ckeckForClickOutsideWindow);
+  }
+
+  ckeckForClickOutsideWindow = (e: MouseEvent) => {
+    if (!this.props.focused) return;
+
+    const elementClassList = (e.target as Element).classList;
+    if (!elementClassList[0]) {
+      this.props.removeFocus();
+      return;
+    }
+
+    const clickedWindow = elementClassList[0].indexOf("window") > -1;
+    if (!clickedWindow) {
+      this.props.removeFocus();
+    }
+  };
+
   handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!(e.target as Element).classList.contains("window__action")) {
       this.props.changePriority();
     }
   };
 
-  getStyles = () => {
+  getClassName = () => {
+    const { fullscreened, focused } = this.props;
+    const defualtClassName: string = "window";
+    let className: string = defualtClassName;
+    if (fullscreened) className += " " + defualtClassName + "--fullscreen";
+    if (focused) className += " " + defualtClassName + "--focused";
+
+    return className;
+  };
+
+  getInlineStyles = () => {
     const { fullscreened, minimalized, top, left, width, height } = this.props;
     return {
       top: fullscreened ? 0 : top,
@@ -49,10 +88,8 @@ export class Window extends React.Component<Props, {}> {
     const { children, id, toggleFullscreen } = this.props;
     return (
       <div
-        className={`window${
-          this.props.fullscreened ? " window--fullscreen" : ""
-        }`}
-        style={this.getStyles()}
+        className={this.getClassName()}
+        style={this.getInlineStyles()}
         data-test="window"
         onMouseDown={this.handleMouseDown}
       >
@@ -66,10 +103,11 @@ export class Window extends React.Component<Props, {}> {
   }
 }
 
-const mapStateToProps = (state: RootState, ownProps: OwnProps) => {
-  const window = state.window.byId[ownProps.id];
+const mapStateToProps = (state: RootState, { id }: OwnProps) => {
+  const window = state.window.byId[id];
+  const focused = state.window.focused === id;
   const { left, top, width, height, minimalized, fullscreened } = window;
-  return { left, top, width, height, minimalized, fullscreened };
+  return { left, top, width, height, minimalized, fullscreened, focused };
 };
 
 const mapDispatchToProps = (
@@ -77,7 +115,8 @@ const mapDispatchToProps = (
   { id }: OwnProps
 ): DispatchProps => ({
   changePriority: () => dispatch(changePriority(id)),
-  toggleFullscreen: () => dispatch(toggleFullscreen(id))
+  toggleFullscreen: () => dispatch(toggleFullscreen(id)),
+  removeFocus: () => dispatch(removeFocus())
 });
 
 export default connect(
