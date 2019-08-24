@@ -7,9 +7,7 @@ const Start = () => {
       className="start"
       data-test="start"
       style={{ width: toolbarConfig.START_WIDTH }}
-    >
-      start
-    </div>
+    />
   );
 };
 

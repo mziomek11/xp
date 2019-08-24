@@ -1,10 +1,16 @@
+//File
+
 $file-size: 64px;
 
-$start-width: 60px;
+//Window
 
-$time-width: 80px;
+$window-lightness-hover: 7%;
 
-$window-icon-color-lightness-hover: 7%;
+$window-blue-icon-start-focus: #7fa3f8;
+$window-blue-icon-end-focus: #0045d3;
+$window-red-icon-start-focus: #ed957f;
+$window-red-icon-end-focus: #c22a00;
+
 $window-colors: (
   "border-start": #5764c4,
   "border-end": #7389d8,
@@ -17,12 +23,16 @@ $window-colors: (
   "bar-4": #5764c4,
   "blue-icon-start": #809bea,
   "blue-icon-end": #3f6ddc,
-  "blue-icon-start-hover": lighten(#7fa3f8, $window-icon-color-lightness-hover),
-  "blue-icon-end-hover": lighten(#0045d3, $window-icon-color-lightness-hover),
+  "blue-icon-start-hover":
+    lighten($window-blue-icon-start-focus, $window-lightness-hover),
+  "blue-icon-end-hover":
+    lighten($window-blue-icon-end-focus, $window-lightness-hover),
   "red-icon-start": #b49cba,
   "red-icon-end": #a06072,
-  "red-icon-start-hover": lighten(#ed957f, $window-icon-color-lightness-hover),
-  "red-icon-end-hover": lighten(#c22a00, $window-icon-color-lightness-hover)
+  "red-icon-start-hover":
+    lighten($window-red-icon-start-focus, $window-lightness-hover),
+  "red-icon-end-hover":
+    lighten($window-red-icon-end-focus, $window-lightness-hover)
 );
 
 $window-colors-focused: (
@@ -35,12 +45,12 @@ $window-colors-focused: (
   "bar-2": #0045bd,
   "bar-3": #004cb8,
   "bar-4": #012f92,
-  "blue-icon-start": #7fa3f8,
-  "blue-icon-end": #0045d3,
+  "blue-icon-start": $window-blue-icon-start-focus,
+  "blue-icon-end": $window-blue-icon-end-focus,
   "blue-icon-start-hover": map-get($window-colors, "blue-icon-start-hover"),
   "blue-icon-end-hover": map-get($window-colors, "blue-icon-end-hover"),
-  "red-icon-start": #ed957f,
-  "red-icon-end": #c22a00,
+  "red-icon-start": $window-red-icon-start-focus,
+  "red-icon-end": $window-red-icon-end-focus,
   "red-icon-start-hover": map-get($window-colors, "red-icon-start-hover"),
   "red-icon-end-hover": map-get($window-colors, "red-icon-end-hover")
 );
@@ -51,3 +61,75 @@ $window-action-size: 20px;
 $window-actions-size: 3 * $window-action-size + 2 * $window-bar-padding;
 $window-resizer-size: 4px;
 $window-top-border-radius: 10px;
+
+//Toolbar
+
+$toolbar-lightness-hover: 7%;
+
+$toolbar-app-main-1: #4993ee;
+$toolbar-app-main-2: #397df3;
+$toolbar-app-main-3: #347cf1;
+
+$toolbar-colors: (
+  "main-1": #3168d5,
+  "main-2": #3888e9,
+  "main-3": #4993e6,
+  "main-4": #307be5,
+  "main-5": #286add,
+  "main-6": #2257d6,
+  "main-7": #2663e0,
+  "main-8": #235bd9,
+  "main-9": #1941a5,
+  "application-main-1": $toolbar-app-main-1,
+  "application-main-2": $toolbar-app-main-2,
+  "application-main-3": $toolbar-app-main-3,
+  "application-main-1-hover":
+    lighten($toolbar-app-main-1, $toolbar-lightness-hover),
+  "application-main-2-hover":
+    lighten($toolbar-app-main-2, $toolbar-lightness-hover),
+  "application-main-3-hover":
+    lighten($toolbar-app-main-3, $toolbar-lightness-hover),
+  "application-border-left": #3067dd,
+  "application-border-right": #2653ae,
+  "application-border-top": #3172da,
+  "application-border-bottom": #2652bc,
+  "application-menu-item": #2157d5,
+  "application-menu-item-hover": #4f96ff
+);
+
+$toolbar-app-main-1-focused: #1650bc;
+$toolbar-app-main-2-focused: #1a50b8;
+$toolbar-app-main-3-focused: #2156b7;
+
+$toolbar-colors-focused: (
+  "application-main-1": $toolbar-app-main-1-focused,
+  "application-main-2": $toolbar-app-main-2-focused,
+  "application-main-3": $toolbar-app-main-3-focused,
+  "application-main-1-hover":
+    lighten($toolbar-app-main-1-focused, $toolbar-lightness-hover),
+  "application-main-2-hover":
+    lighten($toolbar-app-main-2-focused, $toolbar-lightness-hover),
+  "application-main-3-hover":
+    lighten($toolbar-app-main-3-focused, $toolbar-lightness-hover),
+  "application-border-left": #0e3280,
+  "application-border-right": #0e3ba1,
+  "application-border-top": #123d94,
+  "application-border-bottom": #0c3cac
+);
+
+$toolbar-application-padding: 0 0.8em;
+$toolbar-application-menu-item-height: 21px;
+
+//Start
+
+$start-colors: (
+  "main-1": #218b2b,
+  "main-2": #6db66c,
+  "main-3": #3cb73b,
+  "main-4": #3aba3a,
+  "main-5": #27883a
+);
+$start-border-radius: 7px;
+$start-margin: 9px;
+
+$time-width: 80px;

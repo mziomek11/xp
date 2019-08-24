@@ -5,3 +5,15 @@
   }
   @return map-get($map, $name);
 }
+
+@function toolbar-color($name, $focused: false) {
+  $map: $toolbar-colors;
+  @if $focused {
+    $map: $toolbar-colors-focused;
+  }
+  @return map-get($map, $name);
+}
+
+@function start-color($name) {
+  @return map-get($start-colors, $name);
+}

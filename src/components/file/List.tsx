@@ -10,7 +10,12 @@ type DispatchProps = {
   openWindow: (application: string, title: string) => void;
 };
 
-const fileNames: string[] = ["Chrome", "Quake", "VS Code", "Terminal"];
+const fileNames: string[] = [
+  "Chrome",
+  "Very long name too long papapap yo hey",
+  "VS Code",
+  "Terminal"
+];
 
 export const FileList: React.FC<DispatchProps> = ({ openWindow }) => {
   return (

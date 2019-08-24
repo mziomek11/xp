@@ -2,7 +2,18 @@
   display: flex;
   position: relative;
   justify-content: space-between;
-  background: rgb(29, 29, 29);
+  background: linear-gradient(
+    to bottom,
+    toolbar-color("main-1") 4%,
+    toolbar-color("main-2") 8%,
+    toolbar-color("main-3") 12%,
+    toolbar-color("main-4") 16%,
+    toolbar-color("main-5") 20%,
+    toolbar-color("main-6") 50%,
+    toolbar-color("main-7") 80%,
+    toolbar-color("main-8") 96%,
+    toolbar-color("main-9")
+  );
 }
 
 .toolbar__left-side {
@@ -11,47 +22,96 @@
 
 .toolbar__applications {
   @include flex-centered;
+  align-items: flex-start;
 }
 
 .toolbar__application {
-  background: black;
+  background: linear-gradient(
+    to bottom,
+    toolbar-color("application-main-1") 0%,
+    toolbar-color("application-main-2") 30%,
+    toolbar-color("application-main-3")
+  );
+  border-left: 1px solid toolbar-color("application-border-left");
+  border-right: 1px solid toolbar-color("application-border-right");
+  border-top: 1px solid toolbar-color("application-border-top");
+  border-bottom: 1px solid toolbar-color("application-border-bottom");
   display: flex;
   align-items: center;
   position: relative;
-  height: 100%;
-  padding: 0 0.8em;
+  height: calc(100% - 6px);
+  margin-top: 4px;
+  padding: $toolbar-application-padding;
+  border-radius: 3px;
 
   &:hover {
-    cursor: pointer;
-    background: aquamarine;
+    background: linear-gradient(
+      to bottom,
+      toolbar-color("application-main-1-hover"),
+      toolbar-color("application-main-2-hover"),
+      toolbar-color("application-main-3-hover")
+    );
   }
 
   &--with-menu {
     justify-content: space-between;
   }
+
+  &--focused {
+    background: linear-gradient(
+      to bottom,
+      toolbar-color("application-main-1", $focused: true) 0%,
+      toolbar-color("application-main-2", $focused: true) 30%,
+      toolbar-color("application-main-3", $focused: true)
+    );
+    border-left: 1px solid
+      toolbar-color("application-border-left", $focused: true);
+    border-right: 1px solid
+      toolbar-color("application-border-right", $focused: true);
+    border-top: 1px solid
+      toolbar-color("application-border-top", $focused: true);
+    border-bottom: 1px solid
+      toolbar-color("application-border-bottom", $focused: true);
+  }
+
+  &--focused:hover {
+    background: linear-gradient(
+      to bottom,
+      toolbar-color("application-main-1-hover", $focused: true) 0%,
+      toolbar-color("application-main-2-hover", $focused: true) 30%,
+      toolbar-color("application-main-3-hover", $focused: true)
+    );
+  }
+}
+
+.toolbar__application-text {
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .toolbar__application-arrow {
-  @include icon-list-down(10px);
+  @include icon-list-down(4px);
 }
 
 .toolbar__application-menu {
   position: absolute;
   left: 0;
-  bottom: 100%;
+  bottom: calc(100% + 5px);
   width: 100%;
-  background: blue;
 }
 
 .toolbar__application-menu-item {
-  background: black;
+  background: toolbar-color("application-menu-item");
   white-space: nowrap;
-  width: 100%;
+  width: calc(100% + 5px);
+  height: $toolbar-application-menu-item-height;
+  padding: $toolbar-application-padding;
   overflow: hidden;
-  padding: 0.8em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 
   &:hover {
-    cursor: pointer;
-    background: aquamarine;
+    background: toolbar-color("application-menu-item-hover");
   }
 }

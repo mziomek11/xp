@@ -1,6 +1,13 @@
 .start {
-  background: green;
-  width: $start-width;
-  height: 100%;
   @include flex-centered;
+  height: 100%;
+  margin-right: $start-margin;
+  border-right: red;
+  background: url("../../assets/start.png");
+  background-size: cover;
+
+  &:hover {
+    background: url("../../assets/start-hover.png");
+    background-size: cover;
+  }
 }
