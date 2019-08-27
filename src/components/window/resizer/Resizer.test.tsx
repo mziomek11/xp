@@ -1,52 +1,36 @@
 import React from "react";
 import { shallow } from "enzyme";
 
+import { testContextData as contextData } from "../Context.test";
 import { windowConfig } from "../../../config";
-import { Window } from "../../../store/window/models";
-import { WindowResizer, initState } from "./Resizer";
 import { findByTestAtrr } from "../../../../testingUtils";
 import { capitalize } from "../../../utils";
 import { toolbarConfig } from "../../../config";
-
-const windowId: string = "this-is-window-id";
-const windowData: Window = {
-  id: windowId,
-  fullscreened: false,
-  minimalized: false,
-  application: "ApplicationName",
-  name: "WindowName",
-  width: windowConfig.MINIMAL_HEIGHT,
-  height: windowConfig.MINIMAL_WIDTH,
-  left: windowConfig.INITIAL_LEFT,
-  top: windowConfig.INITIAL_TOP
-};
-
-const compResizerData = {
-  resizesWidth: false,
-  resizesHeight: false,
-  isLeft: false,
-  isTop: false
-};
+import {
+  WindowResizer,
+  initState,
+  OwnProps,
+  defaultProps as defaultResizeProps
+} from "./Resizer";
 
 const compProps = {
-  id: windowId,
-  resize: jest.fn(),
-  moveAndResize: jest.fn(),
-  windowData: windowData,
-  ...compResizerData
+  context: contextData,
+  ...defaultResizeProps
 };
 
-type CreateInstance = {
-  resizesWidth?: boolean;
-  resizesHeight?: boolean;
-  isLeft?: boolean;
-  isTop?: boolean;
-  resize?: jest.Mock;
-  moveAndResize?: jest.Mock;
+type CreateInstance = Omit<OwnProps, "context"> & {
+  setContext?: () => void;
 };
 
-const createInstance = (resizingProps: CreateInstance = {}) => {
-  const props = { ...compProps, ...resizingProps };
+const createInstance = ({
+  setContext,
+  ...resizingProps
+}: CreateInstance = {}) => {
+  const contextProps = {
+    ...contextData,
+    setContext: setContext ? setContext : jest.fn()
+  };
+  const props = { context: { ...contextProps }, ...resizingProps };
   const comp = <WindowResizer {...props} />;
   const wrapper = shallow<WindowResizer>(comp);
   return wrapper.instance();
@@ -61,7 +45,7 @@ describe("WindowResizer Component", () => {
     it("should update when isFullscreen changes", () => {
       const changedProps = {
         ...compProps,
-        windowData: { ...compProps.windowData, fullscreened: true }
+        context: { ...compProps.context, fullscreened: true }
       };
       const result = instance.shouldComponentUpdate(changedProps);
 
@@ -70,20 +54,7 @@ describe("WindowResizer Component", () => {
 
     it("should NOT update when isFullscreen NOT changes", () => {
       const changedProps = {
-        id: "asdasd",
-        resize: jest.fn(),
-        moveAndResize: jest.fn(),
-        windowData: {
-          id: "asdasd",
-          fullscreened: false,
-          minimalized: true,
-          application: "asdasdasd",
-          name: "qweqweqweqwe",
-          width: 333,
-          height: 333,
-          left: 333,
-          top: 333
-        },
+        context: { ...contextData },
         resizesWidth: false,
         resizesHeight: false,
         isLeft: false,
@@ -107,7 +78,7 @@ describe("WindowResizer Component", () => {
     it("should NOT render when window is fullscreen", () => {
       const fullscreenProps = {
         ...compProps,
-        windowData: { ...compProps.windowData, fullscreened: true }
+        context: { ...compProps.context, fullscreened: true }
       };
       const fullScreenWrapper = shallow(<WindowResizer {...fullscreenProps} />);
 
@@ -121,8 +92,8 @@ describe("WindowResizer Component", () => {
 
       const result = instance.calculateStateDataX(clientX);
       const expectedResult = {
-        endX: windowData.left + windowData.width,
-        edgeDistanceX: clientX - compProps.windowData.left
+        endX: contextData.left + contextData.width,
+        edgeDistanceX: clientX - compProps.context.left
       };
 
       expect(result).toEqual(expectedResult);
@@ -134,7 +105,7 @@ describe("WindowResizer Component", () => {
       const result = instance.calculateStateDataX(clientX);
       const expectedResult = {
         endX: initState.endX,
-        edgeDistanceX: clientX - windowData.left - windowData.width
+        edgeDistanceX: clientX - contextData.left - contextData.width
       };
 
       expect(result).toEqual(expectedResult);
@@ -159,8 +130,8 @@ describe("WindowResizer Component", () => {
 
       const result = instance.calculateStateDataY(clientY);
       const expectedResult = {
-        endY: windowData.top + windowData.height,
-        edgeDistanceY: clientY - windowData.top
+        endY: contextData.top + contextData.height,
+        edgeDistanceY: clientY - contextData.top
       };
 
       expect(result).toEqual(expectedResult);
@@ -172,7 +143,7 @@ describe("WindowResizer Component", () => {
       const result = instance.calculateStateDataY(clientY);
       const expectedResult = {
         endY: initState.endY,
-        edgeDistanceY: clientY - windowData.top - windowData.height
+        edgeDistanceY: clientY - contextData.top - contextData.height
       };
 
       expect(result).toEqual(expectedResult);
@@ -246,10 +217,22 @@ describe("WindowResizer Component", () => {
       const instance = createInstance({ resizesWidth: true, isLeft: true });
 
       it("should return calculated value", () => {
-        const { endX, edgeDistanceX } = instance.state;
+        const endX: number = 800;
+        const edgeDistanceX: number = 2;
+        const clientX: number = endX - windowConfig.MINIMAL_WIDTH - 40;
+        instance.setState({ endX, edgeDistanceX });
 
         const result = instance.calculateNewWidth(clientX);
         const expectedResult = endX - clientX + edgeDistanceX;
+
+        expect(result).toBe(expectedResult);
+      });
+
+      it("should return min width", () => {
+        const clientX: number = 999999;
+
+        const result = instance.calculateNewWidth(clientX);
+        const expectedResult = windowConfig.MINIMAL_WIDTH;
 
         expect(result).toBe(expectedResult);
       });
@@ -268,10 +251,20 @@ describe("WindowResizer Component", () => {
       const instance = createInstance({ resizesWidth: true, isLeft: false });
 
       it("should return calculated value", () => {
-        const { edgeDistanceX } = instance.state;
+        const edgeDistanceX: number = -2;
+        instance.setState({ edgeDistanceX });
 
         const result = instance.calculateNewWidth(clientX);
-        const expectedResult = clientX - windowData.left - edgeDistanceX;
+        const expectedResult = clientX - contextData.left - edgeDistanceX;
+
+        expect(result).toBe(expectedResult);
+      });
+
+      it("should return min width", () => {
+        const clientX: number = -999999;
+
+        const result = instance.calculateNewWidth(clientX);
+        const expectedResult = windowConfig.MINIMAL_WIDTH;
 
         expect(result).toBe(expectedResult);
       });
@@ -291,7 +284,7 @@ describe("WindowResizer Component", () => {
         const instance = createInstance({ resizesWidth: false });
 
         const result = instance.calculateNewWidth(clientX);
-        const expectedResult = windowData.width;
+        const expectedResult = contextData.width;
 
         expect(result).toBe(expectedResult);
       });
@@ -303,10 +296,22 @@ describe("WindowResizer Component", () => {
       const instance = createInstance({ resizesHeight: true, isTop: true });
 
       it("should return calculated value", () => {
-        const { endY, edgeDistanceY } = instance.state;
+        const endY: number = 40;
+        const edgeDistanceY: number = 2;
+        const clientY: number = endY - windowConfig.MINIMAL_HEIGHT - 100;
+        instance.setState({ endY, edgeDistanceY });
 
         const result = instance.calculateNewHeight(clientY);
         const expectedResult = endY - clientY + edgeDistanceY;
+
+        expect(result).toBe(expectedResult);
+      });
+
+      it("should return min height", () => {
+        const clientY: number = 999999;
+
+        const result = instance.calculateNewHeight(clientY);
+        const expectedResult = windowConfig.MINIMAL_HEIGHT;
 
         expect(result).toBe(expectedResult);
       });
@@ -325,10 +330,20 @@ describe("WindowResizer Component", () => {
       const instance = createInstance({ resizesHeight: true, isTop: false });
 
       it("should return calculated value", () => {
-        const { edgeDistanceY } = instance.state;
+        const edgeDistanceY: number = 2;
+        instance.setState({ edgeDistanceY });
 
         const result = instance.calculateNewHeight(clientY);
-        const expectedResult = clientY - windowData.top - edgeDistanceY;
+        const expectedResult = clientY - contextData.top - edgeDistanceY;
+
+        expect(result).toBe(expectedResult);
+      });
+
+      it("should return min height", () => {
+        const clientY: number = -999999;
+
+        const result = instance.calculateNewHeight(clientY);
+        const expectedResult = windowConfig.MINIMAL_HEIGHT;
 
         expect(result).toBe(expectedResult);
       });
@@ -348,7 +363,7 @@ describe("WindowResizer Component", () => {
         const instance = createInstance({ resizesHeight: false });
 
         const result = instance.calculateNewHeight(clientY);
-        const expectedResult = windowData.height;
+        const expectedResult = contextData.height;
 
         expect(result).toBe(expectedResult);
       });
@@ -367,31 +382,31 @@ describe("WindowResizer Component", () => {
     });
   });
 
-  describe("changeSize", () => {
+  describe("resize", () => {
     const newSize = { width: 500, height: 500 };
 
     describe("!isLeft && !isTop", () => {
       it("should call resize with given size", () => {
-        const resize = jest.fn();
+        const setContext = jest.fn();
         const instance = createInstance({
           isLeft: false,
           isTop: false,
-          resize
+          setContext
         });
-        instance.changeSize(newSize);
+        instance.resize(newSize);
 
-        expect(resize.mock.calls.length).toBe(1);
-        expect(resize.mock.calls[0]).toEqual([newSize.width, newSize.height]);
+        expect(setContext.mock.calls.length).toBe(1);
+        expect(setContext.mock.calls[0]).toEqual([{ ...newSize }]);
       });
     });
 
     describe("isLeft", () => {
       it("should call moveAndResize with proper args", () => {
-        const moveAndResize = jest.fn();
+        const setContext = jest.fn();
         const instance = createInstance({
           isLeft: true,
           isTop: false,
-          moveAndResize
+          setContext
         });
         const { endX } = instance.state;
 
@@ -400,26 +415,25 @@ describe("WindowResizer Component", () => {
           endX - windowConfig.MINIMAL_WIDTH
         );
 
-        const expectedArgs = [
-          newPosX,
-          windowData.top,
-          newSize.width,
-          newSize.height
-        ];
+        const expectedArgs = {
+          left: newPosX,
+          top: contextData.top,
+          ...newSize
+        };
 
-        instance.changeSize(newSize);
-        expect(moveAndResize.mock.calls.length).toBe(1);
-        expect(moveAndResize.mock.calls[0]).toEqual(expectedArgs);
+        instance.resize(newSize);
+        expect(setContext.mock.calls.length).toBe(1);
+        expect(setContext.mock.calls[0]).toEqual([expectedArgs]);
       });
     });
 
     describe("isTop", () => {
       it("should call moveAndResize with proper args", () => {
-        const moveAndResize = jest.fn();
+        const setContext = jest.fn();
         const instance = createInstance({
           isLeft: false,
           isTop: true,
-          moveAndResize
+          setContext
         });
         const { endY } = instance.state;
 
@@ -428,16 +442,15 @@ describe("WindowResizer Component", () => {
           endY - windowConfig.MINIMAL_HEIGHT
         );
 
-        const expectedArgs = [
-          windowData.left,
-          newPosY,
-          newSize.width,
-          newSize.height
-        ];
+        const expectedArgs = {
+          left: contextData.left,
+          top: newPosY,
+          ...newSize
+        };
 
-        instance.changeSize(newSize);
-        expect(moveAndResize.mock.calls.length).toBe(1);
-        expect(moveAndResize.mock.calls[0]).toEqual(expectedArgs);
+        instance.resize(newSize);
+        expect(setContext.mock.calls.length).toBe(1);
+        expect(setContext.mock.calls[0]).toEqual([expectedArgs]);
       });
     });
   });

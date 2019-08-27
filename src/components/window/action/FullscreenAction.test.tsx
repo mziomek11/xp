@@ -1,12 +1,13 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import { FullscreenAction } from "./FulscreenAction";
+import { testContextData } from "../Context.test";
+import { FullscreenAction } from "./FullscreenAction";
 import { findByTestAtrr } from "../../../../testingUtils";
 
-const mockFullscreenFn = jest.fn();
-const comp = <FullscreenAction id="id" toggleFullscreen={mockFullscreenFn} />;
-const wrapper = shallow(comp);
+const mockSetContext = jest.fn();
+const context = { ...testContextData, setContext: mockSetContext };
+const wrapper = shallow(<FullscreenAction context={context} />);
 
 describe("FullscreenComponent Component", () => {
   describe("render", () => {
@@ -23,7 +24,7 @@ describe("FullscreenComponent Component", () => {
     it("should emit closeWindow", () => {
       findByTestAtrr(wrapper, "action").simulate("click");
 
-      expect(mockFullscreenFn.mock.calls.length).toBe(1);
+      expect(mockSetContext.mock.calls.length).toBe(1);
     });
   });
 });

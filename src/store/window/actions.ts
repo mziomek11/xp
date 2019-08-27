@@ -7,24 +7,14 @@ import { WindowState } from "./reducer";
 import { deepCopy } from "../../utils";
 import { Window } from "./models";
 
-export const open = (
-  id: string,
-  application: string,
-  name: string,
-  fullscreened: boolean
-) => {
+export const open = (id: string, application: string, name: string) => {
   const { byId, allIds } = getCopyOfStore();
 
   const newWindow: Window = {
     id,
     application,
     name,
-    width: windowConfig.INITIAL_WIDTH,
-    height: windowConfig.INITIAL_HEIGHT,
-    left: windowConfig.INITIAL_LEFT,
-    top: windowConfig.INITIAL_TOP,
-    minimalized: windowConfig.INITIAL_MINIMALIZED,
-    fullscreened
+    minimalized: windowConfig.INITIAL_MINIMALIZED
   };
   byId[newWindow.id] = newWindow;
   allIds.push(id);
@@ -44,44 +34,6 @@ export const changePriority = (id: string) => {
   return action(WindowAction.CHANGE_PRIORITY, { allIds, focused: id });
 };
 
-export const move = (id: string, x: number, y: number) => {
-  const { byId } = getCopyOfStore(true, false);
-  const windowToMove = byId[id];
-  if (!windowToMove) return action(WindowAction.CHANGE_PROP_FAILED);
-
-  windowToMove.left = x;
-  windowToMove.top = y;
-  return action(WindowAction.MOVE, { byId });
-};
-
-export const resize = (id: string, width: number, height: number) => {
-  const { byId } = getCopyOfStore(true, false);
-  const windowToResize = byId[id];
-  if (!windowToResize) return action(WindowAction.CHANGE_PROP_FAILED);
-
-  windowToResize.width = Math.max(width, windowConfig.MINIMAL_WIDTH);
-  windowToResize.height = Math.max(height, windowConfig.MINIMAL_HEIGHT);
-  return action(WindowAction.RESIZE, { byId });
-};
-
-export const moveAndResize = (
-  id: string,
-  x: number,
-  y: number,
-  width: number,
-  height: number
-) => {
-  const { byId } = getCopyOfStore(true, false);
-  const windowChange = byId[id];
-  if (!windowChange) return action(WindowAction.CHANGE_PROP_FAILED);
-
-  windowChange.width = Math.max(width, windowConfig.MINIMAL_WIDTH);
-  windowChange.height = Math.max(height, windowConfig.MINIMAL_HEIGHT);
-  windowChange.left = x;
-  windowChange.top = y;
-  return action(WindowAction.MOVE_AND_RESIZE, { byId });
-};
-
 export const toggleMinimalize = (id: string) => {
   let { byId, allIds, focused } = getCopyOfStore();
   const windowToMinimalize = byId[id];
@@ -95,15 +47,6 @@ export const toggleMinimalize = (id: string) => {
 
   windowToMinimalize.minimalized = !windowToMinimalize.minimalized;
   return action(WindowAction.TOGGLE_MINIMALIZE, { byId, allIds, focused });
-};
-
-export const toggleFullscreen = (id: string) => {
-  const { byId } = getCopyOfStore();
-  const windowToFullscreen = byId[id];
-  if (!windowToFullscreen) return action(WindowAction.CHANGE_PROP_FAILED);
-
-  windowToFullscreen.fullscreened = !windowToFullscreen.fullscreened;
-  return action(WindowAction.TOGGLE_FULLSCREEN, { byId });
 };
 
 export const close = (id: string) => {

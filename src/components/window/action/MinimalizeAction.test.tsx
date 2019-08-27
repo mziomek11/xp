@@ -2,11 +2,15 @@ import React from "react";
 import { shallow } from "enzyme";
 
 import { MinimalizeAction } from "./MinimalizeAction";
+import { testContextData } from "../Context.test";
 import { findByTestAtrr } from "../../../../testingUtils";
 
 const mockMinimalizeWindowFn = jest.fn();
-const comp = <MinimalizeAction id="id" minimalize={mockMinimalizeWindowFn} />;
-const wrapper = shallow(comp);
+const context = {
+  ...testContextData,
+  toggleMinimalize: mockMinimalizeWindowFn
+};
+const wrapper = shallow(<MinimalizeAction context={context} />);
 
 describe("MinimalizeAction Component", () => {
   describe("render", () => {

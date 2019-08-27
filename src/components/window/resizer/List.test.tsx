@@ -4,15 +4,13 @@ import ResizerList from "./List";
 import { shallow } from "enzyme";
 import { findByTestAtrr } from "../../../../testingUtils";
 
-const id = "asdasdasdasd";
-const wrapper = shallow(<ResizerList id={id} />);
+const wrapper = shallow(<ResizerList />);
 
 const testRenderResizer = (name: string, testData: string) => {
   it(`should render ${name}Resizer Component`, () => {
     const resizer = findByTestAtrr(wrapper, testData);
 
     expect(resizer.length).toBe(1);
-    expect(resizer.prop("id")).toBe(id);
   });
 };
 

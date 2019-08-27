@@ -1,7 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import Window from "./Window";
+import WindowContainer from "./WindowContainer";
+import { Provider as WindowContextProvider } from "./Context";
 import { RootState } from "MyTypes";
 
 type StateProps = {
@@ -14,7 +15,9 @@ export const List: React.FC<Props> = ({ windowsIds }) => {
   return (
     <React.Fragment>
       {windowsIds.map(id => (
-        <Window id={id} key={id} data-test="window" />
+        <WindowContextProvider id={id} key={id} startFullscreened={false}>
+          <WindowContainer data-test="window" />
+        </WindowContextProvider>
       ))}
     </React.Fragment>
   );

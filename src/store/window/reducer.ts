@@ -1,8 +1,9 @@
 import { combineReducers } from "redux";
 import { ActionType } from "typesafe-actions";
-import { WindowById } from "./models";
+
 import * as actions from "./actions";
 import * as WindowAction from "./constants";
+import { WindowById } from "./models";
 
 type WindowAction = ActionType<typeof actions>;
 export type WindowState = Readonly<{
@@ -22,10 +23,6 @@ export default combineReducers<WindowState, WindowAction>({
     switch (action.type) {
       case WindowAction.OPEN:
       case WindowAction.CLOSE:
-      case WindowAction.MOVE:
-      case WindowAction.RESIZE:
-      case WindowAction.MOVE_AND_RESIZE:
-      case WindowAction.TOGGLE_FULLSCREEN:
       case WindowAction.TOGGLE_MINIMALIZE:
         return action.payload.byId;
       case WindowAction.CLOSE_ALL:

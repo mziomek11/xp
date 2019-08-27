@@ -1,32 +1,22 @@
-import React from "react";
-import { Dispatch } from "redux";
-import { connect } from "react-redux";
+import React, { Component } from "react";
 
 import Action from "./Action";
-import { close as closeWindow } from "../../../store/window/actions";
+import { WindowContextType } from "ContextType";
+import { withWindowContext } from "../../../hoc";
 
-type OwnProps = {
-  id: string;
+type Props = {
+  context: WindowContextType;
 };
 
-type DispatchProps = {
-  closeWindow: () => void;
-};
+export class ExitAction extends Component<Props, {}> {
+  shouldComponentUpdate() {
+    return false;
+  }
 
-type Props = OwnProps & DispatchProps;
+  render() {
+    const { close } = this.props.context;
+    return <Action type="exit" onClick={close} data-test="action" />;
+  }
+}
 
-export const ExitAction: React.FC<Props> = ({ closeWindow, id }) => (
-  <Action id={id} type="exit" onClick={closeWindow} data-test="action" />
-);
-
-const mapDispatchToProps = (
-  dispatch: Dispatch,
-  { id }: OwnProps
-): DispatchProps => ({
-  closeWindow: () => dispatch(closeWindow(id))
-});
-
-export default connect(
-  null,
-  mapDispatchToProps
-)(ExitAction);
+export default withWindowContext(ExitAction);

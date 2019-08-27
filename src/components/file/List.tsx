@@ -36,7 +36,7 @@ export const FileList: React.FC<DispatchProps> = ({ openWindow }) => {
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   openWindow: (application: string, title: string) =>
-    dispatch(openWindow(uuid(), application, title, false))
+    dispatch(openWindow(uuid(), application, title))
 });
 
 export default connect(

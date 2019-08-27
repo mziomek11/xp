@@ -1,32 +1,24 @@
-import React from "react";
-import { Dispatch } from "redux";
-import { connect } from "react-redux";
+import React, { Component } from "react";
 
 import Action from "./Action";
-import { toggleMinimalize as minimalize } from "../../../store/window/actions";
+import { WindowContextType } from "ContextType";
+import { withWindowContext } from "../../../hoc";
 
-type OwnProps = {
-  id: string;
+type Props = {
+  context: WindowContextType;
 };
 
-type DispatchProps = {
-  minimalize: () => void;
-};
+export class MinimalizeAction extends Component<Props, {}> {
+  shouldComponentUpdate() {
+    return false;
+  }
 
-type Props = OwnProps & DispatchProps;
+  render() {
+    const { toggleMinimalize } = this.props.context;
+    return (
+      <Action type="minimalize" onClick={toggleMinimalize} data-test="action" />
+    );
+  }
+}
 
-export const MinimalizeAction: React.FC<Props> = ({ minimalize, id }) => (
-  <Action id={id} type="minimalize" onClick={minimalize} data-test="action" />
-);
-
-const mapDispatchToProps = (
-  dispatch: Dispatch,
-  { id }: OwnProps
-): DispatchProps => ({
-  minimalize: () => dispatch(minimalize(id))
-});
-
-export default connect(
-  null,
-  mapDispatchToProps
-)(MinimalizeAction);
+export default withWindowContext(MinimalizeAction);

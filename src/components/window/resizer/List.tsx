@@ -1,34 +1,22 @@
 import React from "react";
 
-import TopLeftResizer from "./direction/TopLeft";
-import TopResizer from "./direction/Top";
-import TopRightResizer from "./direction/TopRight";
-import RightResizer from "./direction/Right";
-import BottomRightResizer from "./direction/BottomRight";
-import BottomResizer from "./direction/Bottom";
-import BottomLeftResizer from "./direction/BottomLeft";
-import LeftResizer from "./direction/Left";
+import * as DirectionResizer from "./Direction";
 
-type Props = {
-  id: string;
-};
-
-class ResizerList extends React.Component<Props, {}> {
+class ResizerList extends React.Component {
   shouldComponentUpdate() {
     return false;
   }
   render() {
-    const { id } = this.props;
     return (
       <>
-        <TopLeftResizer id={id} data-test="NW" />
-        <TopResizer id={id} data-test="N" />
-        <TopRightResizer id={id} data-test="NE" />
-        <RightResizer id={id} data-test="E" />
-        <BottomRightResizer id={id} data-test="SE" />
-        <BottomResizer id={id} data-test="S" />
-        <BottomLeftResizer id={id} data-test="SW" />
-        <LeftResizer id={id} data-test="W" />
+        <DirectionResizer.TopLeft data-test="NW" />
+        <DirectionResizer.Top data-test="N" />
+        <DirectionResizer.TopRight data-test="NE" />
+        <DirectionResizer.Right data-test="E" />
+        <DirectionResizer.BottomRight data-test="SE" />
+        <DirectionResizer.Bottom data-test="S" />
+        <DirectionResizer.BottomLeft data-test="SW" />
+        <DirectionResizer.Left data-test="W" />
       </>
     );
   }

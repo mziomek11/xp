@@ -1,42 +1,35 @@
-import React from "react";
-import { Dispatch } from "redux";
-import { connect } from "react-redux";
+import React, { Component } from "react";
 
-import { changePriority } from "../../../store/window/actions";
+import withWindowContext from "../../../hoc/withWindowContext";
+import { WindowContextType } from "ContextType";
 
-type OwnProps = {
-  id: string;
+type Props = {
+  context: WindowContextType;
   type: "exit" | "minimalize" | "fullscreen";
   onClick: () => void;
 };
 
-type DispatchProps = {
-  changePriority: () => void;
-};
+export class Action extends Component<Props, {}> {
+  shouldComponentUpdate() {
+    return false;
+  }
 
-type Props = OwnProps & DispatchProps;
+  handleClick = () => {
+    const { onClick, context, type } = this.props;
 
-export const Action: React.FC<Props> = ({ type, onClick, changePriority }) => {
-  return (
-    <div
-      className={`window__action window__action--${type}`}
-      onClick={() => {
-        onClick();
-        if (type !== "exit") changePriority();
-      }}
-      data-test="action"
-    />
-  );
-};
+    onClick();
+    if (type !== "exit") context.changePriority();
+  };
 
-const mapDispatchToProps = (
-  dispatch: Dispatch,
-  { id }: OwnProps
-): DispatchProps => ({
-  changePriority: () => dispatch(changePriority(id))
-});
+  render() {
+    return (
+      <div
+        className={`window__action window__action--${this.props.type}`}
+        onClick={this.handleClick}
+        data-test="action"
+      />
+    );
+  }
+}
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(Action);
+export default withWindowContext(Action);

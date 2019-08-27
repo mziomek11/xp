@@ -1,11 +1,13 @@
 import React from "react";
 import { shallow } from "enzyme";
 
+import { testContextData } from "../Context.test";
 import { ExitAction } from "./ExitAction";
 import { findByTestAtrr } from "../../../../testingUtils";
 
 const mockCloseWindowFn = jest.fn();
-const wrapper = shallow(<ExitAction id="id" closeWindow={mockCloseWindowFn} />);
+const context = { ...testContextData, close: mockCloseWindowFn };
+const wrapper = shallow(<ExitAction context={context} />);
 
 describe("ExitAction Component", () => {
   describe("render", () => {

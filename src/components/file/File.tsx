@@ -1,5 +1,5 @@
 import React from "react";
-import { withDoubleClick } from "../../hoc";
+import withDoubleClick from "../../hoc/withDoubleClick";
 
 type Props = {
   name: string;

@@ -1,13 +1,14 @@
 import React from "react";
 import { shallow } from "enzyme";
+
+import { testContextData } from "../Context.test";
 import { Action } from "./Action";
 import { findByTestAtrr } from "../../../../testingUtils";
 
 const actionProps = {
-  id: "pap",
   type: "exit" as "exit",
-  onClick: jest.fn(),
-  changePriority: jest.fn()
+  context: testContextData,
+  onClick: jest.fn()
 };
 const wrapper = shallow(<Action {...actionProps} />);
 
@@ -35,10 +36,9 @@ describe("WindowAction Component", () => {
       changePriorityMockFn = jest.fn();
 
       const props = {
-        id: "pap",
-        type: type,
+        type,
         onClick: onClickMockFn,
-        changePriority: changePriorityMockFn
+        context: { ...testContextData, changePriority: changePriorityMockFn }
       };
 
       return shallow(<Action {...props} />);
