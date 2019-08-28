@@ -122,9 +122,8 @@ describe("WindowContainer Component", () => {
         <WindowContainer context={context} />
       );
       const instance = wrapper.instance();
-      const expectedClass = baseClass + fullscreenModifier;
 
-      expect(instance.getClassName()).toBe(expectedClass);
+      expect(instance.getClassName()).toContain(fullscreenModifier);
     });
 
     it("should return base class with focus modifier", () => {
@@ -137,9 +136,8 @@ describe("WindowContainer Component", () => {
         <WindowContainer context={context} />
       );
       const instance = wrapper.instance();
-      const expectedClass = baseClass + focusModifier;
 
-      expect(instance.getClassName()).toBe(expectedClass);
+      expect(instance.getClassName()).toContain(focusModifier);
     });
 
     it("should return base class with fullscreen and focus modifier", () => {
@@ -152,9 +150,9 @@ describe("WindowContainer Component", () => {
         <WindowContainer context={context} />
       );
       const instance = wrapper.instance();
-      const expectedClass = baseClass + fullscreenModifier + focusModifier;
 
-      expect(instance.getClassName()).toBe(expectedClass);
+      expect(instance.getClassName()).toContain(fullscreenModifier);
+      expect(instance.getClassName()).toContain(focusModifier);
     });
   });
 

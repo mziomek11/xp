@@ -1,37 +1,55 @@
 import React from "react";
+import { connect } from "react-redux";
 
 import ApplicationMenu from "./Menu";
+import { RootState } from "MyTypes";
+import { getClassName } from "../../../utils";
 
-type Props = {
+type OwnProps = {
   application: string;
   width: number;
   ids: string[];
 };
 
+type StateProps = {
+  focused: boolean;
+};
+
+type Props = OwnProps & StateProps;
+
 type State = { isOpen: boolean };
 
 export class SelectApplication extends React.Component<Props, State> {
+  private baseClassName = "toolbar__application";
+
   readonly state: State = { isOpen: false };
 
-  handleClick = () => this.setState({ isOpen: !this.state.isOpen });
-
+  toggleMenu = () => this.setState({ isOpen: !this.state.isOpen });
   closeMenu = () => this.setState({ isOpen: false });
+
+  getClassName = () => {
+    const modifiersObj = { focused: this.props.focused || this.state.isOpen };
+    const baseModifiers = ["with-menu"];
+
+    return getClassName(this.baseClassName, modifiersObj, baseModifiers);
+  };
 
   render() {
     const { isOpen } = this.state;
     const { application, width, ids } = this.props;
+    const className = this.getClassName();
 
     return (
       <div
-        className="toolbar__application toolbar__application--with-menu"
+        className={className}
         data-test="application"
-        onClick={this.handleClick}
+        onClick={this.toggleMenu}
         style={{ width }}
       >
-        <span className="toolbar__application-text" data-test="text">
+        <span className={`${this.baseClassName}-text`} data-test="text">
           {application}
         </span>
-        <div className="toolbar__application-arrow " data-test="arrow" />
+        <div className={`${this.baseClassName}-arrow`} data-test="arrow" />
         {isOpen && (
           <ApplicationMenu
             ids={ids}
@@ -44,4 +62,10 @@ export class SelectApplication extends React.Component<Props, State> {
   }
 }
 
-export default SelectApplication;
+const mapStateToProps = (state: RootState, { ids }: OwnProps): StateProps => {
+  return {
+    focused: ids.indexOf(state.window.focused as any) > -1
+  };
+};
+
+export default connect(mapStateToProps)(SelectApplication);

@@ -7,7 +7,8 @@ import { findByTestAtrr } from "../../../../testingUtils";
 const props = {
   width: 300,
   application: "ApplicationName",
-  ids: ["1", "2", "3"]
+  ids: ["1", "2", "3"],
+  focused: false
 };
 const wrapper = shallow<SelectApplication>(<SelectApplication {...props} />);
 const instance = wrapper.instance();
@@ -49,13 +50,13 @@ describe("ToolbarSelectApplication Component", () => {
     });
   });
 
-  describe("handleClick", () => {
+  describe("toggleMenu", () => {
     it("should toggle isOpen", () => {
       instance.setState({ isOpen: false });
-      instance.handleClick();
+      instance.toggleMenu();
       expect(instance.state.isOpen).toBe(true);
 
-      instance.handleClick();
+      instance.toggleMenu();
       expect(instance.state.isOpen).toBe(false);
     });
   });
@@ -68,6 +69,36 @@ describe("ToolbarSelectApplication Component", () => {
 
       instance.closeMenu();
       expect(instance.state.isOpen).toBe(false);
+    });
+  });
+
+  describe("getClassName", () => {
+    const baseClassName = "toolbar__application";
+    const withMenuModifier = ` ${baseClassName}--with-menu`;
+    const focusedModifier = ` ${baseClassName}--focused`;
+
+    it("should return class --with-menu when closed and not focused", () => {
+      const result = instance.getClassName();
+
+      expect(result).toContain(withMenuModifier);
+    });
+
+    it("should return class --focused when focused", () => {
+      const focusedProps = { ...props, focused: true };
+      const wrapper = shallow<SelectApplication>(
+        <SelectApplication {...focusedProps} />
+      );
+
+      const result = wrapper.instance().getClassName();
+
+      expect(result).toContain(focusedModifier);
+    });
+
+    it("should return class --focused when isOpen", () => {
+      wrapper.setState({ isOpen: true });
+      const result = wrapper.instance().getClassName();
+
+      expect(result).toContain(focusedModifier);
     });
   });
 });

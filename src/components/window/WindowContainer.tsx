@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import Window from "./Window";
 import { WindowContextType } from "ContextType";
 import { withWindowContext } from "../../hoc";
+import { getClassName } from "../../utils";
 
 type OwnProps = {
   context: WindowContextType;
@@ -12,11 +13,11 @@ type Props = OwnProps;
 
 export class WindowContainer extends Component<Props> {
   componentDidMount() {
-    window.addEventListener("mousedown", this.ckeckForClickOutsideWindow);
+    window.addEventListener("mouseup", this.ckeckForClickOutsideWindow);
   }
 
   componentWillUnmount() {
-    window.removeEventListener("mousedown", this.ckeckForClickOutsideWindow);
+    window.removeEventListener("mouseup", this.ckeckForClickOutsideWindow);
   }
 
   ckeckForClickOutsideWindow = (e: MouseEvent) => {
@@ -41,13 +42,10 @@ export class WindowContainer extends Component<Props> {
   };
 
   getClassName = () => {
-    const { fullscreened, focused } = this.props.context;
-    const defualtClassName: string = "window";
-    let className: string = defualtClassName;
-    if (fullscreened) className += " " + defualtClassName + "--fullscreen";
-    if (focused) className += " " + defualtClassName + "--focused";
+    const { focused, fullscreened } = this.props.context;
+    const modifiersObj = { focused, fullscreen: fullscreened };
 
-    return className;
+    return getClassName("window", modifiersObj);
   };
 
   getInlineStyles = () => {
@@ -82,8 +80,8 @@ export class WindowContainer extends Component<Props> {
 
   render() {
     const { children } = this.props;
-    const className = this.getClassName();
     const inlineStyles = this.getInlineStyles();
+    const className = this.getClassName();
 
     return (
       <Window
