@@ -1,7 +1,27 @@
 .time {
-  background: brown;
   height: 100%;
   width: $time-width;
+  border-left: 1px solid time-color("border");
+  border-radius: 2px;
   user-select: none;
+  font-size: 0.9em;
+  font-weight: 500;
+
+  @include linear-gradient-from-main(
+    $time,
+    to bottom,
+    4%,
+    8%,
+    12%,
+    16%,
+    20%,
+    50%,
+    60%,
+    70%,
+    84%,
+    88%,
+    92%,
+    96%
+  );
   @include flex-centered;
 }

@@ -1,0 +1,25 @@
+@mixin linear-gradient-from-main($map, $direction, $percentage...) {
+  $gradiends: "";
+
+  @for $i from 1 through length($percentage) {
+    $color: map-get($map, #{"main-" + $i});
+
+    @if $i == 1 {
+      $gradiends: $color + ", ";
+    }
+
+    @if $i == length($percentage) {
+      $percent: nth($percentage, $i - 1);
+      $gradient: #{$color + " " + $percent};
+      $gradiends: $gradiends + $gradient;
+    }
+
+    @if $i != 1 and $i != length($percentage) {
+      $percent: nth($percentage, $i - 1);
+      $gradient: #{$color + " " + $percent + ", "};
+      $gradiends: $gradiends + $gradient;
+    }
+  }
+
+  background: linear-gradient($direction, #{$gradiends});
+}

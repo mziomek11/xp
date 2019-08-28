@@ -2,7 +2,7 @@ import React from "react";
 import { shallow } from "enzyme";
 
 import Start from "./Start";
-import { findByTestAtrr } from "../../../testingUtils";
+import { findByTestAtrr } from "../../../../testingUtils";
 
 const wrapper = shallow(<Start />);
 

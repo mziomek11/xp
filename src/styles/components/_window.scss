@@ -4,6 +4,7 @@
   padding: $window-resizer-size;
   border-top-left-radius: $window-top-border-radius;
   border-top-right-radius: $window-top-border-radius;
+  font-size: 1.55em;
 
   &--fullscreen {
     padding: 0;
@@ -12,7 +13,7 @@
 }
 
 .window__bar {
-  @include window-bar-gradient;
+  @include window-bar-gradient($window-bar);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -26,6 +27,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-weight: 500;
 }
 
 .window__actions {
@@ -49,7 +51,7 @@
 
   &--minimalize,
   &--fullscreen {
-    @include window-blue-icon-gradient;
+    @include window-icon-gradient($window-blue-icon);
   }
 
   &--minimalize::after {
@@ -74,7 +76,7 @@
   }
 
   &--exit {
-    @include window-red-icon-gradient;
+    @include window-icon-gradient($window-red-icon);
   }
 
   &--exit::after,
@@ -109,13 +111,13 @@
   position: absolute;
 
   &--left {
-    @include window-resizer-color($direction: to right);
+    @include window-resizer-color($direction: to right, $map: $window-resizer);
     left: 0;
     cursor: w-resize;
   }
 
   &--right {
-    @include window-resizer-color($direction: to left);
+    @include window-resizer-color($direction: to left, $map: $window-resizer);
     right: 0;
     cursor: e-resize;
   }
@@ -128,18 +130,13 @@
   }
 
   &--top {
-    background: linear-gradient(
-      to bottom,
-      window-color("border-top-1") 0,
-      window-color("border-top-2") 25%,
-      window-color("border-top-3") 75%
-    );
+    @include window-resizer-top-color($window-resizer-top);
     top: 0;
     cursor: n-resize;
   }
 
   &--bottom {
-    @include window-resizer-color($direction: to top);
+    @include window-resizer-color($direction: to top, $map: $window-resizer);
     bottom: 0;
     cursor: s-resize;
   }
@@ -159,7 +156,7 @@
   }
 
   &--bottom#{&}--left {
-    @include window-resizer-color-corner($direction: 45deg);
+    @include window-resizer-color($direction: 45deg, $map: $window-resizer);
     @include reset-relative-postions;
     left: 0;
     bottom: 0;
@@ -167,7 +164,7 @@
   }
 
   &--bottom#{&}--right {
-    @include window-resizer-color-corner($direction: -45deg);
+    @include window-resizer-color($direction: -45deg, $map: $window-resizer);
     @include reset-relative-postions;
     right: 0;
     bottom: 0;
@@ -175,7 +172,7 @@
   }
 
   &--top#{&}--left {
-    @include window-resizer-color-corner($direction: 135deg);
+    @include window-resizer-color($direction: 135deg, $map: $window-resizer);
     @include reset-relative-postions;
     left: 0;
     top: 0;
@@ -183,7 +180,7 @@
   }
 
   &--top#{&}--right {
-    @include window-resizer-color-corner($direction: -135deg);
+    @include window-resizer-color($direction: -135deg, $map: $window-resizer);
     @include reset-relative-postions;
     right: 0;
     top: 0;
@@ -193,51 +190,72 @@
 
 .window--focused {
   .window__bar {
-    @include window-bar-gradient($focused: true);
+    @include window-bar-gradient($window-bar-focused);
   }
 
   .window__action {
     &--minimalize,
     &--fullscreen {
-      @include window-blue-icon-gradient($focused: true);
+      @include window-icon-gradient($window-blue-icon-focused);
     }
 
     &--exit {
-      @include window-red-icon-gradient($focused: true);
+      @include window-icon-gradient($window-red-icon-focused);
     }
   }
 
   .window__resizer {
     &--left {
-      @include window-resizer-color($direction: to right, $focused: true);
+      @include window-resizer-color(
+        $direction: to right,
+        $map: $window-resizer-focused
+      );
     }
 
     &--right {
-      @include window-resizer-color($direction: to left, $focused: true);
+      @include window-resizer-color(
+        $direction: to left,
+        $map: $window-resizer-focused
+      );
     }
 
     &--top {
-      @include window-resizer-top-color($focused: true);
+      @include window-resizer-top-color($window-resizer-top-focused);
     }
 
     &--bottom {
-      @include window-resizer-color($direction: to top, $focused: true);
+      @include window-resizer-color(
+        $direction: to top,
+        $map: $window-resizer-focused
+      );
     }
 
     &--bottom.window__resizer--left {
-      @include window-resizer-color-corner($direction: 45deg, $focused: true);
+      @include window-resizer-color-corner(
+        $direction: 45deg,
+        $map: $window-resizer-focused
+      );
     }
 
     &--bottom.window__resizer--right {
-      @include window-resizer-color-corner($direction: -45deg, $focused: true);
+      @include window-resizer-color-corner(
+        $direction: -45deg,
+        $map: $window-resizer-focused
+      );
     }
 
     &--top.window__resizer--left {
-      @include window-resizer-color-corner($direction: 135deg, $focused: true);
+      @include window-resizer-color-corner(
+        $direction: 135deg,
+        $map: $window-resizer-focused
+      );
     }
 
     &--top.window__resizer--right {
-      @include window-resizer-color-corner($direction: -135deg, $focused: true);
+      @include window-resizer-color-corner(
+        $direction: -135deg,
+        $map: $window-resizer-focused
+      );
     }
   }
 }

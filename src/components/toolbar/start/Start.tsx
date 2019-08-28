@@ -1,5 +1,5 @@
 import React from "react";
-import { toolbarConfig } from "../../config";
+import { toolbarConfig } from "../../../config";
 
 const Start = () => {
   return (

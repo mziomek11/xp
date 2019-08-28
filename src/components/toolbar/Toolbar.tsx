@@ -1,7 +1,7 @@
 import React from "react";
-import Start from "../start/Start";
+import Start from "./start/Start";
 import ApplicationsListContainer from "./application/ListContainer";
-import Time from "../time/Time";
+import Time from "./time/Time";
 
 import { toolbarConfig } from "../../config";
 

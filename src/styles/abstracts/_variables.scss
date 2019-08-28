@@ -1,59 +1,13 @@
+//Font
+
+$font-family: "Roboto", sans-serif;
+$font-size: 10px;
+
 //File
 
 $file-size: 64px;
 
 //Window
-
-$window-lightness-hover: 7%;
-
-$window-blue-icon-start-focus: #7fa3f8;
-$window-blue-icon-end-focus: #0045d3;
-$window-red-icon-start-focus: #ed957f;
-$window-red-icon-end-focus: #c22a00;
-
-$window-colors: (
-  "border-start": #5764c4,
-  "border-end": #7389d8,
-  "border-top-1": #6a91e0,
-  "border-top-2": #9db9eb,
-  "border-top-3": #8bb0e9,
-  "bar-1": #8aace7,
-  "bar-2": #7a99e0,
-  "bar-3": #80a5e7,
-  "bar-4": #5764c4,
-  "blue-icon-start": #809bea,
-  "blue-icon-end": #3f6ddc,
-  "blue-icon-start-hover":
-    lighten($window-blue-icon-start-focus, $window-lightness-hover),
-  "blue-icon-end-hover":
-    lighten($window-blue-icon-end-focus, $window-lightness-hover),
-  "red-icon-start": #b49cba,
-  "red-icon-end": #a06072,
-  "red-icon-start-hover":
-    lighten($window-red-icon-start-focus, $window-lightness-hover),
-  "red-icon-end-hover":
-    lighten($window-red-icon-end-focus, $window-lightness-hover)
-);
-
-$window-colors-focused: (
-  "border-start": #0018ab,
-  "border-end": #0855dd,
-  "border-top-1": #0058ee,
-  "border-top-2": #3f97ff,
-  "border-top-3": #0372ff,
-  "bar-1": #004ebb,
-  "bar-2": #0045bd,
-  "bar-3": #004cb8,
-  "bar-4": #012f92,
-  "blue-icon-start": $window-blue-icon-start-focus,
-  "blue-icon-end": $window-blue-icon-end-focus,
-  "blue-icon-start-hover": map-get($window-colors, "blue-icon-start-hover"),
-  "blue-icon-end-hover": map-get($window-colors, "blue-icon-end-hover"),
-  "red-icon-start": $window-red-icon-start-focus,
-  "red-icon-end": $window-red-icon-end-focus,
-  "red-icon-start-hover": map-get($window-colors, "red-icon-start-hover"),
-  "red-icon-end-hover": map-get($window-colors, "red-icon-end-hover")
-);
 
 $window-bar-height: 30px;
 $window-bar-padding: 4px;
@@ -61,16 +15,83 @@ $window-action-size: 20px;
 $window-actions-size: 3 * $window-action-size + 2 * $window-bar-padding;
 $window-resizer-size: 4px;
 $window-top-border-radius: 10px;
+$window-lightness-hover: 7%;
+
+$window-resizer: (
+  "start": #5764c4,
+  "end": #7389d8
+);
+
+$window-resizer-focused: (
+  "start": #0018ab,
+  "end": #0855dd
+);
+
+$window-resizer-top: (
+  "main-1": #6a91e0,
+  "main-2": #9db9eb,
+  "main-3": #8bb0e9
+);
+
+$window-resizer-top-focused: (
+  "main-1": #0058ee,
+  "main-2": #3f97ff,
+  "main-3": #0372ff
+);
+
+$window-bar: (
+  "main-1": #8aace7,
+  "main-2": #7a99e0,
+  "main-3": #80a5e7,
+  "main-4": #5764c4
+);
+
+$window-bar-focused: (
+  "main-1": #004ebb,
+  "main-2": #0045bd,
+  "main-3": #004cb8,
+  "main-4": #012f92
+);
+
+$window-blue-icon-start-focus: #7fa3f8;
+$window-blue-icon-end-focus: #0045d3;
+$window-blue-icon: (
+  "start": #809bea,
+  "end": #3f6ddc,
+  "start-hover": lighten($window-blue-icon-start-focus, $window-lightness-hover),
+  "end-hover": lighten($window-blue-icon-end-focus, $window-lightness-hover)
+);
+
+$window-blue-icon-focused: (
+  "start": $window-blue-icon-start-focus,
+  "end": $window-blue-icon-end-focus,
+  "start-hover": map-get($window-blue-icon, "start-hover"),
+  "end-hover": map-get($window-blue-icon, "end-hover")
+);
+
+$window-red-icon-start-focus: #ed957f;
+$window-red-icon-end-focus: #c22a00;
+$window-red-icon: (
+  "start": #b49cba,
+  "end": #a06072,
+  "start-hover": lighten($window-red-icon-start-focus, $window-lightness-hover),
+  "end-hover": lighten($window-red-icon-end-focus, $window-lightness-hover)
+);
+
+$window-red-icon-focused: (
+  "start": $window-red-icon-start-focus,
+  "end": $window-red-icon-end-focus,
+  "start-hover": map-get($window-red-icon, "start-hover"),
+  "end-hover": map-get($window-red-icon, "end-hover")
+);
 
 //Toolbar
 
+$toolbar-application-padding: 0 0.8em;
+$toolbar-application-menu-item-height: 21px;
 $toolbar-lightness-hover: 7%;
 
-$toolbar-app-main-1: #4993ee;
-$toolbar-app-main-2: #397df3;
-$toolbar-app-main-3: #347cf1;
-
-$toolbar-colors: (
+$toolbar: (
   "main-1": #3168d5,
   "main-2": #3888e9,
   "main-3": #4993e6,
@@ -79,57 +100,80 @@ $toolbar-colors: (
   "main-6": #2257d6,
   "main-7": #2663e0,
   "main-8": #235bd9,
-  "main-9": #1941a5,
-  "application-main-1": $toolbar-app-main-1,
-  "application-main-2": $toolbar-app-main-2,
-  "application-main-3": $toolbar-app-main-3,
-  "application-main-1-hover":
-    lighten($toolbar-app-main-1, $toolbar-lightness-hover),
-  "application-main-2-hover":
-    lighten($toolbar-app-main-2, $toolbar-lightness-hover),
-  "application-main-3-hover":
-    lighten($toolbar-app-main-3, $toolbar-lightness-hover),
-  "application-border-left": #3067dd,
-  "application-border-right": #2653ae,
-  "application-border-top": #3172da,
-  "application-border-bottom": #2652bc,
-  "application-menu-item": #2157d5,
-  "application-menu-item-hover": #4f96ff
+  "main-9": #1941a5
+);
+
+$toolbar-app-main-1: #4993ee;
+$toolbar-app-main-2: #397df3;
+$toolbar-app-main-3: #347cf1;
+$toolbar-application: (
+  "main-1": $toolbar-app-main-1,
+  "main-2": $toolbar-app-main-2,
+  "main-3": $toolbar-app-main-3,
+  "main-1-hover": lighten($toolbar-app-main-1, $toolbar-lightness-hover),
+  "main-2-hover": lighten($toolbar-app-main-2, $toolbar-lightness-hover),
+  "main-3-hover": lighten($toolbar-app-main-3, $toolbar-lightness-hover)
+);
+
+$toolbar-application-border: (
+  "left": #3067dd,
+  "right": #2653ae,
+  "top": #3172da,
+  "bottom": #2652bc
+);
+
+$toolbar-application-item: (
+  "main": #2157d5,
+  "main-hover": #4f96ff
+);
+
+$toolbar-application-item-border: (
+  "left": #1e4fc3,
+  "right": #1d4ab5,
+  "left-hover": #4772d6,
+  "right-hover": #527bda
 );
 
 $toolbar-app-main-1-focused: #1650bc;
 $toolbar-app-main-2-focused: #1a50b8;
 $toolbar-app-main-3-focused: #2156b7;
-
-$toolbar-colors-focused: (
-  "application-main-1": $toolbar-app-main-1-focused,
-  "application-main-2": $toolbar-app-main-2-focused,
-  "application-main-3": $toolbar-app-main-3-focused,
-  "application-main-1-hover":
-    lighten($toolbar-app-main-1-focused, $toolbar-lightness-hover),
-  "application-main-2-hover":
-    lighten($toolbar-app-main-2-focused, $toolbar-lightness-hover),
-  "application-main-3-hover":
-    lighten($toolbar-app-main-3-focused, $toolbar-lightness-hover),
-  "application-border-left": #0e3280,
-  "application-border-right": #0e3ba1,
-  "application-border-top": #123d94,
-  "application-border-bottom": #0c3cac
+$toolbar-application-focused: (
+  "main-1": $toolbar-app-main-1-focused,
+  "main-2": $toolbar-app-main-2-focused,
+  "main-3": $toolbar-app-main-3-focused,
+  "main-1-hover": lighten($toolbar-app-main-1-focused, $toolbar-lightness-hover),
+  "main-2-hover": lighten($toolbar-app-main-2-focused, $toolbar-lightness-hover),
+  "main-3-hover": lighten($toolbar-app-main-3-focused, $toolbar-lightness-hover)
 );
 
-$toolbar-application-padding: 0 0.8em;
-$toolbar-application-menu-item-height: 21px;
+$toolbar-application-border-focused: (
+  "left": #0e3280,
+  "right": #0e3ba1,
+  "top": #123d94,
+  "bottom": #0c3cac
+);
 
 //Start
-
-$start-colors: (
-  "main-1": #218b2b,
-  "main-2": #6db66c,
-  "main-3": #3cb73b,
-  "main-4": #3aba3a,
-  "main-5": #27883a
-);
 $start-border-radius: 7px;
 $start-margin: 9px;
 
 $time-width: 80px;
+
+//Time
+
+$time: (
+  "main-1": #095bc9,
+  "main-2": #16adf0,
+  "main-3": #19b9f3,
+  "main-4": #149eed,
+  "main-5": #1399eb,
+  "main-6": #1290e8,
+  "main-7": #0f8eea,
+  "main-8": #0d90eb,
+  "main-9": #0d9df1,
+  "main-10": #119ceb,
+  "main-11": #1394e5,
+  "main-12": #1581d7,
+  "main-13": #095bc9,
+  "border": #1a4b75
+);
