@@ -46,9 +46,14 @@ export class SelectApplication extends React.Component<Props, State> {
         onClick={this.toggleMenu}
         style={{ width }}
       >
-        <span className={`${this.baseClassName}-text`} data-test="text">
-          {application}
-        </span>
+        <div className={`${this.baseClassName}-text-container`}>
+          <span className={`${this.baseClassName}-count`} data-test="count">
+            {ids.length}
+          </span>
+          <span className={`${this.baseClassName}-text`} data-test="text">
+            {application}
+          </span>
+        </div>
         <div className={`${this.baseClassName}-arrow`} data-test="arrow" />
         {isOpen && (
           <ApplicationMenu

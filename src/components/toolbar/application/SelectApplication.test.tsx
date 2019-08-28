@@ -26,6 +26,13 @@ describe("ToolbarSelectApplication Component", () => {
       expect(appText.text()).toBe(props.application);
     });
 
+    it("should render count", () => {
+      expect(findByTestAtrr(wrapper, "count").length).toBe(1);
+      expect(findByTestAtrr(wrapper, "count").text()).toBe(
+        props.ids.length.toString()
+      );
+    });
+
     it("should render arrow", () => {
       expect(findByTestAtrr(wrapper, "arrow").length).toBe(1);
     });

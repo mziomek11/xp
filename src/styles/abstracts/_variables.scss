@@ -87,8 +87,11 @@ $window-red-icon-focused: (
 
 //Toolbar
 
+$toolbar-font-size: 1.3em;
 $toolbar-application-padding: 0 0.8em;
 $toolbar-application-menu-item-height: 21px;
+$toolbar-application-count-color: #ffcc6d;
+$toolbar-application-count-padding: 0 5px;
 $toolbar-lightness-hover: 7%;
 
 $toolbar: (
