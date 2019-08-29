@@ -2,12 +2,18 @@ import React from "react";
 
 import Bar from "./Bar";
 import { toolbarConfig, windowConfig } from "../../../config";
-import { withWindowContext } from "../../../hoc";
+import { withWindowContext, withDoubleClick } from "../../../hoc";
 import { Context } from "../Context";
 
-type Props = {
+type OwnProps = {
   context: Context;
 };
+
+type DoubleClickProps = {
+  checkForDoubleClick: (onDouble: () => void) => void;
+};
+
+type Props = OwnProps & DoubleClickProps;
 
 type State = {
   barX: number;
@@ -89,9 +95,13 @@ export class BarContainer extends React.Component<Props, State> {
     return { left, top };
   };
 
-  handleDoubleClick = () => {
+  onDoubleClick = () => {
     const { fullscreened, setContext } = this.props.context;
     setContext({ fullscreened: !fullscreened });
+  };
+
+  handleClick = () => {
+    this.props.checkForDoubleClick(this.onDoubleClick);
   };
 
   render() {
@@ -100,11 +110,11 @@ export class BarContainer extends React.Component<Props, State> {
       <Bar
         name={name}
         onMouseDown={this.handleMouseDown}
-        onDoubleClick={this.handleDoubleClick}
+        onClick={this.handleClick}
         data-test="bar"
       />
     );
   }
 }
 
-export default withWindowContext(BarContainer);
+export default withWindowContext(withDoubleClick(BarContainer));

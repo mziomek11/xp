@@ -1,9 +1,5 @@
 import React from "react";
 
-type Props = {
-  onDoubleClick: () => void;
-};
-
 type State = {
   lastClickTime: number;
 };
@@ -11,19 +7,22 @@ type State = {
 function withDoubleClick<T>(
   Component: React.ComponentType<T>,
   timeBetweenClick: number = 500
-): React.ComponentClass<T & Props, State> {
-  return class EnchancedComponent extends React.Component<T & Props, State> {
+): React.ComponentClass<Omit<T, "checkForDoubleClick">, State> {
+  return class EnchancedComponent extends React.Component<
+    Omit<T, "checkForDoubleClick">,
+    State
+  > {
     readonly state: State = {
       lastClickTime: -Infinity
     };
 
-    handleClick = () => {
+    checkForDoubleClick = (onDoubleClick: () => void) => {
       const currentTime: number = Date.now();
       const { lastClickTime } = this.state;
 
       if (currentTime - lastClickTime < timeBetweenClick) {
         this.setState({ lastClickTime: -Infinity });
-        this.props.onDoubleClick();
+        onDoubleClick();
       } else {
         this.setState({ lastClickTime: currentTime });
       }
@@ -31,9 +30,11 @@ function withDoubleClick<T>(
 
     render() {
       return (
-        <div onClick={this.handleClick} data-test="container">
-          <Component {...this.props} data-test="component" />
-        </div>
+        <Component
+          {...(this.props as any)}
+          checkForDoubleClick={this.checkForDoubleClick}
+          data-test="component"
+        />
       );
     }
   };

@@ -1,10 +1,11 @@
 import React from "react";
 import { shallow } from "enzyme";
-import { FileList } from "./List";
+
+import FileList from "./List";
 import { findByTestAtrr } from "../../../testingUtils";
 
 describe("FileList Component", () => {
-  const comp = <FileList openWindow={() => {}} />;
+  const comp = <FileList />;
   const wrapper = shallow(comp);
 
   describe("render", () => {

@@ -1,14 +1,6 @@
 import React from "react";
-import uuid from "uuid";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
 
 import File from "./File";
-import { open as openWindow } from "../../store/window/actions";
-
-type DispatchProps = {
-  openWindow: (application: string, title: string) => void;
-};
 
 const fileNames: string[] = [
   "Chrome",
@@ -17,29 +9,14 @@ const fileNames: string[] = [
   "Terminal"
 ];
 
-export const FileList: React.FC<DispatchProps> = ({ openWindow }) => {
+const FileList = () => {
   return (
     <div data-test="file-list">
       {fileNames.map((name, i) => (
-        <File
-          name={name}
-          key={i}
-          left={0}
-          top={50 * i}
-          onDoubleClick={() => openWindow(name, "Untitled " + name)}
-          data-test="file"
-        />
+        <File name={name} key={i} left={0} top={50 * i} data-test="file" />
       ))}
     </div>
   );
 };
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-  openWindow: (application: string, title: string) =>
-    dispatch(openWindow(uuid(), application, title))
-});
-
-export default connect(
-  null,
-  mapDispatchToProps
-)(FileList);
+export default FileList;

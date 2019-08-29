@@ -3,16 +3,21 @@ import React from "react";
 import MinimalizeAction from "../action/MinimalizeAction";
 import FullscreenAction from "../action/FullscreenAction";
 import ExitAction from "../action/ExitAction";
-import { withDoubleClick } from "../../../hoc";
 
 type Props = {
   name: string;
   onMouseDown: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onClick: () => void;
 };
 
-export const Bar: React.FC<Props> = ({ name, onMouseDown }) => {
+export const Bar: React.FC<Props> = ({ name, onMouseDown, onClick }) => {
   return (
-    <div className="window__bar" onMouseDown={onMouseDown} data-test="bar">
+    <div
+      className="window__bar"
+      onMouseDown={onMouseDown}
+      data-test="bar"
+      onClick={onClick}
+    >
       <h4 className="window__title" data-test="title">
         {name}
       </h4>
@@ -25,4 +30,4 @@ export const Bar: React.FC<Props> = ({ name, onMouseDown }) => {
   );
 };
 
-export default withDoubleClick(Bar);
+export default Bar;
