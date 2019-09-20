@@ -4,10 +4,31 @@ import { shallow } from "enzyme";
 import { MenuItem } from "./MenuItem";
 import { findByTestAtrr } from "../../../../testingUtils";
 
-const mockChangePriority = jest.fn();
-const props = { changePriority: mockChangePriority, name: "example", id: "1" };
-const wrapper = shallow(<MenuItem {...props} />);
+let mockChangePriority = jest.fn();
+let mockToggleMinimalize = jest.fn();
+const props = {
+  changePriority: mockChangePriority,
+  toggleMinimalize: mockToggleMinimalize,
+  name: "example",
+  id: "1",
+  minimalized: false,
+  focused: false
+};
 
+const createWrapper = (changedProps: Partial<typeof props> = {}) => {
+  mockChangePriority = jest.fn();
+  mockToggleMinimalize = jest.fn();
+  const newProps = {
+    ...props,
+    ...changedProps,
+    changePriority: mockChangePriority,
+    toggleMinimalize: mockToggleMinimalize
+  };
+
+  return shallow(<MenuItem {...newProps} />);
+};
+
+const wrapper = createWrapper();
 const parentDiv = findByTestAtrr(wrapper, "menu-item");
 
 describe("ToolbarApplcationMenuItem Component", () => {
@@ -26,6 +47,34 @@ describe("ToolbarApplcationMenuItem Component", () => {
       parentDiv.simulate("click");
 
       expect(mockChangePriority.mock.calls.length).toBe(1);
+    });
+
+    describe("toggleMinimalize", () => {
+      it("should be called when focused", () => {
+        const wrapper = createWrapper({ focused: true, minimalized: false });
+        findByTestAtrr(wrapper, "menu-item").simulate("click");
+
+        expect(mockToggleMinimalize.mock.calls.length).toBe(1);
+        expect(mockChangePriority.mock.calls.length).toBe(0);
+      });
+
+      it("should be called when minimalized", () => {
+        const wrapper = createWrapper({ focused: false, minimalized: true });
+        findByTestAtrr(wrapper, "menu-item").simulate("click");
+
+        expect(mockToggleMinimalize.mock.calls.length).toBe(1);
+        expect(mockChangePriority.mock.calls.length).toBe(0);
+      });
+    });
+
+    describe("change priority", () => {
+      it("should be called when NOT focused and NOT minimalized", () => {
+        const wrapper = createWrapper({ focused: false, minimalized: false });
+        findByTestAtrr(wrapper, "menu-item").simulate("click");
+
+        expect(mockToggleMinimalize.mock.calls.length).toBe(0);
+        expect(mockChangePriority.mock.calls.length).toBe(1);
+      });
     });
   });
 });

@@ -1,8 +1,9 @@
 import React from "react";
 
 import Bar from "./Bar";
+import withContext from "../../../hoc/withContext";
+import withDoubleClick from "../../../hoc/withDoubleClick";
 import { toolbarConfig, windowConfig } from "../../../config";
-import { withWindowContext, withDoubleClick } from "../../../hoc";
 import { Context } from "../Context";
 
 type OwnProps = {
@@ -117,4 +118,4 @@ export class BarContainer extends React.Component<Props, State> {
   }
 }
 
-export default withWindowContext(withDoubleClick(BarContainer));
+export default withDoubleClick(withContext(BarContainer, "window"));

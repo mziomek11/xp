@@ -3,6 +3,7 @@
   width: $file-size;
   height: $file-size;
   background: black;
+  color: white;
   @include flex-centered;
 
   &:hover {

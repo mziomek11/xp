@@ -1,7 +1,7 @@
 export const OPEN = "@@window/OPEN";
 export const CHANGE_PRIORITY = "@@window/CHANGE_PRIORITY";
 export const CHANGE_PRIORITY_FAILED = "@@window/CHANGE_PRIORITY_FAILED";
-export const TOGGLE_MINIMALIZE = "@@window//MINIMALIZE";
+export const TOGGLE_MINIMALIZE = "@@window/MINIMALIZE";
 export const CHANGE_PROP_FAILED = "@@widnow/CHANGE_PROP_FAILED";
 export const CLOSE = "@@window/CLOSE";
 export const CLOSE_FAILED = "@@window/CLOSE_FAILED";

@@ -1,38 +1,58 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 
 import Window from "./Window";
+import withContext from "../../hoc/withContext";
+import { RootState } from "MyTypes";
 import { WindowContextType } from "ContextType";
-import { withWindowContext } from "../../hoc";
 import { getClassName } from "../../utils";
 
 type OwnProps = {
   context: WindowContextType;
+  children: React.ReactNode;
 };
 
-type Props = OwnProps;
+type StateProps = {
+  isFocusingRect: boolean;
+};
+
+type Props = OwnProps & StateProps;
 
 export class WindowContainer extends Component<Props> {
   componentDidMount() {
-    window.addEventListener("mouseup", this.ckeckForClickOutsideWindow);
+    window.addEventListener("mouseup", this.checkForUnfocus);
   }
 
   componentWillUnmount() {
-    window.removeEventListener("mouseup", this.ckeckForClickOutsideWindow);
+    window.removeEventListener("mouseup", this.checkForUnfocus);
   }
 
-  ckeckForClickOutsideWindow = (e: MouseEvent) => {
-    const { removeFocus, focused } = this.props.context;
-
+  checkForUnfocus = (e: MouseEvent) => {
+    const { clickedWindow, clickedOnToolbarApp } = this;
+    const { isFocusingRect, context } = this.props;
+    const { removeFocus, focused } = context;
     if (!focused) return;
 
-    const elementClassList = (e.target as Element).classList;
-    if (!elementClassList[0]) {
+    if (!clickedWindow(e) && !clickedOnToolbarApp(e) && !isFocusingRect) {
       removeFocus();
-      return;
     }
+  };
 
-    const clickedWindow = elementClassList[0].indexOf("window") > -1;
-    if (!clickedWindow) removeFocus();
+  clickedWindow = ({ clientX, clientY }: MouseEvent) => {
+    const { left, top, width, height, fullscreened } = this.props.context;
+    if (fullscreened) return true;
+
+    const isXProper = clientX >= left && clientX <= left + width;
+    const isYProper = clientY >= top && clientY <= top + height;
+
+    return isXProper && isYProper;
+  };
+
+  clickedOnToolbarApp = (e: MouseEvent) => {
+    const elementClassList = (e.target as Element).classList;
+    if (!elementClassList[0]) return false;
+
+    return elementClassList[0].indexOf("toolbar__application") > -1;
   };
 
   handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -95,4 +115,8 @@ export class WindowContainer extends Component<Props> {
   }
 }
 
-export default withWindowContext(WindowContainer);
+const mapStateToProps = (state: RootState): StateProps => ({
+  isFocusingRect: state.fileSystem.isFocusingRect
+});
+
+export default connect(mapStateToProps)(withContext(WindowContainer, "window"));

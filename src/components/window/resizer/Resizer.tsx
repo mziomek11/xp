@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import withWindowContext from "../../../hoc/withWindowContext";
+import withContext from "../../../hoc/withContext";
 import { WindowContextType } from "ContextType";
 import { windowConfig, toolbarConfig } from "../../../config";
 
@@ -240,4 +240,4 @@ export class WindowResizer extends Component<OwnProps, State> {
   }
 }
 
-export default withWindowContext(WindowResizer);
+export default withContext(WindowResizer, "window");

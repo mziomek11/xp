@@ -1,0 +1,47 @@
+::-webkit-scrollbar {
+  width: $scrollbar-width;
+}
+
+::-webkit-scrollbar-track {
+  background: $scrollbar-track-color;
+  border: 1px solid $scrollbar-track-border-color;
+}
+
+::-webkit-scrollbar-thumb {
+  @include scrollbar-gradient($scrollbar-thumb-color, to right);
+  border: 1px solid white;
+
+  &:hover {
+    @include scrollbar-gradient($scrollbar-thumb-color-hover, to right);
+  }
+
+  &:active {
+    @include scrollbar-gradient($scrollbar-thumb-color-active, to right);
+  }
+}
+
+::-webkit-scrollbar-thumb:vertical {
+  border-top: 0;
+  border-bottom: 0;
+}
+
+::-webkit-scrollbar-thumb:horizontal {
+  border-left: 0;
+  border-right: 0;
+}
+
+::-webkit-scrollbar-button:single-button:vertical:decrement {
+  @include scrollbar-button("up");
+}
+
+::-webkit-scrollbar-button:single-button:vertical:increment {
+  @include scrollbar-button("down");
+}
+
+::-webkit-scrollbar-button:single-button:horizontal:decrement {
+  @include scrollbar-button("left");
+}
+
+::-webkit-scrollbar-button:single-button:horizontal:increment {
+  @include scrollbar-button("right");
+}

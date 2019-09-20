@@ -30,5 +30,9 @@ describe("Window Component", () => {
     it("should render ResizerList Component", () => {
       expect(findByTestAtrr(wrapper, "resizers").length).toBe(1);
     });
+
+    it("should render Content Component", () => {
+      expect(findByTestAtrr(wrapper, "content").length).toBe(1);
+    });
   });
 });

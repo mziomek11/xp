@@ -1,0 +1,57 @@
+@mixin arrow($size, $vertical) {
+  width: 0;
+  height: 0;
+
+  @if $vertical {
+    border-left: $size solid transparent;
+    border-right: $size solid transparent;
+  } @else {
+    border-top: $size solid transparent;
+    border-bottom: $size solid transparent;
+  }
+}
+
+@mixin arrow-bottom($size, $color) {
+  @include arrow($size, true);
+  border-top: $size solid $color;
+}
+
+@mixin arrow-top($size, $color) {
+  @include arrow($size, true);
+  border-bottom: $size solid $color;
+}
+
+@mixin arrow-left($size, $color) {
+  @include arrow($size, false);
+  border-right: $size solid $color;
+}
+
+@mixin arrow-right($size, $color) {
+  @include arrow($size, false);
+  border-left: $size solid $color;
+}
+
+@mixin arrow-not-inside($size, $border-size, $color) {
+  display: block;
+  width: $size;
+  height: $size;
+  border-radius: 1px;
+  border-top: $border-size solid $filesystem-side-arrow-color;
+  border-left: $border-size solid $filesystem-side-arrow-color;
+  transform: rotate(45deg);
+}
+
+@mixin circle($size, $color) {
+  width: $size;
+  height: $size;
+  background: $color;
+  border-radius: 50%;
+}
+
+@mixin checkmark($size, $color, $additional-transform) {
+  width: $size * 2.3;
+  height: $size * 3.8;
+  border-right: $size solid $color;
+  border-bottom: $size solid $color;
+  transform: #{$additional-transform} rotate(45deg);
+}

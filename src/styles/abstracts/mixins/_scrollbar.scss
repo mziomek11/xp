@@ -1,0 +1,21 @@
+@mixin scrollbar-gradient($map, $direction) {
+  @include linear-gradient-from-main($map, $direction, 4%, 5%, 6%, 7%);
+}
+
+@mixin scrollbar-button($direction) {
+  background-color: #bbbbbb;
+  display: block;
+  height: $scrollbar-width;
+  width: $scrollbar-width;
+  background-size: cover;
+  border: 1px solid $scrollbar-track-border-color;
+  background-image: url(../../../assets/scrollbar/button-#{$direction}.png);
+
+  &:hover {
+    background-image: url(../../../assets/scrollbar/button-#{$direction}-hover.png);
+  }
+
+  &:active {
+    background-image: url(../../../assets/scrollbar/button-#{$direction}-active.png);
+  }
+}

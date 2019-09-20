@@ -7,3 +7,9 @@ export function findByTestAtrr<T>(
   const wrapper = component.find(`[data-test='${attr}']`);
   return wrapper;
 }
+
+export function getEventTargetClassList(classList: string[]) {
+  return {
+    target: { classList }
+  };
+}

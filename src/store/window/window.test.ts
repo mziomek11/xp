@@ -230,7 +230,10 @@ describe("Window redux", () => {
           const action = actions.toggleMinimalize(windowId) as AnyAction;
 
           expect(action.type).toBe(WindowAction.TOGGLE_MINIMALIZE);
-          expect(action.payload).toEqual(stateWithChangedMinimalize);
+          expect(action.payload).toEqual({
+            ...stateWithChangedMinimalize,
+            focused: null
+          });
         });
 
         it("should toggle minimalized when was minimalized", () => {

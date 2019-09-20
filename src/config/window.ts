@@ -1,5 +1,5 @@
-const INITIAL_WIDTH: number = 500;
-const INITIAL_HEIGHT: number = 300;
+const INITIAL_WIDTH: number = 600;
+const INITIAL_HEIGHT: number = 500;
 
 const windowConfig = {
   MINIMAL_HEIGHT: 34,

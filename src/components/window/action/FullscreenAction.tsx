@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 
 import Action from "./Action";
+import withContext from "../../../hoc/withContext";
 import { WindowContextType } from "ContextType";
-import { withWindowContext } from "../../../hoc";
 
 type Props = {
   context: WindowContextType;
@@ -25,4 +25,4 @@ export class FullscreenAction extends Component<Props, {}> {
   }
 }
 
-export default withWindowContext(FullscreenAction);
+export default withContext(FullscreenAction, "window");

@@ -1,0 +1,10 @@
+export const SET_FOCUSING_RECT = "@@filesystem/SET_FOCUSING_RECT";
+export const CREATE = "@@filesystem/CREATE";
+export const CREATE_FAILED = "@@filesystem/CREATE_FAILED";
+export const REMOVE = "@@filesystem/REMOVE";
+export const REMOVE_FAILED = "@@filesystem/REMOVE_FAILED";
+export const COPY = "@@filesystem/COPY";
+export const CUT = "@@filesystem/CUT";
+export const PASTE = "@@filesystem/PASTE";
+export const RENAME = "@@filesystem/RENAME";
+export const RENAME_FAILED = "@@filesystem/RENAME_FAILED";

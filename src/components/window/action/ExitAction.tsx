@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 
 import Action from "./Action";
+import withContext from "../../../hoc/withContext";
 import { WindowContextType } from "ContextType";
-import { withWindowContext } from "../../../hoc";
 
 type Props = {
   context: WindowContextType;
@@ -19,4 +19,4 @@ export class ExitAction extends Component<Props, {}> {
   }
 }
 
-export default withWindowContext(ExitAction);
+export default withContext(ExitAction, "window");

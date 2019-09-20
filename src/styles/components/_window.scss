@@ -5,6 +5,7 @@
   border-top-left-radius: $window-top-border-radius;
   border-top-right-radius: $window-top-border-radius;
   font-size: 1.55em;
+  z-index: $window-z-index;
 
   &--fullscreen {
     padding: 0;
@@ -19,6 +20,7 @@
   justify-content: space-between;
   padding: 0 $window-bar-padding;
   height: $window-bar-height;
+  color: white;
 }
 
 .window__title {
@@ -102,9 +104,7 @@
 
 .window__content {
   height: calc(100% - #{$window-bar-height});
-  background: rgb(75, 25, 25);
-  padding: $window-resizer-size;
-  padding-top: 0;
+  background: white;
 }
 
 .window__resizer {

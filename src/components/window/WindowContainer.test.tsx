@@ -3,16 +3,30 @@ import { shallow } from "enzyme";
 
 import { WindowContainer } from "./WindowContainer";
 import { testContextData } from "./Context.test";
-import { findByTestAtrr } from "../../../testingUtils";
+import { findByTestAtrr, getEventTargetClassList } from "../../../testingUtils";
 
 let comp = (
-  <WindowContainer context={testContextData}>
+  <WindowContainer context={testContextData} isFocusingRect={false}>
     <div data-test="child" />
     <div data-test="child" />
   </WindowContainer>
 );
 let wrapper = shallow<WindowContainer>(comp);
 let instance = wrapper.instance();
+
+const createComp = (
+  context: Partial<typeof testContextData>,
+  isFocusingRect: boolean = false
+) => {
+  const newContext = { ...testContextData, ...context };
+  return (
+    <WindowContainer
+      context={newContext}
+      isFocusingRect={isFocusingRect}
+      children={{}}
+    />
+  );
+};
 
 describe("WindowContainer Component", () => {
   describe("render", () => {
@@ -32,8 +46,7 @@ describe("WindowContainer Component", () => {
     });
 
     it("should calculate inline styles when when fullscreened", () => {
-      const context = { ...testContextData, fullscreened: true };
-      const fullScrComp = <WindowContainer context={context} />;
+      const fullScrComp = createComp({ fullscreened: true });
       const instance = shallow<WindowContainer>(fullScrComp).instance();
       const inlineStyles = instance.getInlineStyles();
 
@@ -50,8 +63,7 @@ describe("WindowContainer Component", () => {
     });
 
     it("should calculate inline styles when minimalized", () => {
-      const context = { ...testContextData, minimalized: true };
-      const minimaliedComp = <WindowContainer context={context} />;
+      const minimaliedComp = createComp({ minimalized: true });
       const instance = shallow<WindowContainer>(minimaliedComp).instance();
       const inlineStyles = instance.getInlineStyles();
 
@@ -72,11 +84,8 @@ describe("WindowContainer Component", () => {
 
     beforeEach(() => {
       mockChangePriority = jest.fn();
-      const context = {
-        ...testContextData,
-        changePriority: mockChangePriority
-      };
-      wrapper = shallow<WindowContainer>(<WindowContainer context={context} />);
+      const comp = createComp({ changePriority: mockChangePriority });
+      wrapper = shallow<WindowContainer>(comp);
     });
 
     it("should call mockChangePriority", () => {
@@ -98,14 +107,8 @@ describe("WindowContainer Component", () => {
     const focusModifier: string = " " + baseClass + "--focused";
 
     it("should return base class", () => {
-      const context = {
-        ...testContextData,
-        focused: false,
-        fullscreened: false
-      };
-      const wrapper = shallow<WindowContainer>(
-        <WindowContainer context={context} />
-      );
+      const comp = createComp({ focused: false, fullscreened: false });
+      const wrapper = shallow<WindowContainer>(comp);
       const instance = wrapper.instance();
       const expectedClass = baseClass;
 
@@ -113,42 +116,24 @@ describe("WindowContainer Component", () => {
     });
 
     it("should return base class with fullscreen modifier", () => {
-      const context = {
-        ...testContextData,
-        focused: false,
-        fullscreened: true
-      };
-      const wrapper = shallow<WindowContainer>(
-        <WindowContainer context={context} />
-      );
+      const comp = createComp({ focused: false, fullscreened: true });
+      const wrapper = shallow<WindowContainer>(comp);
       const instance = wrapper.instance();
 
       expect(instance.getClassName()).toContain(fullscreenModifier);
     });
 
     it("should return base class with focus modifier", () => {
-      const context = {
-        ...testContextData,
-        focused: true,
-        fullscreened: false
-      };
-      const wrapper = shallow<WindowContainer>(
-        <WindowContainer context={context} />
-      );
+      const comp = createComp({ focused: true, fullscreened: false });
+      const wrapper = shallow<WindowContainer>(comp);
       const instance = wrapper.instance();
 
       expect(instance.getClassName()).toContain(focusModifier);
     });
 
     it("should return base class with fullscreen and focus modifier", () => {
-      const context = {
-        ...testContextData,
-        focused: true,
-        fullscreened: true
-      };
-      const wrapper = shallow<WindowContainer>(
-        <WindowContainer context={context} />
-      );
+      const comp = createComp({ focused: true, fullscreened: true });
+      const wrapper = shallow<WindowContainer>(comp);
       const instance = wrapper.instance();
 
       expect(instance.getClassName()).toContain(fullscreenModifier);
@@ -156,61 +141,80 @@ describe("WindowContainer Component", () => {
     });
   });
 
-  describe("checkForClickOutsideWindow", () => {
-    let mockRemoveFocusFocusedFn: jest.Mock;
-    let instance: any;
+  describe("clickedOnWindow", () => {
+    const clickEvent = {
+      clientX: 150,
+      clientY: 150
+    };
 
-    beforeEach(() => {
-      mockRemoveFocusFocusedFn = jest.fn();
-      const context = {
-        ...testContextData,
-        focused: true,
-        removeFocus: mockRemoveFocusFocusedFn
+    it("should return true when window is fullscreened", () => {
+      const comp = createComp({ left: -100, fullscreened: true });
+      const instance = shallow<WindowContainer>(comp).instance();
+      expect(instance.clickedWindow(clickEvent as any)).toBe(true);
+    });
+
+    it("should return false when is on left", () => {
+      const comp = createComp({ left: -100, width: 10 });
+      const instance = shallow<WindowContainer>(comp).instance();
+      expect(instance.clickedWindow(clickEvent as any)).toBe(false);
+    });
+
+    it("should return false when x is on right", () => {
+      const comp = createComp({ left: 5000, width: 10 });
+      const instance = shallow<WindowContainer>(comp).instance();
+      expect(instance.clickedWindow(clickEvent as any)).toBe(false);
+    });
+
+    it("should return false when y is on top", () => {
+      const comp = createComp({ top: -100, height: 10 });
+      const instance = shallow<WindowContainer>(comp).instance();
+      expect(instance.clickedWindow(clickEvent as any)).toBe(false);
+    });
+
+    it("should return false when y is on bottom", () => {
+      const comp = createComp({ top: 5000, height: 10 });
+      const instance = shallow<WindowContainer>(comp).instance();
+      expect(instance.clickedWindow(clickEvent as any)).toBe(false);
+    });
+
+    it("should return true", () => {
+      const clickedOnWindowContextData = {
+        width: 200,
+        height: 200,
+        left: 100,
+        top: 100,
+        fullscreened: false
       };
-      instance = shallow<WindowContainer>(
-        <WindowContainer context={context} />
-      ).instance();
-    });
-    describe("should NOT call removeFocus when", () => {
-      it("element has NOT focus", () => {
-        const mockRemoveFocus = jest.fn();
-        const context = {
-          ...testContextData,
-          focused: false,
-          removeFocus: mockRemoveFocus
-        };
-        const wrapper = shallow<WindowContainer>(
-          <WindowContainer context={context} />
-        );
-        wrapper.instance().ckeckForClickOutsideWindow({} as MouseEvent);
 
-        expect(mockRemoveFocus.mock.calls.length).toBe(0);
+      const comp = createComp(clickedOnWindowContextData);
+      const instance = shallow<WindowContainer>(comp).instance();
+      expect(instance.clickedWindow(clickEvent as any)).toBe(true);
+    });
+  });
+
+  describe("clickedOnToolbarApp", () => {
+    describe("returns false", () => {
+      it("classlist is empty", () => {
+        const event = getEventTargetClassList([]);
+        expect(instance.clickedOnToolbarApp(event as any)).toBe(false);
       });
 
-      it("element has window class", () => {
-        let e = { target: { classList: ["window"] } } as any;
-        instance.ckeckForClickOutsideWindow(e);
-
-        e = { target: { classList: ["window__action"] } } as any;
-        instance.ckeckForClickOutsideWindow(e);
-
-        expect(mockRemoveFocusFocusedFn.mock.calls.length).toBe(0);
+      it("classlist does NOT contain toolbar__application", () => {
+        const event = getEventTargetClassList([
+          "aaa__application",
+          "toolbar__adasdadasdsad"
+        ]);
+        expect(instance.clickedOnToolbarApp(event as any)).toBe(false);
       });
     });
 
-    describe("should call removeFocus when", () => {
-      it("element has NOT class", () => {
-        const e = { target: { classList: [] } } as any;
-        instance.ckeckForClickOutsideWindow(e);
-
-        expect(mockRemoveFocusFocusedFn.mock.calls.length).toBe(1);
-      });
-
-      it("element has NOT window class", () => {
-        const e = { target: { classList: ["example"] } } as any;
-        instance.ckeckForClickOutsideWindow(e);
-
-        expect(mockRemoveFocusFocusedFn.mock.calls.length).toBe(1);
+    describe("returns true", () => {
+      it("classlist contains toolbar__application", () => {
+        const event = getEventTargetClassList([
+          "toolbar__application",
+          "another"
+        ]);
+        expect(instance.clickedOnToolbarApp(event as any)).toBe(true);
       });
     });
   });

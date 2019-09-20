@@ -1,7 +1,79 @@
+//Global
+
+$focus-color: #316ac5;
+
 //Font
 
 $font-family: "Roboto", sans-serif;
 $font-size: 10px;
+
+//Scrollbar
+
+$scrollbar-width: 14px;
+$scrollbar-track-color: #fbfbf8;
+$scrollbar-track-border-color: #eeede5;
+
+$scrollbar-thumb-color: (
+  "main-1": #b7caf5,
+  "main-2": #c8d6fb,
+  "main-3": #c6d6fd,
+  "main-4": #b9cbf3
+);
+
+$scrollbar-thumber-hover-lightness: 3%;
+$scrollbar-thumb-color-hover: (
+  "main-1":
+    lighten(
+      map-get($scrollbar-thumb-color, "main-1"),
+      $scrollbar-thumber-hover-lightness
+    ),
+  "main-2":
+    lighten(
+      map-get($scrollbar-thumb-color, "main-2"),
+      $scrollbar-thumber-hover-lightness
+    ),
+  "main-3":
+    lighten(
+      map-get($scrollbar-thumb-color, "main-3"),
+      $scrollbar-thumber-hover-lightness
+    ),
+  "main-4":
+    lighten(
+      map-get($scrollbar-thumb-color, "main-4"),
+      $scrollbar-thumber-hover-lightness
+    )
+);
+
+$scrollbar-thumber-active-darkness: 6%;
+$scrollbar-thumb-color-active: (
+  "main-1":
+    darken(
+      map-get($scrollbar-thumb-color, "main-1"),
+      $scrollbar-thumber-active-darkness
+    ),
+  "main-2":
+    darken(
+      map-get($scrollbar-thumb-color, "main-2"),
+      $scrollbar-thumber-active-darkness
+    ),
+  "main-3":
+    darken(
+      map-get($scrollbar-thumb-color, "main-3"),
+      $scrollbar-thumber-active-darkness
+    ),
+  "main-4":
+    darken(
+      map-get($scrollbar-thumb-color, "main-4"),
+      $scrollbar-thumber-active-darkness
+    )
+);
+
+//z-index
+
+$toolbar-z-index: 10;
+$window-z-index: 9;
+$dropdown-z-index: 8;
+$location-z-index: 7;
 
 //File
 
@@ -180,3 +252,152 @@ $time: (
   "main-13": #095bc9,
   "border": #1a4b75
 );
+
+//Menu
+
+$menu-height: 24px;
+
+$menu: (
+  "main": #f3f5f6,
+  "border": #d8d2bd,
+  "hover": $focus-color
+);
+
+//DropDown
+
+$dropdown-font-size: 11px;
+$dropdown-padding: 2px 2px;
+$dropdown-border-color: #aca899;
+$dropdown-text-padding: 2px 0;
+$dropdown-divider-margin: 3px 2px;
+$dropdown-shadow: 2px 2px 2px rgb(139, 139, 139);
+
+$dropdown-shortcut-padding: 4px;
+
+$dropdown-box-width: 17px;
+$dropdown-box-padding: 2px;
+
+$dropdown-size-arrow: 3px;
+$dropdown-size-check: 2px;
+$dropdown-size-circle: 6px;
+
+//Filesystem tree
+
+$filesystem-tree-list-item-icon-width: 16px;
+$filesystem-tree-list-item-toggler-size: 9px;
+$filesystem-tree-list-item-toggler-margin: 5px;
+$filesystem-tree-list-item-toggler-border-color: #7898b5;
+$filesystem-tree-list-item-text-color-hover: #000080;
+
+//Filesystem action
+
+$filesystem-action-text-font-size: 0.75em;
+$filesystem-action-text-padding: 6px;
+
+$filesystem-action-dropdown-arrow-container-margin: 0 0 0 8px;
+
+$filesystem-action-dropdown-arrow-size: 4px;
+$filesystem-action-dropdown-arrow-disabled-color: #c9c9c2;
+$filesystem-action-dropdown-arrow-margin-near: 4px;
+
+$filesystem-action-hover-color: #cecec3;
+$filesystem-action-active-color: #e4e3dc;
+$filesystem-action-active-border-color: #9d9d92;
+$filesystem-action-padding: 5px;
+$filesystem-action-padding-with-arrow-right: 2px;
+$filesystem-action-margin: 1px;
+
+$filesystem-action-opened-background: #ffffff;
+
+//Filesystem adress
+
+$filesystem-adress-bar-padding-horizontal: 6px;
+
+$filesystem-adress-text-size: 0.75em;
+$filesystem-adress-text-color: #7f7c73;
+
+$filesystem-adress-go-icon-size: 18px;
+$filesystem-adress-go-padding-horizontal: 4px;
+$filesystem-adress-go-color-hover: #f9f9f5;
+
+//Filesystem location
+
+$filesystem-location-padding: 1px 2px;
+$filesystem-location-border-color: #7f9db9;
+$filesysyem-location-font-size: 0.88em;
+
+$filesystem-location-input-font-size: 1.05em;
+
+$filesystem-location-icon-margin: 3px;
+$filesystem-location-icon-size: 16px;
+
+$filesystem-location-arrow-width: 15px;
+$filesystem-location-arrow-height: 16px;
+
+$filesystem-location-list-padding: 1px;
+$filesystem-location-list-max-height: 200px;
+
+//Filesystem side
+
+$filesystem-side-padding: 12px;
+$filesystem-side-bg-start: #7aa1e6;
+$filesystem-side-bg-end: #6375d6;
+
+$filesystem-side-item-width: 180px;
+
+$filesystem-side-header-border-radius: 2px;
+$filesystem-side-header-bg-start: white;
+$filesystem-side-header-bg-end: #c7d3f7;
+$filesystem-side-header-padding: 6px;
+$filesystem-side-header-color: #215dc6;
+$filesystem-side-header-color-hover: #428eff;
+
+$filesystem-side-arrow-size: 18px;
+$filesystem-side-arrow-border-color: #b0b6d5;
+$filesystem-side-arrow-color: #003ca5;
+
+$filesystem-side-content-bg: #d6dff7;
+$filesystem-side-content-size: 0.77em;
+$filesystem-side-content-heading-size: 1.05em;
+
+$filesystem-side-content-list-icon-width: 16px;
+$filesystem-side-content-list-icon-margin: 8px;
+$filesystem-side-content-list-item-margin: 1px;
+
+//Filesystem folders
+
+$filesystem-folders-width: 190px;
+$filesystem-folders-background: #efecdd;
+$filesystem-folders-border-width: 4px;
+
+$filesystem-folders-header-padding: 6px;
+
+$filesystem-folders-close-size: 10px;
+
+//Filesystem files
+
+$filesystem-disk-divider-color: #3d95ff;
+$filesystem-disk-divider-width: 294px;
+
+$filesystem-file-font-size: 0.77em;
+
+$filesystem-thumbnails-margin: 14px;
+$filesystem-thumbnails-icon-container-size: 100px;
+$filesystem-thumbnails-border-color: #ece9d8;
+$filesystem-thumbnails-text-margin-top: 6px;
+$filesystem-thumbnails-renamer-margin: 4px;
+
+$filesystem-tiles-width: 200px;
+$filesystem-tiles-padding: 8px;
+$filesystem-tiles-icon-size: 44px;
+
+$filesystem-icons-width: 75px;
+$filesystem-icons-margin: 6px;
+$filesystem-icons-icon-container-height: 40px;
+$filesystem-icons-icon-width: 26px;
+
+$filesystem-list-icon-with: 16px;
+$filesystem-list-icon-margin: 1px;
+
+$filesystem-renamer-min-width: 38px;
+$filesystem-renamer-padding: 2px;

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import withWindowContext from "../../../hoc/withWindowContext";
+import withContext from "../../../hoc/withContext";
 import { WindowContextType } from "ContextType";
 
 type Props = {
@@ -18,7 +18,7 @@ export class Action extends Component<Props, {}> {
     const { onClick, context, type } = this.props;
 
     onClick();
-    if (type !== "exit") context.changePriority();
+    if (type === "fullscreen") context.changePriority();
   };
 
   render() {
@@ -32,4 +32,4 @@ export class Action extends Component<Props, {}> {
   }
 }
 
-export default withWindowContext(Action);
+export default withContext(Action, "window");

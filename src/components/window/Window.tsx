@@ -1,5 +1,6 @@
 import React from "react";
 
+import Content from "./Content";
 import BarContainer from "./bar/BarContainer";
 import Resizers from "./resizer/List";
 
@@ -24,9 +25,7 @@ const Window: React.FC<Props> = ({
       onMouseDown={onMouseDown}
     >
       <BarContainer data-test="bar" />
-      <div className="window__content" data-test="content">
-        {children}
-      </div>
+      <Content children={children} data-test="content" />
       <Resizers data-test="resizers" />
     </div>
   );

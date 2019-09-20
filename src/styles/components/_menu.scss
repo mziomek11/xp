@@ -1,0 +1,23 @@
+.menu {
+  display: flex;
+  background: map-get($menu, "main");
+  width: 100%;
+  height: $menu-height;
+  border-bottom: 1px solid map-get($menu, "border");
+  padding: 1px 2px 0px 2px;
+}
+
+.menu__item {
+  position: relative;
+  font-size: 0.75em;
+  font-weight: 400;
+  color: black;
+  padding: 0 8px;
+  @include flex-centered;
+
+  &:hover,
+  &--open {
+    background: map-get($menu, "hover");
+    color: white;
+  }
+}

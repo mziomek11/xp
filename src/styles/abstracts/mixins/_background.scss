@@ -23,3 +23,10 @@
 
   background: linear-gradient($direction, #{$gradiends});
 }
+
+@mixin covered-background($url) {
+  background: url($url);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}

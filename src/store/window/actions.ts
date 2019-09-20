@@ -36,6 +36,8 @@ export const changePriority = (id: string) => {
 
 export const toggleMinimalize = (id: string) => {
   let { byId, allIds, focused } = getCopyOfStore();
+  focused = null;
+
   const windowToMinimalize = byId[id];
   if (!windowToMinimalize) return action(WindowAction.CHANGE_PROP_FAILED);
 

@@ -44,28 +44,34 @@ describe("WindowAction Component", () => {
       return shallow(<Action {...props} />);
     };
 
-    it("should call onClickMock and changePriorityMock once when type is minimalize", () => {
-      const minimalizeWrapper = getWrapperWithType("minimalize");
-      findByTestAtrr(minimalizeWrapper, "action").simulate("click");
+    describe("minimalize", () => {
+      it("should call only onClickMockFn once", () => {
+        const minimalizeWrapper = getWrapperWithType("minimalize");
+        findByTestAtrr(minimalizeWrapper, "action").simulate("click");
 
-      expect(onClickMockFn.mock.calls.length).toBe(1);
-      expect(changePriorityMockFn.mock.calls.length).toBe(1);
+        expect(onClickMockFn.mock.calls.length).toBe(1);
+        expect(changePriorityMockFn.mock.calls.length).toBe(0);
+      });
     });
 
-    it("should call onClickMock and changePriorityMock once when type is fullscreen", () => {
-      const fullScreenWrapper = getWrapperWithType("fullscreen");
-      findByTestAtrr(fullScreenWrapper, "action").simulate("click");
+    describe("exit", () => {
+      it("should call only onClickMockFn once", () => {
+        const exitWrapper = getWrapperWithType("exit");
+        findByTestAtrr(exitWrapper, "action").simulate("click");
 
-      expect(onClickMockFn.mock.calls.length).toBe(1);
-      expect(changePriorityMockFn.mock.calls.length).toBe(1);
+        expect(onClickMockFn.mock.calls.length).toBe(1);
+        expect(changePriorityMockFn.mock.calls.length).toBe(0);
+      });
     });
 
-    it("should call only changePriorityMock once when type is exit", () => {
-      const exitWrapper = getWrapperWithType("exit");
-      findByTestAtrr(exitWrapper, "action").simulate("click");
+    describe("fullscreen", () => {
+      it("should call onClickMock and changePriorityMock once", () => {
+        const fullScreenWrapper = getWrapperWithType("fullscreen");
+        findByTestAtrr(fullScreenWrapper, "action").simulate("click");
 
-      expect(onClickMockFn.mock.calls.length).toBe(1);
-      expect(changePriorityMockFn.mock.calls.length).toBe(0);
+        expect(onClickMockFn.mock.calls.length).toBe(1);
+        expect(changePriorityMockFn.mock.calls.length).toBe(1);
+      });
     });
   });
 });

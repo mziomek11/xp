@@ -1,0 +1,5 @@
+@mixin all-widths($size) {
+  width: $size;
+  min-width: $size;
+  max-width: $size;
+}

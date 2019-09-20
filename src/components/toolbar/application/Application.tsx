@@ -16,7 +16,9 @@ type OwnProps = {
 
 type StateProps = {
   name: string;
+  minimalized: boolean;
   focused: boolean;
+  openedWindows: number;
 };
 
 type DispatchProps = {
@@ -30,8 +32,15 @@ export class Application extends React.Component<Props, {}> {
   private baseClassName = "toolbar__application";
 
   handleClick = () => {
-    const { focused, toggleMinimalize, changePriority } = this.props;
-    if (focused) toggleMinimalize();
+    const {
+      focused,
+      toggleMinimalize,
+      openedWindows,
+      changePriority,
+      minimalized
+    } = this.props;
+
+    if (openedWindows === 1 || focused || minimalized) toggleMinimalize();
     else changePriority();
   };
 
@@ -61,7 +70,9 @@ export class Application extends React.Component<Props, {}> {
 
 const mapStateToProps = (state: RootState, { id }: OwnProps): StateProps => ({
   name: state.window.byId[id].name,
-  focused: state.window.focused === id
+  minimalized: state.window.byId[id].minimalized,
+  focused: state.window.focused === id,
+  openedWindows: state.window.allIds.length
 });
 
 const mapDispatchToProps = (
