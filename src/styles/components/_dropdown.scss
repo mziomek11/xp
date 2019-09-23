@@ -143,9 +143,9 @@
 }
 
 .dropdown__divider {
-  width: calc(100% - $dropdown-divider-margin * 2);
+  width: calc(100% - 4px);
   height: 1px;
   background: $dropdown-border-color;
-  margin: $dropdown-divider-margin;
+  margin: $dropdown-divider-margin-vertical $dropdown-divider-margin-horizontal;
   grid-column: 1/6;
 }

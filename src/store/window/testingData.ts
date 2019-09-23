@@ -2,12 +2,13 @@ import uuid from "uuid";
 
 import { WindowState } from "./reducer";
 import { windowConfig } from "../../config";
+import { Application } from "../models";
 import { Window } from "./models";
 import { deepCopy } from "../../utils/";
 
 export const windowId = uuid();
 export const secondWindowId = uuid();
-export const applicationName: string = "Chrome";
+export const applicationName: Application = "Filesystem";
 export const windowName: string = "WindowName";
 
 export const getWindowData = (id: string): Window => {

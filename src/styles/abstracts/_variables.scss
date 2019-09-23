@@ -83,6 +83,9 @@ $file-size: 64px;
 
 $window-bar-height: 30px;
 $window-bar-padding: 4px;
+$window-bar-font-size: 0.92em;
+$window-icon-width: 18px;
+$window-title-margin: 4px;
 $window-action-size: 20px;
 $window-actions-size: 3 * $window-action-size + 2 * $window-bar-padding;
 $window-resizer-size: 4px;
@@ -269,7 +272,8 @@ $dropdown-font-size: 11px;
 $dropdown-padding: 2px 2px;
 $dropdown-border-color: #aca899;
 $dropdown-text-padding: 2px 0;
-$dropdown-divider-margin: 3px 2px;
+$dropdown-divider-margin-vertical: 3px;
+$dropdown-divider-margin-horizontal: 2px;
 $dropdown-shadow: 2px 2px 2px rgb(139, 139, 139);
 
 $dropdown-shortcut-padding: 4px;

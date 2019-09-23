@@ -18,13 +18,32 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  font-size: $window-bar-font-size;
   padding: 0 $window-bar-padding;
   height: $window-bar-height;
   color: white;
 }
 
-.window__title {
+.window__bar-left {
   max-width: calc(100% - #{$window-actions-size} - #{$window-bar-padding});
+  display: flex;
+  align-items: center;
+}
+
+.window__icon-container {
+  @include all-widths($window-icon-width);
+  @include flex-centered;
+  height: 100%;
+}
+
+.window__icon {
+  width: 100%;
+  height: auto;
+}
+
+.window__title {
+  width: 100%;
+  margin-left: $window-title-margin;
   user-select: none;
   overflow: hidden;
   text-overflow: ellipsis;

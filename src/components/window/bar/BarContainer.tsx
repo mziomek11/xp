@@ -106,10 +106,8 @@ export class BarContainer extends React.Component<Props, State> {
   };
 
   render() {
-    const { name } = this.props.context;
     return (
       <Bar
-        name={name}
         onMouseDown={this.handleMouseDown}
         onClick={this.handleClick}
         data-test="bar"

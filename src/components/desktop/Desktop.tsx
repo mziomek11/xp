@@ -1,6 +1,6 @@
 import React from "react";
 
-import FileList from "../file/List";
+import FileList from "./List";
 import WindowList from "../window/List";
 import { toolbarConfig } from "../../config";
 

@@ -1,16 +1,17 @@
 import React from "react";
 
+import Icon from "../icon/IconContainer";
+import Title from "../title/TitleContainer";
 import MinimalizeAction from "../action/MinimalizeAction";
 import FullscreenAction from "../action/FullscreenAction";
 import ExitAction from "../action/ExitAction";
 
 type Props = {
-  name: string;
   onMouseDown: (e: React.MouseEvent<HTMLDivElement>) => void;
   onClick: () => void;
 };
 
-export const Bar: React.FC<Props> = ({ name, onMouseDown, onClick }) => {
+export const Bar: React.FC<Props> = ({ onMouseDown, onClick }) => {
   return (
     <div
       className="window__bar"
@@ -18,9 +19,10 @@ export const Bar: React.FC<Props> = ({ name, onMouseDown, onClick }) => {
       data-test="bar"
       onClick={onClick}
     >
-      <h4 className="window__title" data-test="title">
-        {name}
-      </h4>
+      <div className="window__bar-left">
+        <Icon data-test="icon" />
+        <Title data-test="title" />
+      </div>
       <div className="window__actions" data-test="actions">
         <MinimalizeAction data-test="action-minimalize" />
         <FullscreenAction data-test="action-fullscreen" />

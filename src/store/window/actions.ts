@@ -6,8 +6,9 @@ import * as WindowAction from "./constants";
 import { WindowState } from "./reducer";
 import { deepCopy } from "../../utils";
 import { Window } from "./models";
+import { Application } from "../models";
 
-export const open = (id: string, application: string, name: string) => {
+export const open = (id: string, application: Application, name: string) => {
   const { byId, allIds } = getCopyOfStore();
 
   const newWindow: Window = {

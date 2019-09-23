@@ -60,7 +60,6 @@ export class Renamer extends Component<Props, State> {
   };
 
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value);
     this.setState({ text: e.target.value });
   };
 

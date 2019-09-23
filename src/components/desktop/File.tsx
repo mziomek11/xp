@@ -5,9 +5,11 @@ import { Dispatch } from "redux";
 
 import withDoubleClick from "../../hoc/withDoubleClick";
 import { open as openWindow } from "../../store/window/actions";
+import { Application } from "../../store/models";
 
 type OwnProps = {
   name: string;
+  application: Application;
   top: number;
   left: number;
 };
@@ -44,9 +46,9 @@ export const File: React.FC<Props> = ({
 
 const mapDispatchToProps = (
   dispatch: Dispatch,
-  { name }: OwnProps
+  { name, application }: OwnProps
 ): DispatchProps => ({
-  openWindow: () => dispatch(openWindow(uuid(), name, `Untilted ${name}`))
+  openWindow: () => dispatch(openWindow(uuid(), application, name))
 });
 
 export default connect(
