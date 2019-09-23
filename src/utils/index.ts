@@ -31,25 +31,6 @@ export function areArraysEqual<T>(arr1: T[], arr2: T[]) {
   return true;
 }
 
-export function areObjectsEqual(a: any, b: any): boolean {
-  const aProps = Object.keys(a);
-  const bProps = Object.keys(b);
-
-  if (aProps.length !== bProps.length) {
-    return false;
-  }
-
-  for (let i = 0; i < aProps.length; i++) {
-    const propName = aProps[i];
-
-    if (a[propName] !== b[propName]) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
 export function deepCopy<T>(a: any): T {
   if (("object" != typeof a || null === a) && !(a instanceof Function))
     return a;

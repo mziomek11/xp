@@ -12,7 +12,7 @@ export function withContext<T>(
   const Context = type === "filesystem" ? FilesystemContext : WindowContext;
   return (props: Omit<T, "context">) => {
     return (
-      <Context.Consumer data-test="consumer">
+      <Context.Consumer data-test={type}>
         {(context: any) => {
           const propsWithContext = { ...props, context };
           return <Component {...(propsWithContext as any)} />;
