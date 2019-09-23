@@ -3,6 +3,7 @@ import { ActionType } from "typesafe-actions";
 
 import * as actions from "./actions";
 import * as FileSystemAction from "./constants";
+import initFiles from "./files";
 import { FileTree } from "./models";
 
 type FileSystemAction = ActionType<typeof actions>;
@@ -14,57 +15,7 @@ export type FileSystemState = Readonly<{
 
 const initState: FileSystemState = {
   copiedFiles: {},
-  files: {
-    "Local Disk (C:)": {
-      type: "disk",
-      name: "Local Disk (C:)",
-      content: {
-        Example1: {
-          type: "folder",
-          name: "Example1",
-          content: {
-            xx: {
-              type: "folder",
-              name: "xx",
-              content: {}
-            },
-            aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: {
-              type: "folder",
-              name:
-                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-              content: {}
-            },
-            "asdasdasd asdasdasdas dasdasdasd asdasdasdasd asdasdasd asdasdasd": {
-              type: "folder",
-              name:
-                "asdasdasd asdasdasdas dasdasdasd asdasdasdasd asdasdasd asdasdasd",
-              content: {}
-            },
-            "paapapapap pappa app": {
-              type: "folder",
-              name: "paapapapap pappa app",
-              content: {}
-            },
-            "short text": {
-              type: "folder",
-              name: "short text",
-              content: {}
-            }
-          }
-        },
-        Example2: {
-          type: "folder",
-          name: "Example2",
-          content: {}
-        },
-        Example3: {
-          type: "folder",
-          name: "Example3",
-          content: {}
-        }
-      }
-    }
-  },
+  files: initFiles,
   isFocusingRect: false
 };
 
