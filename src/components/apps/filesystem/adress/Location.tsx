@@ -36,6 +36,13 @@ export class Location extends Component<Props, State> {
 
   private inputRef = createRef<HTMLInputElement>();
 
+  shouldComponentUpdate({ context }: Props, { text }: State) {
+    if (!areArraysEqual(this.props.context.path, context.path)) return true;
+    if (this.state.text !== text) return true;
+
+    return false;
+  }
+
   componentDidUpdate(prevPros: Props) {
     if (!areArraysEqual(this.props.context.path, prevPros.context.path)) {
       const newText = pathArrayToString(this.props.context.path);

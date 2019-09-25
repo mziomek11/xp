@@ -5,7 +5,7 @@ import Window from "./Window";
 import withContext from "../../hoc/withContext";
 import { RootState } from "MyTypes";
 import { WindowContextType } from "ContextType";
-import { getClassName } from "../../utils";
+import { getClassName, areObjectsEqual } from "../../utils";
 
 type OwnProps = {
   context: WindowContextType;
@@ -25,6 +25,20 @@ export class WindowContainer extends Component<Props> {
 
   componentWillUnmount() {
     window.removeEventListener("mouseup", this.checkForUnfocus);
+  }
+
+  shouldComponentUpdate({ context }: Props) {
+    const values = [
+      "width",
+      "height",
+      "top",
+      "left",
+      "focused",
+      "minimalized",
+      "fullscreened"
+    ];
+
+    return !areObjectsEqual(this.props.context, context, values);
   }
 
   checkForUnfocus = (e: MouseEvent) => {

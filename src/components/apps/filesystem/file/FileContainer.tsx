@@ -10,7 +10,11 @@ import withContext from "../../../../hoc/withContext";
 import { FilesystemContextType } from "ContextType";
 import { File as IFile } from "../../../../store/filesystem/models";
 import { getIcon } from "../../../../icons";
-import { getClassName } from "../../../../utils";
+import {
+  getClassName,
+  areArraysEqual,
+  areObjectsEqual
+} from "../../../../utils";
 import { containerClass } from "../classNames";
 
 export type ViewProps = {
@@ -34,6 +38,17 @@ type DoubleClickProps = {
 type Props = OwnProps & DoubleClickProps;
 
 export class FileContainer extends Component<Props, {}> {
+  shouldComponentUpdate({ file, context }: Props) {
+    const { renamedFile, focused, options } = this.props.context;
+
+    if (!areObjectsEqual(this.props.file, file, ["type", "name"])) return true;
+    if (renamedFile !== context.renamedFile) return true;
+    if (!areArraysEqual(focused, context.focused)) return true;
+    if (options.display !== context.options.display) return true;
+
+    return false;
+  }
+
   getContainerClass = (focused: boolean) => {
     const { display } = this.props.context.options;
 

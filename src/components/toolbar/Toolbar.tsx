@@ -1,6 +1,6 @@
 import React from "react";
 import Start from "./start/Start";
-import ApplicationsListContainer from "./application/ListContainer";
+import ApplicationsListContainer from "./application/list/ListContainer";
 import Time from "./time/Time";
 
 import { toolbarConfig } from "../../config";

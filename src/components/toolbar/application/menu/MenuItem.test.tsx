@@ -2,7 +2,7 @@ import React from "react";
 import { shallow } from "enzyme";
 
 import { MenuItem } from "./MenuItem";
-import { findByTestAtrr } from "../../../../testingUtils";
+import { findByTestAtrr } from "../../../../../testingUtils";
 
 let mockChangePriority = jest.fn();
 let mockToggleMinimalize = jest.fn();

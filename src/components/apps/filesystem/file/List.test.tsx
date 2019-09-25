@@ -34,13 +34,13 @@ describe("Filesystem File List Component", () => {
     });
 
     it("should render FocusRect component", () => {
-      wrapper.instance().setState({ creatingReact: true });
+      wrapper.instance().setState({ creatingRect: true });
 
       expect(findByTestAtrr(wrapper, "focus-rect").length).toBe(1);
     });
 
     it("should NOT FocusRect component", () => {
-      wrapper.instance().setState({ creatingReact: false });
+      wrapper.instance().setState({ creatingRect: false });
 
       expect(findByTestAtrr(wrapper, "focus-rect").length).toBe(0);
     });
@@ -68,10 +68,10 @@ describe("Filesystem File List Component", () => {
 
   describe("handleMouseUp", () => {
     it("should change state", () => {
-      wrapper.instance().setState({ creatingReact: true });
+      wrapper.instance().setState({ creatingRect: true });
       wrapper.instance().handleMouseUp();
 
-      expect(wrapper.instance().state.creatingReact).toBe(false);
+      expect(wrapper.instance().state.creatingRect).toBe(false);
     });
   });
 
@@ -90,11 +90,11 @@ describe("Filesystem File List Component", () => {
         currentTarget: { getClientRects: () => [{ left: 3, top: 4, width: 5 }] }
       };
 
-      wrapper.instance().setState({ creatingReact: false });
+      wrapper.instance().setState({ creatingRect: false });
       wrapper.instance().handleMouseDown(ev as any);
 
       expect(wrapper.instance().state).toEqual({
-        creatingReact: true,
+        creatingRect: true,
         mouseDownData: {
           clientX: 1,
           clientY: 2,

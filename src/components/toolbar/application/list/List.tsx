@@ -1,7 +1,7 @@
 import React from "react";
 
-import SelectApplication from "./SelectApplication";
-import Application from "./Application";
+import SelectApplication from "../SelectApplication";
+import Application from "../Application";
 
 type Props = {
   appWidth: number;

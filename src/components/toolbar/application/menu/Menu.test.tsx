@@ -2,7 +2,7 @@ import React from "react";
 import { shallow } from "enzyme";
 
 import { Menu } from "./Menu";
-import { findByTestAtrr } from "../../../../testingUtils";
+import { findByTestAtrr } from "../../../../../testingUtils";
 
 const mockCloseMenuFn = jest.fn();
 const mockToggleMinimalizeFn = jest.fn();

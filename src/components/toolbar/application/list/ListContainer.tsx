@@ -3,8 +3,8 @@ import { connect } from "react-redux";
 
 import ApplicationList from "./List";
 import { RootState } from "MyTypes";
-import { WindowById } from "../../../store/window/models";
-import { toolbarConfig } from "../../../config";
+import { WindowById } from "../../../../store/window/models";
+import { toolbarConfig } from "../../../../config";
 
 type AppNamesWithIds = { [appName: string]: string[] };
 

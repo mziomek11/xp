@@ -6,7 +6,7 @@ import { RootState } from "MyTypes";
 import {
   changePriority,
   toggleMinimalize
-} from "../../../store/window/actions";
+} from "../../../../store/window/actions";
 
 type OwnProps = {
   id: string;
@@ -32,7 +32,6 @@ export const MenuItem: React.FC<Props> = ({
   focused,
   minimalized
 }) => {
-  
   const handleClick = () => {
     if (focused || minimalized) toggleMinimalize();
     else changePriority();

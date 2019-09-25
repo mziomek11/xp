@@ -4,23 +4,27 @@ import FileContainer from "./FileContainer";
 import DiskHeader from "./DiskHeader";
 import FocusRect, { StartEventData } from "./FocusRect";
 import withContext from "../../../../hoc/withContext";
-import { getClassName } from "../../../../utils";
 import { FilesystemContextType } from "ContextType";
 import { pathArrayToString } from "../../../../utils/filesystem";
 import { listClass } from "../classNames";
+import {
+  getClassName,
+  areArraysEqual,
+  areObjectsEqual
+} from "../../../../utils";
 
-type OwnProps = {
+type Props = {
   context: FilesystemContextType;
 };
 
 type State = {
-  creatingReact: boolean;
+  creatingRect: boolean;
   mouseDownData: StartEventData;
 };
 
-export class List extends Component<OwnProps, State> {
+export class List extends Component<Props, State> {
   readonly state: State = {
-    creatingReact: false,
+    creatingRect: false,
     mouseDownData: {
       clientX: 0,
       clientY: 0,
@@ -32,13 +36,29 @@ export class List extends Component<OwnProps, State> {
 
   private container = createRef<HTMLDivElement>();
 
+  shouldComponentUpdate({ context }: Props, { creatingRect }: State) {
+    const { path, options, files } = this.props.context;
+
+    if (this.state.creatingRect !== creatingRect) return true;
+    if (!areArraysEqual(path, context.path)) return true;
+    if (options.display !== context.options.display) return true;
+    if (files.length !== context.files.length) return true;
+    for (let i = 0; i < files.length; i++) {
+      if (!areObjectsEqual(files[i], context.files[i], ["name", "type"])) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (this.props.context.renamedFile !== null) return null;
     const clientRects = (e.currentTarget as Element).getClientRects()[0];
     const { left, top, width } = clientRects;
 
     this.setState({
-      creatingReact: true,
+      creatingRect: true,
       mouseDownData: {
         clientX: e.clientX,
         clientY: e.clientY,
@@ -49,11 +69,11 @@ export class List extends Component<OwnProps, State> {
     });
   };
 
-  handleMouseUp = () => this.setState({ creatingReact: false });
+  handleMouseUp = () => this.setState({ creatingRect: false });
 
   render() {
     const { path, files, options } = this.props.context;
-    const { creatingReact, mouseDownData } = this.state;
+    const { creatingRect, mouseDownData } = this.state;
 
     const showDiskHeader = path.length === 0 && options.display !== "list";
     const pathWithSlashes = pathArrayToString(path);
@@ -74,7 +94,7 @@ export class List extends Component<OwnProps, State> {
             data-test="file"
           />
         ))}
-        {creatingReact && (
+        {creatingRect && (
           <FocusRect
             onMouseUp={this.handleMouseUp}
             mouseDownData={mouseDownData as StartEventData}

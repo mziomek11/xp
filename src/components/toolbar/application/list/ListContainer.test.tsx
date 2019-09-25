@@ -1,17 +1,18 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import { WindowById, Window } from "../../../store/window/models";
+import { WindowById, Window } from "../../../../store/window/models";
 import { ApplicationsListContainer as ListContainer } from "./ListContainer";
-import { toolbarConfig } from "../../../config";
-import { findByTestAtrr } from "../../../../testingUtils";
-import { deepCopy } from "../../../utils";
+import { toolbarConfig } from "../../../../config";
+import { findByTestAtrr } from "../../../../../testingUtils";
+import { deepCopy } from "../../../../utils";
+import { Application } from "../../../../store/models";
 
 const { APP_WIDTH, START_WIDTH, TIME_WIDTH } = toolbarConfig;
 const createWindow = (id: string, app: string): Window => ({
   name: "Window name",
   minimalized: false,
-  application: app,
+  application: app as Application,
   id
 });
 

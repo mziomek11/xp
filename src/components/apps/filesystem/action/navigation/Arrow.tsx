@@ -5,7 +5,7 @@ import ArrowRight from "./ArrowRight";
 import HistoryArrow from "./HistoryArrow";
 import withContext from "../../../../../hoc/withContext";
 import { FilesystemContextType } from "ContextType";
-import { getClassName } from "../../../../../utils";
+import { getClassName, areArraysEqual } from "../../../../../utils";
 
 export type DirectionArrowProps = {
   disabled: boolean;
@@ -27,6 +27,23 @@ export class Arrow extends Component<Props, State> {
   readonly state: State = {
     isOpen: false
   };
+
+  shouldComponentUpdate({ context }: Props, prevState: State) {
+    const { shortcuts, history, historyPosition } = this.props.context;
+    const { back, forward } = shortcuts;
+
+    if (prevState.isOpen !== this.state.isOpen) return true;
+    if (context.shortcuts.back.disabled !== back.disabled) return true;
+    if (context.shortcuts.forward.disabled !== forward.disabled) return true;
+    if (historyPosition !== context.historyPosition) return true;
+    if (!areArraysEqual(history, context.history)) return true;
+
+    for (let i = 0; i < history.length; i++) {
+      if (!areArraysEqual(history[i], context.history[i])) return true;
+    }
+
+    return false;
+  }
 
   setOpen = (value: boolean) => this.setState({ isOpen: value });
 

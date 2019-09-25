@@ -1,29 +1,44 @@
-import React from "react";
+import React, { Component } from "react";
 
 import withContext from "../../../../hoc/withContext";
 import { FilesystemContextType } from "ContextType";
-import { getClassName } from "../../../../utils";
+import { getClassName, areObjectsEqual } from "../../../../utils";
 
 import foldersIcon from "../../../../assets/folder/folders.png";
 
-const Folders: React.FC<{ context: FilesystemContextType }> = ({ context }) => {
-  const { setOptions, options } = context;
-  const { showFolders } = options;
+type Props = { context: FilesystemContextType };
 
-  const className = getClassName("filesystem__action", {
-    activated: showFolders
-  });
+export class Folders extends Component<Props, {}> {
+  shouldComponentUpdate({ context }: Props) {
+    const currOptions = this.props.context.options;
+    const values = ["showFolders"];
 
-  const handleClick = () => setOptions({ showFolders: !showFolders });
+    return !areObjectsEqual(currOptions, context.options, values);
+  }
 
-  return (
-    <div className="filesystem__actions">
-      <div className={className} onClick={handleClick}>
-        <img src={foldersIcon} alt="folders icon" />
-        <span className="filesystem__action-text">Folders</span>
+  handleClick = () => {
+    const { setOptions, options } = this.props.context;
+    setOptions({ showFolders: !options.showFolders });
+  };
+
+  render() {
+    const className = getClassName("filesystem__action", {
+      activated: this.props.context.options.showFolders
+    });
+
+    return (
+      <div className="filesystem__actions" data-test="container">
+        <div
+          className={className}
+          onClick={this.handleClick}
+          data-test="clickable"
+        >
+          <img src={foldersIcon} alt="folders icon" />
+          <span className="filesystem__action-text">Folders</span>
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+}
 
 export default withContext(Folders, "filesystem");

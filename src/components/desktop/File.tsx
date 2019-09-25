@@ -32,6 +32,7 @@ export const File: React.FC<Props> = ({
   checkForDoubleClick
 }) => {
   const handleClick = () => checkForDoubleClick(openWindow);
+
   return (
     <div
       className="file"

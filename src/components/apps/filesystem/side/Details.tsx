@@ -4,12 +4,22 @@ import Item from "./Item";
 import withContext from "../../../../hoc/withContext";
 import { FilesystemContextType } from "ContextType";
 import { FileType } from "../../../../store/filesystem/models";
+import { areArraysEqual } from "../../../../utils";
 
 type Props = {
   context: FilesystemContextType;
 };
 
 export class Details extends Component<Props, {}> {
+  shouldComponentUpdate({ context }: Props) {
+    const { path, focused } = this.props.context;
+
+    if (!areArraysEqual(path, context.path)) return true;
+    if (!areArraysEqual(focused, context.focused)) return true;
+
+    return false;
+  }
+
   getFileInfo = (): [string, string] => {
     const { focused, path, files } = this.props.context;
 

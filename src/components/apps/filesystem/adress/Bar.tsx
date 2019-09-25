@@ -1,23 +1,32 @@
-import React from "react";
+import React, { Component } from "react";
 
 import Location from "./Location";
 import withContext from "../../../../hoc/withContext";
 import { FilesystemContextType } from "ContextType";
+import { areObjectsEqual } from "../../../../utils";
 
-export const Bar: React.FC<{ context: FilesystemContextType }> = ({
-  context
-}) => {
-  const { showAdressBar } = context.options;
-  if (!showAdressBar) return null;
+type Props = { context: FilesystemContextType };
 
-  return (
-    <div className="filesystem__adress-bar" data-test="container">
-      <span className="filesystem__adress-text" data-test="text">
-        Adress
-      </span>
-      <Location data-test="location" />
-    </div>
-  );
-};
+export class Bar extends Component<Props, {}> {
+  shouldComponentUpdate({ context }: Props) {
+    const currOptions = this.props.context.options;
+    const values = ["showAdressBar"];
+
+    return !areObjectsEqual(currOptions, context.options, values);
+  }
+  render() {
+    const { showAdressBar } = this.props.context.options;
+    if (!showAdressBar) return null;
+
+    return (
+      <div className="filesystem__adress-bar" data-test="container">
+        <span className="filesystem__adress-text" data-test="text">
+          Adress
+        </span>
+        <Location data-test="location" />
+      </div>
+    );
+  }
+}
 
 export default withContext(Bar, "filesystem");

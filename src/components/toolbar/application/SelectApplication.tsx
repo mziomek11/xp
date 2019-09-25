@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import ApplicationMenu from "./Menu";
+import ApplicationMenu from "./menu/Menu";
 import { RootState } from "MyTypes";
 import { getClassName } from "../../../utils";
 

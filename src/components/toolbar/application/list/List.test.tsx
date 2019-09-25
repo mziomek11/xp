@@ -2,7 +2,7 @@ import React from "react";
 import { shallow } from "enzyme";
 
 import ApplicationList from "./List";
-import { findByTestAtrr } from "../../../../testingUtils";
+import { findByTestAtrr } from "../../../../../testingUtils";
 
 const props = {
   appWidth: 100,
