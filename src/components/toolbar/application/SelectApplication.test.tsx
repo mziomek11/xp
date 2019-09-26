@@ -3,6 +3,8 @@ import { shallow } from "enzyme";
 
 import { SelectApplication } from "./SelectApplication";
 import { findByTestAtrr } from "../../../../testingUtils";
+import { getIcon } from "../../../icons";
+import { Application } from "../../../store/models";
 
 const props = {
   width: 300,
@@ -10,7 +12,14 @@ const props = {
   ids: ["1", "2", "3"],
   focused: false
 };
-const wrapper = shallow<SelectApplication>(<SelectApplication {...props} />);
+
+const createWrapper = (application: Application) => {
+  const updatedProps = { ...props, application };
+  const comp = <SelectApplication {...updatedProps} />;
+  return shallow<SelectApplication>(comp);
+};
+
+const wrapper = createWrapper("Filesystem");
 const instance = wrapper.instance();
 
 describe("ToolbarSelectApplication Component", () => {
@@ -23,7 +32,6 @@ describe("ToolbarSelectApplication Component", () => {
       const appText = findByTestAtrr(wrapper, "text");
 
       expect(appText.length).toBe(1);
-      expect(appText.text()).toBe(props.application);
     });
 
     it("should render count", () => {
@@ -106,6 +114,22 @@ describe("ToolbarSelectApplication Component", () => {
       const result = wrapper.instance().getClassName();
 
       expect(result).toContain(focusedModifier);
+    });
+  });
+
+  describe("getIcon", () => {
+    it("should return folder icon", () => {
+      const wrapper = createWrapper("Filesystem");
+
+      expect(wrapper.instance().getIcon()).toBe(getIcon("folder", false));
+    });
+  });
+
+  describe("getName", () => {
+    it("should return filesystem text", () => {
+      const wrapper = createWrapper("Filesystem");
+
+      expect(wrapper.instance().getName()).toBe("Windows explorer");
     });
   });
 });

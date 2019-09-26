@@ -44,10 +44,20 @@ export class SelectApplication extends React.Component<Props, State> {
     }
   };
 
+  getName = () => {
+    switch (this.props.application) {
+      case "Filesystem":
+        return "Windows explorer";
+      default:
+        throw Error("Unknown app");
+    }
+  };
+
   render() {
     const { isOpen } = this.state;
-    const { application, width, ids } = this.props;
+    const { width, ids } = this.props;
     const icon = this.getIcon();
+    const name = this.getName();
     const className = this.getClassName();
 
     return (
@@ -68,7 +78,7 @@ export class SelectApplication extends React.Component<Props, State> {
           {ids.length}
         </span>
         <span className={`${this.baseClassName}-text`} data-test="text">
-          {application}
+          {name}
         </span>
         <div className={`${this.baseClassName}-arrow`} data-test="arrow" />
         {isOpen && (
