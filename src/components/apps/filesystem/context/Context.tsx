@@ -4,8 +4,9 @@ import { connect } from "react-redux";
 
 import { Options, OptionData, Shortcuts, CtxFunctions } from "./models";
 import { RootState } from "MyTypes";
-import { FileTree, File } from "../../../../store/filesystem/models";
+import { FileTree, File, FileType } from "../../../../store/filesystem/models";
 import { remove, copy, cut, paste } from "../../../../store/filesystem/actions";
+import { rename } from "../../../../store/window/actions";
 import { areArraysEqual, deepCopy } from "../../../../utils";
 import { objectPropFromPath } from "../../../../utils/filesystem";
 import { listClass, containerClass } from "../classNames";
@@ -25,6 +26,7 @@ type DispatchProps = {
   copy: (path: string[], files: string[]) => void;
   cut: (path: string[], files: string[]) => void;
   paste: (path: string[]) => void;
+  renameWindow: (newName: string, icon: FileType) => void;
 };
 
 export type Props = OwnProps & StateProps & DispatchProps;
@@ -88,6 +90,7 @@ export class ContextProvider extends Component<Props, State> {
     if (!areArraysEqual(this.state.path, newPath)) {
       newState.files = newFiles;
       newState.path = newPath;
+      this.setWindowNameAndIcon(newPath);
       window.removeEventListener("mousedown", this.handleUnfocusClick);
       newState.focused = [];
     } else if (!areArraysEqual(oldFilenames, newFilenames)) {
@@ -130,6 +133,7 @@ export class ContextProvider extends Component<Props, State> {
     const [files, possiblePath] = objectPropFromPath(fileTree, path);
     const newHistory = this.calculateHistory(newHistoryPos, possiblePath);
 
+    this.setWindowNameAndIcon(possiblePath);
     this.setState({
       path: possiblePath,
       files: files,
@@ -137,6 +141,14 @@ export class ContextProvider extends Component<Props, State> {
       historyPosition: newHistoryPos,
       focused: []
     });
+  };
+
+  setWindowNameAndIcon = (path: string[]) => {
+    if (path.length > 0) {
+      const newName = path[path.length - 1];
+      const newIcon = path.length === 1 ? "disk" : "folder";
+      this.props.renameWindow(newName, newIcon);
+    } else this.props.renameWindow("Computer", "computer");
   };
 
   calculateHistory = (
@@ -388,12 +400,16 @@ const mapStateToProps = (state: RootState): StateProps => {
   };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
+const mapDispatchToProps = (
+  dispatch: Dispatch,
+  { id }: OwnProps
+): DispatchProps => {
   return {
     remove: (path, files) => dispatch(remove(path, files)),
     copy: (path, files) => dispatch(copy(path, files)),
     cut: (path, files) => dispatch(cut(path, files)),
-    paste: path => dispatch(paste(path))
+    paste: path => dispatch(paste(path)),
+    renameWindow: (name, icon) => dispatch(rename(id, name, icon))
   };
 };
 

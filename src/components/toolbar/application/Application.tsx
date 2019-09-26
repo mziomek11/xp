@@ -16,6 +16,7 @@ type OwnProps = {
 
 type StateProps = {
   name: string;
+  icon: string;
   minimalized: boolean;
   focused: boolean;
   openedWindows: number;
@@ -51,7 +52,7 @@ export class Application extends React.Component<Props, {}> {
   };
 
   render() {
-    const { name, width } = this.props;
+    const { name, width, icon } = this.props;
     const className = this.getClassName();
     return (
       <div
@@ -60,6 +61,14 @@ export class Application extends React.Component<Props, {}> {
         style={{ width }}
         data-test="application"
       >
+        <div className={`${this.baseClassName}-icon-container`}>
+          <img
+            src={icon}
+            className={`${this.baseClassName}-icon`}
+            alt="application icon"
+          />
+        </div>
+
         <span className={`${this.baseClassName}-text`} data-test="text">
           {name}
         </span>
@@ -70,6 +79,7 @@ export class Application extends React.Component<Props, {}> {
 
 const mapStateToProps = (state: RootState, { id }: OwnProps): StateProps => ({
   name: state.window.byId[id].name,
+  icon: state.window.byId[id].icon,
   minimalized: state.window.byId[id].minimalized,
   focused: state.window.focused === id,
   openedWindows: state.window.allIds.length

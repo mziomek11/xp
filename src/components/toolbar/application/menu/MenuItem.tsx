@@ -19,6 +19,7 @@ type DispatchProps = {
 
 type StateProps = {
   name: string;
+  icon: string;
   focused: boolean;
   minimalized: boolean;
 };
@@ -30,7 +31,8 @@ export const MenuItem: React.FC<Props> = ({
   changePriority,
   toggleMinimalize,
   focused,
-  minimalized
+  minimalized,
+  icon
 }) => {
   const handleClick = () => {
     if (focused || minimalized) toggleMinimalize();
@@ -43,13 +45,21 @@ export const MenuItem: React.FC<Props> = ({
       onClick={handleClick}
       data-test="menu-item"
     >
-      {name}
+      <div className="toolbar__application-icon-container">
+        <img
+          src={icon}
+          className="toolbar__application-icon"
+          alt="applicaiton icon"
+        />
+      </div>
+      <span className="toolbar__application-text">{name}</span>
     </div>
   );
 };
 
 const mapStateToProps = (state: RootState, { id }: OwnProps): StateProps => ({
   name: state.window.byId[id].name,
+  icon: state.window.byId[id].icon,
   minimalized: state.window.byId[id].minimalized,
   focused: state.window.focused === id
 });

@@ -24,6 +24,7 @@ export default combineReducers<WindowState, WindowAction>({
       case WindowAction.OPEN:
       case WindowAction.CLOSE:
       case WindowAction.TOGGLE_MINIMALIZE:
+      case WindowAction.RENAME:
         return action.payload.byId;
       case WindowAction.CLOSE_ALL:
         return {};

@@ -1,7 +1,7 @@
 import React from "react";
 
-import Icon from "../icon/IconContainer";
-import Title from "../title/TitleContainer";
+import Icon from "./Icon";
+import Title from "./Title";
 import MinimalizeAction from "../action/MinimalizeAction";
 import FullscreenAction from "../action/FullscreenAction";
 import ExitAction from "../action/ExitAction";

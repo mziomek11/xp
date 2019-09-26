@@ -11,6 +11,7 @@ let mockRemoveFn: jest.Mock;
 let mockCopyFn: jest.Mock;
 let mockCutFn: jest.Mock;
 let mockPasteFn: jest.Mock;
+let mockRenameFn: jest.Mock;
 
 const fileTree: FileTree = {
   "Local Disk (C:)": {
@@ -39,6 +40,7 @@ const createWrapper = (
   mockCopyFn = jest.fn();
   mockCutFn = jest.fn();
   mockPasteFn = jest.fn();
+  mockRenameFn = jest.fn();
 
   const defaultProps: Props = {
     id: "id",
@@ -48,7 +50,8 @@ const createWrapper = (
     remove: mockRemoveFn,
     copy: mockCopyFn,
     cut: mockCutFn,
-    paste: mockPasteFn
+    paste: mockPasteFn,
+    renameWindow: mockRenameFn
   };
 
   const props = { ...defaultProps, ...overrideProps };
@@ -174,6 +177,35 @@ describe("Filesystem ContextProvider Component", () => {
     it("should slice history", () => {
       const result = wrapper.instance().calculateHistory(2, ["3"]);
       expect(result).toEqual([[], ["1"], ["3"]]);
+    });
+  });
+
+  describe("setWindowNameAndIcon", () => {
+    it("path is greater than 1", () => {
+      const wrapper = createWrapper();
+      const path = ["a", "b"];
+
+      wrapper.instance().setWindowNameAndIcon(path);
+      expect(mockRenameFn.mock.calls.length).toBe(1);
+      expect(mockRenameFn.mock.calls[0]).toEqual(["b", "folder"]);
+    });
+
+    it("path is equal 1", () => {
+      const wrapper = createWrapper();
+      const path = ["a"];
+
+      wrapper.instance().setWindowNameAndIcon(path);
+      expect(mockRenameFn.mock.calls.length).toBe(1);
+      expect(mockRenameFn.mock.calls[0]).toEqual(["a", "disk"]);
+    });
+
+    it("path is equal 0", () => {
+      const wrapper = createWrapper();
+      const path: string[] = [];
+
+      wrapper.instance().setWindowNameAndIcon(path);
+      expect(mockRenameFn.mock.calls.length).toBe(1);
+      expect(mockRenameFn.mock.calls[0]).toEqual(["Computer", "computer"]);
     });
   });
 

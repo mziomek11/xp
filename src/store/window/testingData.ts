@@ -5,10 +5,12 @@ import { windowConfig } from "../../config";
 import { Application } from "../models";
 import { Window } from "./models";
 import { deepCopy } from "../../utils/";
+import { getIcon } from "../../icons";
 
 export const windowId = uuid();
 export const secondWindowId = uuid();
 export const applicationName: Application = "Filesystem";
+export const windowIcon = "computer";
 export const windowName: string = "WindowName";
 
 export const getWindowData = (id: string): Window => {
@@ -16,6 +18,7 @@ export const getWindowData = (id: string): Window => {
     id,
     application: applicationName,
     name: windowName,
+    icon: getIcon(windowIcon),
     minimalized: windowConfig.INITIAL_MINIMALIZED
   };
 };

@@ -87,6 +87,17 @@ describe("Window reducer", () => {
     });
   });
 
+  describe("rename", () => {
+    it("should update state", () => {
+      const updatedState = reducer(stateWithOneWindow, {
+        type: WindowAction.RENAME,
+        payload: emptyState
+      });
+
+      expect(updatedState.byId).toEqual(emptyState.byId);
+    });
+  });
+
   describe("changePriority", () => {
     it("should update state", () => {
       const updatedState = reducer(stateWithTwoWindows, {

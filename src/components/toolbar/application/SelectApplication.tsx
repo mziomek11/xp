@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import ApplicationMenu from "./menu/Menu";
 import { RootState } from "MyTypes";
 import { getClassName } from "../../../utils";
+import { getIcon } from "../../../icons";
 
 type OwnProps = {
   application: string;
@@ -34,9 +35,19 @@ export class SelectApplication extends React.Component<Props, State> {
     return getClassName(this.baseClassName, modifiersObj, baseModifiers);
   };
 
+  getIcon = () => {
+    switch (this.props.application) {
+      case "Filesystem":
+        return getIcon("folder", false);
+      default:
+        throw Error("Unknown app");
+    }
+  };
+
   render() {
     const { isOpen } = this.state;
     const { application, width, ids } = this.props;
+    const icon = this.getIcon();
     const className = this.getClassName();
 
     return (
@@ -46,14 +57,19 @@ export class SelectApplication extends React.Component<Props, State> {
         onClick={this.toggleMenu}
         style={{ width }}
       >
-        <div className={`${this.baseClassName}-text-container`}>
-          <span className={`${this.baseClassName}-count`} data-test="count">
-            {ids.length}
-          </span>
-          <span className={`${this.baseClassName}-text`} data-test="text">
-            {application}
-          </span>
+        <div className={`${this.baseClassName}-icon-container`}>
+          <img
+            className={`${this.baseClassName}-icon`}
+            src={icon}
+            alt="application-icon"
+          />
         </div>
+        <span className={`${this.baseClassName}-count`} data-test="count">
+          {ids.length}
+        </span>
+        <span className={`${this.baseClassName}-text`} data-test="text">
+          {application}
+        </span>
         <div className={`${this.baseClassName}-arrow`} data-test="arrow" />
         {isOpen && (
           <ApplicationMenu

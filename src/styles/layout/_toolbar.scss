@@ -39,10 +39,15 @@
   }
 }
 
-.toolbar__application-text-container {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.toolbar__application-icon-container {
+  @include flex-centered;
+  @include all-widths($toolbar-application-icon-width);
+  margin-right: $window-title-margin;
+}
+
+.toolbar__application-icon {
+  width: 100%;
+  height: auto;
 }
 
 .toolbar__application-text {
@@ -53,12 +58,13 @@
 
 .toolbar__application-count {
   color: $toolbar-application-count-color;
-  padding: $toolbar-application-count-padding;
+  margin-right: $toolbar-application-count-margin;
   font-weight: 500;
 }
 
 .toolbar__application-arrow {
   @include arrow-bottom(4px, white);
+  margin-left: auto;
 }
 
 .toolbar__application-menu {
@@ -71,12 +77,9 @@
 .toolbar__application-menu-item {
   @include toolbar-application-menu-item-background;
   @include toolbar-application-menu-item-border;
-  white-space: nowrap;
+  display: flex;
+  align-items: center;
   width: calc(100% + 5px);
   height: $toolbar-application-menu-item-height;
-  padding: $toolbar-application-padding;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  padding-top: 3px;
+  padding: 0 $toolbar-application-padding - 0.2em;
 }

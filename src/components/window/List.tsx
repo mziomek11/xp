@@ -17,13 +17,13 @@ export const List: React.FC<Props> = ({ windowsIds }) => {
   return (
     <React.Fragment>
       {windowsIds.map(id => (
-        <FilesystemContextProvider id={id} key={id}>
-          <WindowContextProvider id={id} startFullscreened={false}>
-            <WindowContainer data-test="window">
+        <WindowContextProvider id={id} startFullscreened={false} key={id}>
+          <WindowContainer data-test="window">
+            <FilesystemContextProvider id={id}>
               <FileSystem />
-            </WindowContainer>
-          </WindowContextProvider>{" "}
-        </FilesystemContextProvider>
+            </FilesystemContextProvider>
+          </WindowContainer>
+        </WindowContextProvider>
       ))}
     </React.Fragment>
   );

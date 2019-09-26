@@ -10,7 +10,6 @@ import {
   close,
   removeFocus
 } from "../../store/window/actions";
-import { Application } from "../../store/models";
 
 type OwnProps = {
   id: string;
@@ -26,7 +25,7 @@ type DispatchProps = {
 
 type StateProps = {
   name: string;
-  application: Application;
+  icon: string;
   minimalized: boolean;
   focused: boolean;
 };
@@ -75,9 +74,9 @@ export class ContextProvider extends Component<Props, State> {
 }
 
 const mapStateToProps = (state: RootState, { id }: OwnProps): StateProps => {
-  const { name, minimalized, application } = state.window.byId[id];
+  const { name, minimalized, icon } = state.window.byId[id];
   const focused = id === state.window.focused;
-  return { name, minimalized, focused, application };
+  return { name, minimalized, icon, focused };
 };
 
 const mapDistapchToProps = (

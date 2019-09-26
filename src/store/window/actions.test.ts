@@ -5,6 +5,7 @@ import {
   windowId,
   applicationName,
   windowName,
+  windowIcon,
   emptyState,
   stateWithOneWindow,
   stateWithChangedMinimalize,
@@ -37,7 +38,12 @@ describe("Window actions", () => {
 
   describe("open", () => {
     it("should open new window", () => {
-      const action = actions.open(windowId, applicationName, windowName);
+      const action = actions.open(
+        windowId,
+        applicationName,
+        windowName,
+        windowIcon
+      );
 
       expect(action.type).toBe(WindowAction.OPEN);
       expect(action.payload).toEqual(stateWithOneWindow);
@@ -47,7 +53,9 @@ describe("Window actions", () => {
   describe("close", () => {
     describe("window exists", () => {
       it("should return proper type and payload", () => {
-        store.dispatch(actions.open(windowId, applicationName, windowName));
+        store.dispatch(
+          actions.open(windowId, applicationName, windowName, windowIcon)
+        );
         const action = actions.close(windowId) as AnyAction;
 
         expect(action.type).toBe(WindowAction.CLOSE);
@@ -68,7 +76,9 @@ describe("Window actions", () => {
   describe("toggleMinimalize", () => {
     describe("window exists", () => {
       it("should toggle minimalized when was NOT minimalized", () => {
-        store.dispatch(actions.open(windowId, applicationName, windowName));
+        store.dispatch(
+          actions.open(windowId, applicationName, windowName, windowIcon)
+        );
         const action = actions.toggleMinimalize(windowId) as AnyAction;
 
         expect(action.type).toBe(WindowAction.TOGGLE_MINIMALIZE);
@@ -79,7 +89,9 @@ describe("Window actions", () => {
       });
 
       it("should toggle minimalized when was minimalized", () => {
-        store.dispatch(actions.open(windowId, applicationName, windowName));
+        store.dispatch(
+          actions.open(windowId, applicationName, windowName, windowIcon)
+        );
         store.dispatch(actions.toggleMinimalize(windowId));
         const action = actions.toggleMinimalize(windowId) as AnyAction;
 
@@ -98,12 +110,38 @@ describe("Window actions", () => {
     });
   });
 
+  describe("rename", () => {
+    it("should fail when window does not exists", () => {
+      const action = actions.rename(
+        "no exists",
+        windowName,
+        windowIcon
+      ) as AnyAction;
+
+      expect(action).toEqual({
+        type: WindowAction.CHANGE_PROP_FAILED,
+        payload: undefined
+      });
+    });
+
+    it("should change window name and icon", () => {
+      store.dispatch(
+        actions.open(windowId, applicationName, windowName, windowIcon)
+      );
+      const action = actions.rename(windowId, "new Name", "disk") as AnyAction;
+
+      expect(action.type).toBe(WindowAction.RENAME);
+    });
+  });
+
   describe("changePriority", () => {
     describe("window exists", () => {
       it("should change priority of window", () => {
-        store.dispatch(actions.open(windowId, applicationName, windowName));
         store.dispatch(
-          actions.open(secondWindowId, applicationName, windowName)
+          actions.open(windowId, applicationName, windowName, windowIcon)
+        );
+        store.dispatch(
+          actions.open(secondWindowId, applicationName, windowName, windowIcon)
         );
         let action = actions.changePriority(windowId) as AnyAction;
 

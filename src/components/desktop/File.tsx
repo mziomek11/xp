@@ -6,10 +6,12 @@ import { Dispatch } from "redux";
 import withDoubleClick from "../../hoc/withDoubleClick";
 import { open as openWindow } from "../../store/window/actions";
 import { Application } from "../../store/models";
+import { FileType } from "../../store/filesystem/models";
 
 type OwnProps = {
   name: string;
   application: Application;
+  type: FileType;
   top: number;
   left: number;
 };
@@ -47,9 +49,9 @@ export const File: React.FC<Props> = ({
 
 const mapDispatchToProps = (
   dispatch: Dispatch,
-  { name, application }: OwnProps
+  { name, application, type }: OwnProps
 ): DispatchProps => ({
-  openWindow: () => dispatch(openWindow(uuid(), application, name))
+  openWindow: () => dispatch(openWindow(uuid(), application, name, type))
 });
 
 export default connect(

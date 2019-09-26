@@ -6,5 +6,6 @@ export type Window = {
   id: string;
   name: string;
   application: Application;
+  icon: string;
   minimalized: boolean;
 };

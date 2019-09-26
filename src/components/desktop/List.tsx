@@ -8,6 +8,7 @@ const FileList = () => {
       <File
         name="Computer"
         application="Filesystem"
+        type="computer"
         left={0}
         top={0}
         data-test="computer"

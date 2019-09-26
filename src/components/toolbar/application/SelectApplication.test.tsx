@@ -6,7 +6,7 @@ import { findByTestAtrr } from "../../../../testingUtils";
 
 const props = {
   width: 300,
-  application: "ApplicationName",
+  application: "Filesystem",
   ids: ["1", "2", "3"],
   focused: false
 };
