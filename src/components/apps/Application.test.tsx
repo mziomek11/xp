@@ -7,7 +7,7 @@ import { findByTestAtrr } from "../../../testingUtils";
 describe("Application Component", () => {
   describe("render", () => {
     it("should render Filesystem app", () => {
-      const wrapper = shallow(<Application id="x" application="Filesystem" />);
+      const wrapper = shallow(<Application id="x" application="filesystem" />);
 
       expect(findByTestAtrr(wrapper, "filesystem").length).toBe(1);
     });

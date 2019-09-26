@@ -205,7 +205,7 @@ describe("Filesystem ContextProvider Component", () => {
 
       wrapper.instance().setWindowNameAndIcon(path);
       expect(mockRenameFn.mock.calls.length).toBe(1);
-      expect(mockRenameFn.mock.calls[0]).toEqual(["Computer", "computer"]);
+      expect(mockRenameFn.mock.calls[0]).toEqual(["Computer", "filesystem"]);
     });
   });
 

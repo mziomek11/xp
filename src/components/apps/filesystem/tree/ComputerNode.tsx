@@ -23,7 +23,7 @@ export const ComputerNode: React.FC<Props> = ({
     <TreeNode
       type="computer"
       name="Computer"
-      icon={getIcon("computer")}
+      icon={getIcon("filesystem")}
       filePath={[]}
       selectedPath={selectedPath}
       onClick={onClick}

@@ -7,22 +7,16 @@ import { WindowState } from "./reducer";
 import { deepCopy } from "../../utils";
 import { Window } from "./models";
 import { Application } from "../models";
-import { FileType } from "../filesystem/models";
-import { getIcon } from "../../icons";
+import { getIcon, Icon } from "../../icons";
 
-export const open = (
-  id: string,
-  application: Application,
-  name: string,
-  icon: FileType
-) => {
+export const open = (id: string, application: Application, name: string) => {
   const { byId, allIds } = getCopyOfStore();
 
   const newWindow: Window = {
     id,
     application,
     name,
-    icon: getIcon(icon),
+    icon: getIcon(application),
     minimalized: windowConfig.INITIAL_MINIMALIZED
   };
   byId[newWindow.id] = newWindow;
@@ -60,7 +54,7 @@ export const toggleMinimalize = (id: string) => {
   return action(WindowAction.TOGGLE_MINIMALIZE, { byId, allIds, focused });
 };
 
-export const rename = (id: string, newName: string, icon?: FileType) => {
+export const rename = (id: string, newName: string, icon?: Icon) => {
   let { byId } = getCopyOfStore();
 
   const windowToRename = byId[id];

@@ -5,9 +5,10 @@ import ApplicationMenu from "./menu/Menu";
 import { RootState } from "MyTypes";
 import { getClassName } from "../../../utils";
 import { getIcon } from "../../../icons";
+import { Application } from "../../../store/models";
 
 type OwnProps = {
-  application: string;
+  application: Application;
   width: number;
   ids: string[];
 };
@@ -37,8 +38,10 @@ export class SelectApplication extends React.Component<Props, State> {
 
   getIcon = () => {
     switch (this.props.application) {
-      case "Filesystem":
+      case "filesystem":
         return getIcon("folder", false);
+      case "notepad":
+        return getIcon("notepad", false);
       default:
         throw Error("Unknown app");
     }
@@ -46,8 +49,10 @@ export class SelectApplication extends React.Component<Props, State> {
 
   getName = () => {
     switch (this.props.application) {
-      case "Filesystem":
+      case "filesystem":
         return "Windows explorer";
+      case "notepad":
+        return "Notepad";
       default:
         throw Error("Unknown app");
     }

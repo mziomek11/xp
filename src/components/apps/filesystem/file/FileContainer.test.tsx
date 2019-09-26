@@ -40,15 +40,13 @@ const createWrapper = (
   const comp = (
     <FileContainer
       context={context}
-      file={{ name: fileName } as any}
+      file={{ name: fileName, type: "folder" } as any}
       checkForDoubleClick={mockCheckForDoubleClickFn}
     />
   );
 
   return shallow<FileContainer>(comp);
 };
-
-const wrapper = createWrapper();
 
 describe("Filesystem DiskHeader Component", () => {
   describe("render", () => {

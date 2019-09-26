@@ -14,7 +14,7 @@ const List: React.FC<Props> = ({ appWidth, multipleApps, singleApps }) => {
     <div className="toolbar__applications" data-test="list">
       {Object.keys(multipleApps).map(key => (
         <SelectApplication
-          application={key}
+          application={key as any}
           key={key}
           ids={multipleApps[key]}
           width={appWidth}

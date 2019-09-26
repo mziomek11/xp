@@ -1,1 +1,1 @@
-export type Application = "Filesystem";
+export type Application = "filesystem" | "notepad";

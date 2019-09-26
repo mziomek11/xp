@@ -2,7 +2,7 @@
 
 @import "abstracts/variables", "abstracts/functions", "abstracts/mixins";
 
-@import "base/base", "base/typography", "base/scrollbar";
+@import "base/base", "base/typography";
 
 @import "layout/screen", "layout/desktop", "layout/toolbar", "layout/start",
   "layout/time";
@@ -10,4 +10,4 @@
 @import "components/file", "components/window", "components/menu",
   "components/dropdown";
 
-@import "apps/filesystem";
+@import "apps/filesystem", "apps/notepad";

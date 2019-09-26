@@ -4,33 +4,49 @@ import folderFocused from "./assets/icons/folder-focused.png";
 import disk from "./assets/icons/disk.png";
 import diskFocused from "./assets/icons/disk-focused.png";
 
+import notepad from "./assets/icons/notepad.png";
+import notepadFocused from "./assets/icons/notepad-focused.png";
+
 import computer from "./assets/icons/computer.png";
 
-import { FileType } from "./store/filesystem/models";
+import { Application } from "./store/models";
 
-export const getIcon = (type: FileType, focused: boolean = false): string => {
+export type FileIcon = "folder" | "disk";
+
+export type Icon = FileIcon | Application;
+
+export const getIcon = (type: Icon, focused: boolean = false): string => {
   if (focused) return getFocusedIcon(type);
   else return getNormalIcon(type);
 };
 
-const getNormalIcon = (type: FileType): string => {
+const getNormalIcon = (type: Icon): string => {
   switch (type) {
     case "folder":
       return folder;
     case "disk":
       return disk;
-    default:
+    case "notepad":
+      return notepad;
+    case "filesystem":
       return computer;
+    default:
+      throw Error("This icon does not exists");
   }
 };
 
-const getFocusedIcon = (type: FileType): string => {
+const getFocusedIcon = (type: Icon): string => {
   switch (type) {
     case "folder":
       return folderFocused;
     case "disk":
       return diskFocused;
-    default:
+    case "filesystem":
       return computer;
+    case "notepad":
+      return notepadFocused;
+
+    default:
+      throw Error("This icon does not exists");
   }
 };

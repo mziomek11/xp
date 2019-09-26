@@ -82,7 +82,7 @@ export class FileContainer extends Component<Props, {}> {
 
     const isFocused = focused.indexOf(file.name) > -1;
     const isRenamed = renamedFile === file.name;
-    const icon = getIcon(file.type, isFocused);
+    const icon = getIcon(file.type as any, isFocused);
 
     const viewProps: ViewProps = {
       containerClass: this.getContainerClass(isFocused),

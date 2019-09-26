@@ -4,12 +4,13 @@ import { connect } from "react-redux";
 
 import { Options, OptionData, Shortcuts, CtxFunctions } from "./models";
 import { RootState } from "MyTypes";
-import { FileTree, File, FileType } from "../../../../store/filesystem/models";
+import { FileTree, File } from "../../../../store/filesystem/models";
 import { remove, copy, cut, paste } from "../../../../store/filesystem/actions";
 import { rename } from "../../../../store/window/actions";
 import { areArraysEqual, deepCopy } from "../../../../utils";
 import { objectPropFromPath } from "../../../../utils/filesystem";
 import { listClass, containerClass } from "../classNames";
+import { Icon } from "../../../../icons";
 
 type OwnProps = {
   id: string;
@@ -26,7 +27,7 @@ type DispatchProps = {
   copy: (path: string[], files: string[]) => void;
   cut: (path: string[], files: string[]) => void;
   paste: (path: string[]) => void;
-  renameWindow: (newName: string, icon: FileType) => void;
+  renameWindow: (newName: string, icon: Icon) => void;
 };
 
 export type Props = OwnProps & StateProps & DispatchProps;
@@ -148,7 +149,7 @@ export class ContextProvider extends Component<Props, State> {
       const newName = path[path.length - 1];
       const newIcon = path.length === 1 ? "disk" : "folder";
       this.props.renameWindow(newName, newIcon);
-    } else this.props.renameWindow("Computer", "computer");
+    } else this.props.renameWindow("Computer", "filesystem");
   };
 
   calculateHistory = (

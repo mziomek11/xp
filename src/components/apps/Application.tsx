@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
+import Notepad from "./notepad/Notepad";
 import FileSystem from "./filesystem/FileSystem";
 import { Application as AppType } from "../../store/models";
 import { Provider as FilesystemContextProvider } from "./filesystem/context/Context";
@@ -19,8 +20,10 @@ type Props = OwnProps & StateProps;
 export class Application extends Component<Props, {}> {
   getApplication = () => {
     switch (this.props.application) {
-      case "Filesystem":
+      case "filesystem":
         return this.getFilesystemApp();
+      case "notepad":
+        return this.getNotepadApp();
       default:
         throw Error(`${this.props.application} is not an application`);
     }
@@ -31,6 +34,8 @@ export class Application extends Component<Props, {}> {
       <FileSystem />
     </FilesystemContextProvider>
   );
+
+  getNotepadApp = () => <Notepad />;
 
   render() {
     return this.getApplication();

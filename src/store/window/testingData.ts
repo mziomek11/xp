@@ -9,8 +9,8 @@ import { getIcon } from "../../icons";
 
 export const windowId = uuid();
 export const secondWindowId = uuid();
-export const applicationName: Application = "Filesystem";
-export const windowIcon = "computer";
+export const applicationName: Application = "filesystem";
+export const windowIcon = "filesystem";
 export const windowName: string = "WindowName";
 
 export const getWindowData = (id: string): Window => {

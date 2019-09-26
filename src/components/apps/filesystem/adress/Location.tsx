@@ -52,7 +52,7 @@ export class Location extends Component<Props, State> {
 
   getLocationIcon = () => {
     const { path } = this.props.context;
-    if (path.length === 0) return getIcon("computer");
+    if (path.length === 0) return getIcon("filesystem");
     else if (path.length === 1) return getIcon("disk");
     else return getIcon("folder");
   };

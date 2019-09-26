@@ -8,18 +8,16 @@ import { Application } from "../../../store/models";
 
 const props = {
   width: 300,
-  application: "Filesystem",
-  ids: ["1", "2", "3"],
-  focused: false
+  ids: ["1", "2", "3"]
 };
 
-const createWrapper = (application: Application) => {
-  const updatedProps = { ...props, application };
+const createWrapper = (application: Application, focused: boolean = false) => {
+  const updatedProps = { ...props, application, focused };
   const comp = <SelectApplication {...updatedProps} />;
   return shallow<SelectApplication>(comp);
 };
 
-const wrapper = createWrapper("Filesystem");
+const wrapper = createWrapper("filesystem");
 const instance = wrapper.instance();
 
 describe("ToolbarSelectApplication Component", () => {
@@ -99,11 +97,7 @@ describe("ToolbarSelectApplication Component", () => {
     });
 
     it("should return class --focused when focused", () => {
-      const focusedProps = { ...props, focused: true };
-      const wrapper = shallow<SelectApplication>(
-        <SelectApplication {...focusedProps} />
-      );
-
+      const wrapper = createWrapper("filesystem", true);
       const result = wrapper.instance().getClassName();
 
       expect(result).toContain(focusedModifier);
@@ -119,7 +113,7 @@ describe("ToolbarSelectApplication Component", () => {
 
   describe("getIcon", () => {
     it("should return folder icon", () => {
-      const wrapper = createWrapper("Filesystem");
+      const wrapper = createWrapper("filesystem");
 
       expect(wrapper.instance().getIcon()).toBe(getIcon("folder", false));
     });
@@ -127,7 +121,7 @@ describe("ToolbarSelectApplication Component", () => {
 
   describe("getName", () => {
     it("should return filesystem text", () => {
-      const wrapper = createWrapper("Filesystem");
+      const wrapper = createWrapper("filesystem");
 
       expect(wrapper.instance().getName()).toBe("Windows explorer");
     });

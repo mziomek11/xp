@@ -127,7 +127,7 @@ class TreeNode extends Component<Props, State> {
                   name={file.name}
                   type={file.type}
                   content={file.content}
-                  icon={getIcon(file.type)}
+                  icon={getIcon(file.type as any)}
                   filePath={[...filePath, key]}
                   key={key}
                   onClick={onClick}
