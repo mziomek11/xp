@@ -33,6 +33,7 @@ type StateProps = {
 type Props = OwnProps & DispatchProps & StateProps;
 
 type State = {
+  resizing: boolean;
   left: number;
   top: number;
   width: number;
@@ -48,6 +49,7 @@ const WindowContext = createContext<Partial<Context>>({});
 
 export class ContextProvider extends Component<Props, State> {
   readonly state: State = {
+    resizing: false,
     left: windowConfig.INITIAL_LEFT,
     top: windowConfig.INITIAL_TOP,
     width: windowConfig.INITIAL_WIDTH,

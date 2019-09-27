@@ -1,0 +1,2 @@
+$cursors: "n", "nw", "ne", "s", "sw", "se", "w", "e";
+@include resize-cursors($cursors);

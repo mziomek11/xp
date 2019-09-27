@@ -1,0 +1,13 @@
+@mixin resize-cursors($directions) {
+  @each $direction in $directions {
+    body.#{$direction}-resize {
+      * {
+        cursor: #{$direction}#{"-resize"} !important;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        cursor: progress !important;
+      }
+    }
+  }
+}

@@ -55,17 +55,19 @@ export class WindowResizer extends Component<OwnProps, State> {
   removeListeners = () => {
     window.removeEventListener("mousemove", this.handleMouseMove);
     window.removeEventListener("mouseup", this.removeListeners);
-    this.changeCursor("default");
+    this.changeCursor();
+    this.props.context.setContext({ resizing: false });
   };
 
-  changeCursor = (cursor: string) => {
-    document.body.style.cursor = cursor;
+  changeCursor = (cursor?: string) => {
+    if (!cursor) document.body.className = "";
+    else document.body.className = cursor;
   };
 
   getOwnCursor = () => {
     const { resizesHeight, resizesWidth, isLeft, isTop } = this.props;
 
-    let ownCursor: string = "default";
+    let ownCursor: string = "";
     if (resizesWidth && resizesHeight) {
       if (isTop && isLeft) ownCursor = "nw-resize";
       else if (isTop && !isLeft) ownCursor = "ne-resize";
@@ -86,8 +88,9 @@ export class WindowResizer extends Component<OwnProps, State> {
     const newState = this.calculateNewState(e.clientX, e.clientY);
 
     this.setState(newState);
-    this.addListeners();
+    this.props.context.setContext({ resizing: true });
     this.changeCursor(this.getOwnCursor());
+    this.addListeners();
   };
 
   calculateNewState = (clientX: number, clientY: number): State => {
