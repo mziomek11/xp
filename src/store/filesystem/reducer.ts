@@ -10,13 +10,11 @@ type FileSystemAction = ActionType<typeof actions>;
 export type FileSystemState = Readonly<{
   copiedFiles: FileTree;
   files: FileTree;
-  isFocusingRect: boolean;
 }>;
 
 const initState: FileSystemState = {
   copiedFiles: {},
-  files: initFiles,
-  isFocusingRect: false
+  files: initFiles
 };
 
 export default combineReducers<FileSystemState, FileSystemAction>({
@@ -37,14 +35,6 @@ export default combineReducers<FileSystemState, FileSystemAction>({
       case FileSystemAction.CUT:
       case FileSystemAction.COPY:
         return action.payload.copiedFiles;
-      default:
-        return state;
-    }
-  },
-  isFocusingRect: (state = initState.isFocusingRect, action) => {
-    switch (action.type) {
-      case FileSystemAction.SET_FOCUSING_RECT:
-        return action.payload.isFocusingRect;
       default:
         return state;
     }

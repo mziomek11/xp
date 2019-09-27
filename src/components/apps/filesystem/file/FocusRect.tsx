@@ -1,11 +1,8 @@
 import React, { Component, CSSProperties } from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
 
 import withContext from "../../../../hoc/withContext";
 import { FilesystemContextType } from "ContextType";
 import { filesystemConfig } from "../../../../config";
-import { setFocusingRect } from "../../../../store/filesystem/actions";
 import { areArraysEqual } from "../../../../utils";
 
 export type StartEventData = {
@@ -23,11 +20,7 @@ type OwnProps = {
   context: FilesystemContextType;
 };
 
-type DispatchProps = {
-  setFocusingRect: (value: boolean) => void;
-};
-
-type Props = OwnProps & DispatchProps;
+type Props = OwnProps;
 
 type StyleState = {
   left: number;
@@ -52,11 +45,9 @@ export class FocusRect extends Component<Props, State> {
   };
 
   componentDidMount() {
-    const { setFocusingRect, mouseDownData, containerRef } = this.props;
+    const { mouseDownData, containerRef } = this.props;
     const { clientX, clientY, filesLeft, filesTop } = mouseDownData;
     const { scrollTop } = containerRef.current as any;
-
-    setFocusingRect(true);
 
     const startLeft = clientX - filesLeft;
     const startTop = clientY - filesTop + scrollTop;
@@ -201,7 +192,6 @@ export class FocusRect extends Component<Props, State> {
   handleMouseUp = () => {
     this.removeListeners();
     this.props.onMouseUp();
-    this.props.setFocusingRect(false);
   };
 
   getInlineStyles = (): CSSProperties => {
@@ -224,11 +214,4 @@ export class FocusRect extends Component<Props, State> {
   }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
-  setFocusingRect: value => dispatch(setFocusingRect(value))
-});
-
-export default connect(
-  null,
-  mapDispatchToProps
-)(withContext(FocusRect, "filesystem"));
+export default withContext(FocusRect, "filesystem");

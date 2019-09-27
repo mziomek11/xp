@@ -6,7 +6,6 @@ import { FocusRect, StartEventData } from "./FocusRect";
 import { filesystemConfig } from "../../../../config";
 import { findByTestAtrr } from "../../../../../testingUtils";
 
-let mockSetFocusingRectFn: jest.Mock;
 let mockOnMouseUpFn: jest.Mock;
 let mockSetFocusedFn: jest.Mock;
 
@@ -20,12 +19,10 @@ const createWrapper = (
   } = {},
   display: Display = "tiles"
 ) => {
-  mockSetFocusingRectFn = jest.fn();
   mockOnMouseUpFn = jest.fn();
   mockSetFocusedFn = jest.fn();
 
   const props = {
-    setFocusingRect: mockSetFocusingRectFn,
     onMouseUp: mockOnMouseUpFn,
     mouseDownData: {
       clientX: 0,
@@ -59,13 +56,6 @@ let wrapper = createWrapper();
 
 describe("Filesystem FocusRect Component", () => {
   describe("componentDidMount", () => {
-    it("should call setFocusingRect", () => {
-      wrapper = createWrapper();
-
-      expect(mockSetFocusingRectFn.mock.calls.length).toBe(1);
-      expect(mockSetFocusingRectFn.mock.calls[0]).toEqual([true]);
-    });
-
     it("should change state", () => {
       wrapper = createWrapper(
         { clientX: 50, filesLeft: 20, clientY: 50, filesTop: 20 },
@@ -232,14 +222,6 @@ describe("Filesystem FocusRect Component", () => {
   });
 
   describe("handleMouseUp", () => {
-    it("should call setFocusingRect", () => {
-      wrapper = createWrapper();
-      wrapper.instance().handleMouseUp();
-
-      expect(mockSetFocusingRectFn.mock.calls.length).toBe(2);
-      expect(mockSetFocusingRectFn.mock.calls[1]).toEqual([false]);
-    });
-
     it("should call onMouseUp", () => {
       wrapper = createWrapper();
       wrapper.instance().handleMouseUp();

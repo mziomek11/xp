@@ -3,7 +3,6 @@ import reducer, { FileSystemState } from "./reducer";
 import { FileTree } from "./models";
 
 const initState: FileSystemState = {
-  isFocusingRect: false,
   copiedFiles: {},
   files: {
     "Local Disk": {
@@ -100,20 +99,6 @@ describe("Filesystem reducer", () => {
       expect(updatedState).toEqual({
         ...initState,
         copiedFiles: updatedCopiedFiles
-      });
-    });
-  });
-
-  describe("setFocusingRect", () => {
-    it("should update state", () => {
-      const updatedState = reducer(initState, {
-        type: FilesystemAction.SET_FOCUSING_RECT,
-        payload: { isFocusingRect: true }
-      });
-
-      expect(updatedState).toEqual({
-        ...initState,
-        isFocusingRect: true
       });
     });
   });

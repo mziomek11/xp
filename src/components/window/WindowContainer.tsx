@@ -1,9 +1,7 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
 
 import Window from "./Window";
 import withContext from "../../hoc/withContext";
-import { RootState } from "MyTypes";
 import { WindowContextType } from "ContextType";
 import { getClassName, areObjectsEqual } from "../../utils";
 
@@ -12,18 +10,22 @@ type OwnProps = {
   children: React.ReactNode;
 };
 
-type StateProps = {
-  isFocusingRect: boolean;
+type Props = OwnProps;
+type State = {
+  mouseDownAtWindow: boolean;
 };
 
-type Props = OwnProps & StateProps;
-
-export class WindowContainer extends Component<Props> {
+export class WindowContainer extends Component<Props, State> {
+  readonly state: State = {
+    mouseDownAtWindow: false
+  };
   componentDidMount() {
+    window.addEventListener("mousedown", this.checkForMouseDownPosition);
     window.addEventListener("mouseup", this.checkForUnfocus);
   }
 
   componentWillUnmount() {
+    window.removeEventListener("mousedown", this.checkForMouseDownPosition);
     window.removeEventListener("mouseup", this.checkForUnfocus);
   }
 
@@ -41,15 +43,32 @@ export class WindowContainer extends Component<Props> {
     return !areObjectsEqual(this.props.context, context, values);
   }
 
+  checkForMouseDownPosition = (e: MouseEvent) => {
+    if (!this.props.context.focused) return;
+
+    const mouseDownAtWindow = this.clickedWindow(e);
+    if (this.state.mouseDownAtWindow !== mouseDownAtWindow) {
+      this.setState({ mouseDownAtWindow });
+    }
+  };
+
   checkForUnfocus = (e: MouseEvent) => {
-    const { clickedWindow, clickedOnToolbarApp } = this;
-    const { isFocusingRect, context } = this.props;
+    const { context } = this.props;
     const { removeFocus, focused } = context;
     if (!focused) return;
 
-    if (!clickedWindow(e) && !clickedOnToolbarApp(e) && !isFocusingRect) {
+    if (this.shouldUnfocus(e)) {
       removeFocus();
     }
+  };
+
+  shouldUnfocus = (e: MouseEvent) => {
+    const { mouseDownAtWindow } = this.state;
+    return (
+      !mouseDownAtWindow &&
+      !this.clickedWindow(e) &&
+      !this.clickedOnToolbarApp(e)
+    );
   };
 
   clickedWindow = ({ clientX, clientY }: MouseEvent) => {
@@ -129,8 +148,4 @@ export class WindowContainer extends Component<Props> {
   }
 }
 
-const mapStateToProps = (state: RootState): StateProps => ({
-  isFocusingRect: state.fileSystem.isFocusingRect
-});
-
-export default connect(mapStateToProps)(withContext(WindowContainer, "window"));
+export default withContext(WindowContainer, "window");

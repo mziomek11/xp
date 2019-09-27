@@ -6,7 +6,7 @@ import { testContextData } from "./Context.test";
 import { findByTestAtrr, getEventTargetClassList } from "../../../testingUtils";
 
 let comp = (
-  <WindowContainer context={testContextData} isFocusingRect={false}>
+  <WindowContainer context={testContextData}>
     <div data-test="child" />
     <div data-test="child" />
   </WindowContainer>
@@ -14,18 +14,9 @@ let comp = (
 let wrapper = shallow<WindowContainer>(comp);
 let instance = wrapper.instance();
 
-const createComp = (
-  context: Partial<typeof testContextData>,
-  isFocusingRect: boolean = false
-) => {
+const createComp = (context: Partial<typeof testContextData>) => {
   const newContext = { ...testContextData, ...context };
-  return (
-    <WindowContainer
-      context={newContext}
-      isFocusingRect={isFocusingRect}
-      children={{}}
-    />
-  );
+  return <WindowContainer context={newContext} children={{}} />;
 };
 
 describe("WindowContainer Component", () => {

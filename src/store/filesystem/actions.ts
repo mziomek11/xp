@@ -6,10 +6,6 @@ import { FileTree, FileType, File } from "./models";
 import { deepCopy } from "../../utils";
 import { objectPropFromPath } from "../../utils/filesystem";
 
-export const setFocusingRect = (value: boolean) => {
-  return action(FileSystemAction.SET_FOCUSING_RECT, { isFocusingRect: value });
-};
-
 export const create = (path: string[], type: FileType) => {
   const fileTree = getFileTreeCopy();
   const [possibleFiles, possiblePath] = objectPropFromPath(fileTree, path);

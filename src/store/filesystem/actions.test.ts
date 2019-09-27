@@ -20,22 +20,6 @@ describe("Filesystem actions", () => {
     store.dispatch(actions.copy([], []));
   });
 
-  describe("setFocusingRect", () => {
-    it("should toggle isFocusingRect", () => {
-      const actionTrue = actions.setFocusingRect(true);
-      expect(actionTrue).toEqual({
-        type: FilesystemAction.SET_FOCUSING_RECT,
-        payload: { isFocusingRect: true }
-      });
-
-      const actionFalse = actions.setFocusingRect(false);
-      expect(actionFalse).toEqual({
-        type: FilesystemAction.SET_FOCUSING_RECT,
-        payload: { isFocusingRect: false }
-      });
-    });
-  });
-
   describe("create", () => {
     it("should add folders", () => {
       store.dispatch(actions.create([], "folder"));
