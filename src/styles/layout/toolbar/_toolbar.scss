@@ -1,0 +1,14 @@
+.toolbar {
+  @include toolbar-background;
+  display: flex;
+  position: relative;
+  justify-content: space-between;
+  font-weight: 400;
+  font-size: $toolbar-font-size;
+  z-index: $toolbar-z-index;
+  color: white;
+}
+
+.toolbar__left {
+  display: flex;
+}

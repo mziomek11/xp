@@ -45,7 +45,7 @@ class Views extends Component<{}, State> {
         >
           <img src={viewIcon} alt="view icon" data-test="icon" />
           <span
-            className="filesystem__action-dropdown-arrow filesystem__action-dropdown-arrow--near"
+            className="filesystem__action__dropdown-arrow filesystem__action__dropdown-arrow--near"
             data-test="arrow"
           />
           {isOpen && <ViewsDropDown data-test="dropdown" />}

@@ -41,18 +41,14 @@ export const MenuItem: React.FC<Props> = ({
 
   return (
     <div
-      className="toolbar__application-menu-item"
+      className="taskbar__menu__item"
       onClick={handleClick}
       data-test="menu-item"
     >
-      <div className="toolbar__application-icon-container">
-        <img
-          src={icon}
-          className="toolbar__application-icon"
-          alt="applicaiton icon"
-        />
+      <div className="taskbar__icon-container">
+        <img src={icon} className="taskbar__icon" alt="applicaiton icon" />
       </div>
-      <span className="toolbar__application-text">{name}</span>
+      <span className="taskbar__text">{name}</span>
     </div>
   );
 };

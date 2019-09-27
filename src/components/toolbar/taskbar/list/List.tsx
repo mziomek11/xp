@@ -11,7 +11,7 @@ type Props = {
 
 const List: React.FC<Props> = ({ appWidth, multipleApps, singleApps }) => {
   return (
-    <div className="toolbar__applications" data-test="list">
+    <div className="taskbar" data-test="list">
       {Object.keys(multipleApps).map(key => (
         <SelectApplication
           application={key as any}

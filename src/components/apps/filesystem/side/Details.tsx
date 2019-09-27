@@ -58,8 +58,8 @@ export class Details extends Component<Props, {}> {
 
     return (
       <Item title="Details" data-test="container">
-        <h5 className="filesystem__side-content-heading">{heading}</h5>
-        <p className="filesystem__side-content-paragraph"> {paragraph}</p>
+        <h5 className="filesystem__side__content__heading">{heading}</h5>
+        <p> {paragraph}</p>
       </Item>
     );
   }

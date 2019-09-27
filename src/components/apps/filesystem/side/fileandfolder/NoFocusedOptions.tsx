@@ -24,7 +24,7 @@ const NoFocusedOptions: React.FC<Props> = ({ context, createFolder }) => {
   const handleCreateClick = () => createFolder(context.path, "folder");
 
   return (
-    <ul className="filesystem__side-content-list">
+    <ul className="filesystem__side__list">
       <ListItem icon={createIcon} onClick={handleCreateClick}>
         Create new folder
       </ListItem>

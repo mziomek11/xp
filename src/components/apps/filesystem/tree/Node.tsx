@@ -50,13 +50,13 @@ class TreeNode extends Component<Props, State> {
   };
 
   getContainerClass = (selected: boolean) => {
-    const baseClass = "filesystem__tree-list-item";
+    const baseClass = "filesystem__tree__item";
 
     return getClassName(baseClass, { selected });
   };
 
   getTogglerClass = (shouldShowList: boolean) => {
-    const baseClass = "filesystem__tree-list-item-toggler";
+    const baseClass = "filesystem__tree__item__toggler";
     return getClassName(baseClass, {
       invisible: !shouldShowList,
       open: this.state.open
@@ -89,7 +89,7 @@ class TreeNode extends Component<Props, State> {
 
     return (
       <li className={containerClass} data-test="container">
-        <div className="filesystem__tree-list-item-container">
+        <div className="filesystem__tree__item__content">
           {withToggler && (
             <div
               onClick={this.handleTogglerClick}
@@ -98,28 +98,25 @@ class TreeNode extends Component<Props, State> {
             />
           )}
           <div
-            className="filesystem__tree-list-item-text-container"
+            className="filesystem__tree__item__text-container"
             onClick={this.handleNameContainerClick}
             data-test="name-container"
           >
-            <div className="filesystem__tree-list-item-icon-container">
+            <div className="filesystem__tree__item__icon-container">
               <img
                 src={icon}
                 alt="file icon"
-                className="filesystem__tree-list-item-icon"
+                className="filesystem__tree__item__icon"
                 data-test="icon"
               />
             </div>
-            <span
-              className={"filesystem__tree-list-item-text"}
-              data-test="text"
-            >
+            <span className={"filesystem__tree__item__text"} data-test="text">
               {name}
             </span>
           </div>
         </div>
         {showList && this.state.open && (
-          <ul className="filesystem__tree-list" data-test="list">
+          <ul className="filesystem__tree__list" data-test="list">
             {Object.keys(content!).map(key => {
               const file = (content as any)[key] as File;
               return (

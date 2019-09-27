@@ -1,0 +1,83 @@
+.window {
+  position: absolute;
+  overflow: hidden;
+  padding: $window-resizer-size;
+  border-top-left-radius: $window-top-border-radius;
+  border-top-right-radius: $window-top-border-radius;
+  font-size: 1.55em;
+  z-index: $window-z-index;
+
+  &--fullscreen {
+    padding: 0;
+    border-radius: 0;
+  }
+}
+
+.window__bar {
+  @include window-bar-gradient($window-bar);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: $window-bar-font-size;
+  padding: 0 $window-bar-padding;
+  height: $window-bar-height;
+  color: white;
+
+  .window--focused & {
+    @include window-bar-gradient($window-bar-focused);
+  }
+}
+
+.window__bar__left {
+  max-width: calc(100% - #{$window-actions-size} - #{$window-bar-padding});
+  display: flex;
+  align-items: center;
+}
+
+.window__icon-container {
+  @include all-widths($window-icon-width);
+  @include flex-centered;
+  height: 100%;
+}
+
+.window__icon {
+  width: 100%;
+  height: auto;
+}
+
+.window__title {
+  width: 100%;
+  margin-left: $window-title-margin;
+  user-select: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.window__actions {
+  display: flex;
+  height: 100%;
+  width: $window-actions-size;
+  align-items: center;
+}
+
+.window__action {
+  width: $window-action-size;
+  height: $window-action-size;
+  position: relative;
+  margin-right: $window-bar-padding;
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  @include window-icon("minimalize");
+  @include window-icon("fullscreen");
+  @include window-icon("exit");
+}
+
+.window__content {
+  height: calc(100% - #{$window-bar-height});
+  background: white;
+}

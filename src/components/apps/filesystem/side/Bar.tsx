@@ -30,7 +30,7 @@ export class Bar extends Component<Props, {}> {
     if (!shouldRender) return null;
 
     return (
-      <div className="filesystem__side-bar" data-test="container">
+      <div className="filesystem__side__bar" data-test="container">
         <FileAndFolderTasks data-test="tasks" />
         <Details data-test="details" />
       </div>

@@ -3,11 +3,11 @@
   height: 100%;
   margin-right: $start-margin;
   border-right: red;
-  background: url("../../assets/toolbar/start.png");
+  background: url("../../../assets/toolbar/start.png");
   background-size: cover;
 
   &:hover {
-    background: url("../../assets/toolbar/start-hover.png");
+    background: url("../../../assets/toolbar/start-hover.png");
     background-size: cover;
   }
 }

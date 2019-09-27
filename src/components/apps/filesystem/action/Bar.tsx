@@ -22,7 +22,7 @@ export class Bar extends Component<Props, {}> {
     if (!showActionBar) return null;
 
     return (
-      <div className="filesystem__action-bar" data-test="bar">
+      <div className="filesystem__action__bar" data-test="bar">
         <Navigation data-test="navigation" />
         <Folders data-test="folders" />
         <Views data-test="views" />

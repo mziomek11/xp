@@ -28,12 +28,12 @@ const ArrowLeft: React.FC<DirectionArrowProps> = ({
     >
       <img
         src={icon}
-        className="filesystem__action-arrow"
+        className="filesystem__action__arrow"
         alt="navigation back arrow"
         ref={arrow}
         data-test="arrow"
       />
-      <span className="filesystem__action-text" ref={text} data-test="text">
+      <span className="filesystem__action__text" ref={text} data-test="text">
         Back
       </span>
       {historyArrow}

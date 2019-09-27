@@ -1,0 +1,5 @@
+@mixin border($size, $style, $sides) {
+  @each $side, $color in $sides {
+    border-#{$side}: $size $style $color;
+  }
+}

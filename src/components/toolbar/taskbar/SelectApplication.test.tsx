@@ -20,7 +20,7 @@ const createWrapper = (application: Application, focused: boolean = false) => {
 const wrapper = createWrapper("filesystem");
 const instance = wrapper.instance();
 
-describe("ToolbarSelectApplication Component", () => {
+describe("Taskbar SelectApplication Component", () => {
   describe("render", () => {
     it("should render without throwing an error", () => {
       expect(findByTestAtrr(wrapper, "application").length).toBe(1);
@@ -86,7 +86,7 @@ describe("ToolbarSelectApplication Component", () => {
   });
 
   describe("getClassName", () => {
-    const baseClassName = "toolbar__application";
+    const baseClassName = "taskbar__application";
     const withMenuModifier = ` ${baseClassName}--with-menu`;
     const focusedModifier = ` ${baseClassName}--focused`;
 

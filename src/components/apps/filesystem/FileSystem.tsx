@@ -24,13 +24,13 @@ export class FileSystem extends Component<Props> {
   render() {
     return (
       <div className="filesystem" data-test="filesystem">
-        <div className="filesystem__menu-container" data-test="menu-container">
+        <div className="filesystem__menu" data-test="menu-container">
           <Menu data-test="menu" />
-          <div className="filesystem__menu-logo" data-test="menu-logo" />
+          <div className="filesystem__menu__logo" data-test="menu-logo" />
         </div>
         <ActionBar data-test="action-bar" />
         <AdressBar data-test="adress-bar" />
-        <div className="filesystem__content-divider">
+        <div className="filesystem__divider">
           {this.props.context.options.showFolders ? (
             <Folders data-test="folders" />
           ) : (

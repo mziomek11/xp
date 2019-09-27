@@ -12,46 +12,15 @@
   );
 }
 
-@mixin toolbar-application-background($map) {
+@mixin taskbar-background($map, $light: 0%) {
+  $c1: map-get($map, "main-1");
+  $c2: map-get($map, "main-1");
+  $c3: map-get($map, "main-1");
+
   background: linear-gradient(
     to bottom,
-    map-get($map, "main-1") 0%,
-    map-get($map, "main-2") 30%,
-    map-get($map, "main-3")
+    lighten($c1, $light) 0%,
+    lighten($c2, $light) 30%,
+    lighten($c3, $light)
   );
-
-  &:hover {
-    background: linear-gradient(
-      to bottom,
-      map-get($map, "main-1-hover") 0%,
-      map-get($map, "main-2-hover") 30%,
-      map-get($map, "main-3-hover")
-    );
-  }
-}
-
-@mixin toolbar-application-border($map) {
-  border-left: 1px solid map-get($map, "left");
-  border-right: 1px solid map-get($map, "right");
-  border-top: 1px solid map-get($map, "top");
-  border-bottom: 1px solid map-get($map, "bottom");
-}
-
-@mixin toolbar-application-menu-item-background {
-  background: map-get($toolbar-application-item, "main");
-
-  &:hover {
-    background: map-get($toolbar-application-item, "main-hover");
-  }
-}
-
-@mixin toolbar-application-menu-item-border {
-  $map: $toolbar-application-item-border;
-  border-left: 2px solid map-get($map, "left");
-  border-right: 2px solid map-get($map, "right");
-
-  &:hover {
-    border-left: 2px solid map-get($map, "left-hover");
-    border-right: 2px solid map-get($map, "right-hover");
-  }
 }

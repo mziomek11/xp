@@ -43,11 +43,11 @@ class HistoryArrow extends Component<Props, State> {
     const { dropdownOptions, isOpen } = this.props;
     return (
       <div
-        className="filesystem__action-dropdown-arrow-container"
+        className="filesystem__action__dropdown-arrow-container"
         onClick={this.handleClick}
         data-test="arrow-container"
       >
-        <div className="filesystem__action-dropdown-arrow" data-test="arrow" />
+        <div className="filesystem__action__dropdown-arrow" data-test="arrow" />
         {isOpen && (
           <HistoryArrowDropDown
             options={dropdownOptions}

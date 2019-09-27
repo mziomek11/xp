@@ -48,7 +48,7 @@ const createWrapper = (
   return shallow<FileContainer>(comp);
 };
 
-describe("Filesystem DiskHeader Component", () => {
+describe("Filesystem FileContainer Component", () => {
   describe("render", () => {
     it("should render thumbnail", () => {
       const wrapper = createWrapper({ display: "thumbnails" });
@@ -75,7 +75,7 @@ describe("Filesystem DiskHeader Component", () => {
     it("should return proper class", () => {
       const wrapper = createWrapper({ display: "tiles" });
       const result = wrapper.instance().getElementClass("test");
-      const expected = "filesystem__file-test filesystem__file-test--tiles";
+      const expected = "filesystem__file__test filesystem__file__test--tiles";
 
       expect(result).toBe(expected);
     });

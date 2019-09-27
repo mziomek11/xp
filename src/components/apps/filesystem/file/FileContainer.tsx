@@ -50,15 +50,17 @@ export class FileContainer extends Component<Props, {}> {
   }
 
   getContainerClass = (focused: boolean) => {
-    const { display } = this.props.context.options;
+    const { options, renamedFile } = this.props.context;
+    const { display } = options;
+    const renaming = renamedFile === this.props.file.name;
 
-    return getClassName(containerClass, { focused }, [display, "renaming"]);
+    return getClassName(containerClass, { focused, renaming }, [display]);
   };
 
   getElementClass = (element: string) => {
     const { display } = this.props.context.options;
 
-    return `filesystem__file-${element} filesystem__file-${element}--${display}`;
+    return getClassName(`filesystem__file__${element}`, {}, [display]);
   };
 
   handleClick = () => {

@@ -19,7 +19,7 @@ export const Bar: React.FC<Props> = ({ onMouseDown, onClick }) => {
       data-test="bar"
       onClick={onClick}
     >
-      <div className="window__bar-left">
+      <div className="window__bar__left">
         <Icon data-test="icon" />
         <Title data-test="title" />
       </div>

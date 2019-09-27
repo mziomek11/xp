@@ -34,7 +34,7 @@ export class Folders extends Component<Props, {}> {
           data-test="clickable"
         >
           <img src={foldersIcon} alt="folders icon" />
-          <span className="filesystem__action-text">Folders</span>
+          <span className="filesystem__action__text">Folders</span>
         </div>
       </div>
     );

@@ -12,6 +12,7 @@ const props = {
   toggleMinimalize: mockToggleMinimalizeFn,
   changePriority: mockChangePriority,
   name: "WindowName",
+  icon: "this is icon",
   focused: false,
   minimalized: false,
   openedWindows: 0
@@ -23,7 +24,7 @@ const createWrapper = (changedProps: Partial<typeof props>) => {
   return shallow<Application>(<Application {...newProps} />);
 };
 
-describe("ToolbarApplication Component", () => {
+describe("Taskbar Application Component", () => {
   describe("render", () => {
     it("should render without throwing an error", () => {
       expect(findByTestAtrr(wrapper, "application").length).toBe(1);
@@ -109,7 +110,7 @@ describe("ToolbarApplication Component", () => {
   });
 
   describe("getClassName", () => {
-    const baseClass = "toolbar__application";
+    const baseClass = "taskbar__application";
 
     it("should return proper className when focused", () => {
       const focusWrapper = createWrapper({ focused: true });

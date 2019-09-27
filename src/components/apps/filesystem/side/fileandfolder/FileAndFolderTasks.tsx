@@ -25,7 +25,7 @@ export class FileAndFolderTasks extends Component<Props, {}> {
 
     return (
       <SideItem title={"File and foler tasks"} data-test="container">
-        <ul className="filesystem__side-content-list">{options}</ul>
+        <ul className="filesystem__side__list">{options}</ul>
       </SideItem>
     );
   }

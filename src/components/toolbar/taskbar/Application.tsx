@@ -30,7 +30,7 @@ type DispatchProps = {
 type Props = OwnProps & StateProps & DispatchProps;
 
 export class Application extends React.Component<Props, {}> {
-  private baseClassName = "toolbar__application";
+  private baseClassName = "taskbar__application";
 
   handleClick = () => {
     const {
@@ -61,15 +61,11 @@ export class Application extends React.Component<Props, {}> {
         style={{ width }}
         data-test="application"
       >
-        <div className={`${this.baseClassName}-icon-container`}>
-          <img
-            src={icon}
-            className={`${this.baseClassName}-icon`}
-            alt="application icon"
-          />
+        <div className="taskbar__icon-container">
+          <img src={icon} className="taskbar__icon" alt="application icon" />
         </div>
 
-        <span className={`${this.baseClassName}-text`} data-test="text">
+        <span className="taskbar__text" data-test="text">
           {name}
         </span>
       </div>

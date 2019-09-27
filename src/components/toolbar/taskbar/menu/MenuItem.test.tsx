@@ -11,6 +11,7 @@ const props = {
   toggleMinimalize: mockToggleMinimalize,
   name: "example",
   id: "1",
+  icon: "this is icon",
   minimalized: false,
   focused: false
 };
@@ -31,7 +32,7 @@ const createWrapper = (changedProps: Partial<typeof props> = {}) => {
 const wrapper = createWrapper();
 const parentDiv = findByTestAtrr(wrapper, "menu-item");
 
-describe("ToolbarApplcationMenuItem Component", () => {
+describe("Taskbar Applcation MenuItem Component", () => {
   describe("render", () => {
     it("should render without throwing an eror", () => {
       expect(parentDiv.length).toBe(1);

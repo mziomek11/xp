@@ -11,10 +11,10 @@ export const Folders: React.FC<{ context: FilesystemContextType }> = ({
 
   return (
     <div className="filesystem__folders" data-test="container">
-      <div className="filesystem__folders-header">
+      <div className="filesystem__folders__header">
         <span>Folders</span>
         <div
-          className="filesystem__folders-close"
+          className="filesystem__folders__close"
           onClick={handleCloseClick}
           data-test="clickable"
         />

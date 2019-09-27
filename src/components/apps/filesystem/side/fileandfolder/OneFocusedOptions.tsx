@@ -20,7 +20,7 @@ const OneFocusedOptions: React.FC<Props> = ({ context }) => {
   const handleRenameClick = () => setRenamedFile(false);
 
   return (
-    <ul className="filesystem__side-content-list">
+    <ul className="filesystem__side__list">
       <ListItem icon={renameIcon} onClick={handleRenameClick}>
         Rename this {typeText}
       </ListItem>

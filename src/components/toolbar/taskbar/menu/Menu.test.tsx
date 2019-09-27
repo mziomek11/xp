@@ -15,7 +15,7 @@ const props = {
 const wrapper = shallow<Menu>(<Menu {...props} />);
 const instance = wrapper.instance();
 
-describe("ToolbarApplicationMenu Component", () => {
+describe("Taskbar Application Menu Component", () => {
   describe("render", () => {
     it("should render without throwing an error", () => {
       expect(findByTestAtrr(wrapper, "menu").length).toBe(1);
@@ -40,18 +40,6 @@ describe("ToolbarApplicationMenu Component", () => {
       instance.handleClickOutsideMenu(ev);
 
       expect(mockCloseMenuFn.mock.calls.length).toBe(1);
-    });
-  });
-
-  describe("clickedOutsideMenu", () => {
-    it("should return false when contains class", () => {
-      const ev: any = { target: { classList: { contains: () => true } } };
-      expect(instance.clickedOutsideMenu(ev)).toBe(false);
-    });
-
-    it("should returnf true when NOT contains class", () => {
-      const ev: any = { target: { classList: { contains: () => false } } };
-      expect(instance.clickedOutsideMenu(ev)).toBe(true);
     });
   });
 });

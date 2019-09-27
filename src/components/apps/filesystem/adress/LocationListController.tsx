@@ -38,7 +38,7 @@ class LocationListController extends Component<{}, State> {
   render() {
     return (
       <div
-        className="filesystem__location-arrow"
+        className="filesystem__location__arrow"
         onClick={this.handleContainerClick}
         data-test="container"
       >

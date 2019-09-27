@@ -27,7 +27,7 @@ const ArrowRight: React.FC<DirectionArrowProps> = ({
     >
       <img
         src={icon}
-        className="filesystem__action-arrow"
+        className="filesystem__action__arrow"
         alt="navigation forward arrow"
         ref={arrow}
         data-test="arrow"

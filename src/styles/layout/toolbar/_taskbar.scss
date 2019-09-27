@@ -1,0 +1,91 @@
+.taskbar {
+  @include flex-centered;
+  align-items: flex-start;
+}
+
+.taskbar__application {
+  @include taskbar-background($taskbar-colors);
+  @include border(1px, solid, $taskbar-border-colors);
+  display: flex;
+  align-items: center;
+  position: relative;
+  height: calc(100% - 6px);
+  margin-top: 4px;
+  padding: $taskbar-padding;
+  border-radius: 3px;
+
+  &--with-menu {
+    justify-content: space-between;
+  }
+
+  &:hover {
+    @include taskbar-background($taskbar-colors, $taskbar-lightness-hover);
+  }
+
+  &--focused,
+  &:active {
+    @include taskbar-background($taskbar-colors-focused);
+    @include border(1px, solid, $taskbar-border-colors-focused);
+  }
+
+  &--focused:hover {
+    @include taskbar-background(
+      $taskbar-colors-focused,
+      $taskbar-lightness-hover
+    );
+  }
+
+  &:active:hover {
+    @include taskbar-background($taskbar-colors-focused);
+  }
+}
+
+.taskbar__icon-container {
+  @include flex-centered;
+  @include all-widths($taskbar-icon-width);
+  margin-right: $window-title-margin;
+}
+
+.taskbar__icon {
+  width: 100%;
+  height: auto;
+}
+
+.taskbar__text {
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.taskbar__count {
+  color: $taskbar-count-color;
+  margin-right: $taskbar-count-margin;
+  font-weight: 500;
+}
+
+.taskbar__arrow {
+  @include arrow-bottom(4px, white);
+  margin-left: auto;
+}
+
+.taskbar__menu {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 5px);
+  width: 100%;
+}
+
+.taskbar__menu__item {
+  @include border(2px, solid, $taskbar-item-border-colors);
+  background: $taskbar-item-color;
+  display: flex;
+  align-items: center;
+  width: calc(100% + 5px);
+  height: $taskbar-menu-item-height;
+  padding: 0 $taskbar-padding - 0.2em;
+
+  &:hover {
+    @include border(2px, solid, $taskbar-item-border-colors-hover);
+    background: $taskbar-item-color-hover;
+  }
+}

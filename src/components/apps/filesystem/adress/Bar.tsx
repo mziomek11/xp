@@ -19,8 +19,8 @@ export class Bar extends Component<Props, {}> {
     if (!showAdressBar) return null;
 
     return (
-      <div className="filesystem__adress-bar" data-test="container">
-        <span className="filesystem__adress-text" data-test="text">
+      <div className="filesystem__adress__bar" data-test="container">
+        <span className="filesystem__adress__text" data-test="text">
           Adress
         </span>
         <Location data-test="location" />

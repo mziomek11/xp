@@ -32,18 +32,21 @@
   );
 }
 
-@mixin window-icon-gradient($map) {
-  background: radial-gradient(
-    ellipse at top left,
-    map-get($map, "start"),
-    map-get($map, "end")
-  );
+@mixin window-icon($icon) {
+  $path: "../../../assets/actions/";
+  &--#{$icon} {
+    background-image: url(#{$path}#{$icon}-not-focused.png);
+  }
 
-  &:hover {
-    background: radial-gradient(
-      ellipse at top left,
-      map-get($map, "start-hover"),
-      map-get($map, "end-hover")
-    );
+  .window--focused &--#{$icon} {
+    background-image: url(#{$path}#{$icon}.png);
+  }
+
+  &--#{$icon}:hover {
+    background-image: url(#{$path}#{$icon}-hover.png);
+  }
+
+  &--#{$icon}:active {
+    background-image: url(#{$path}#{$icon}-active.png);
   }
 }

@@ -4,25 +4,25 @@
   height: 100%;
 }
 
-.filesystem__menu-container {
+.filesystem__menu {
   display: flex;
 }
 
-.filesystem__menu-logo {
+.filesystem__menu__logo {
   @include covered-background("../../../assets/folder/file-system-logo.png");
   width: 39px;
   border-bottom: 1px solid map-get($menu, "border");
   border-left: 1px solid map-get($menu, "border");
 }
 
-.filesystem__action-bar {
+.filesystem__action__bar {
   display: flex;
   width: 100%;
   background: map-get($menu, "main");
   border-bottom: 1px solid map-get($menu, "border");
 }
 
-.filesystem__action-arrow {
+.filesystem__action__arrow {
   padding: $filesystem-action-padding 0;
 }
 
@@ -36,7 +36,7 @@
   }
 }
 
-.filesystem__action-dropdown-arrow-container {
+.filesystem__action__dropdown-arrow-container {
   @include flex-centered;
   height: 100%;
   margin: $filesystem-action-dropdown-arrow-container-margin;
@@ -55,7 +55,7 @@
   }
 }
 
-.filesystem__action-dropdown-arrow {
+.filesystem__action__dropdown-arrow {
   @include arrow-bottom($filesystem-action-dropdown-arrow-size, black);
 
   .filesystem__action--disabled & {
@@ -70,7 +70,7 @@
   }
 }
 
-.filesystem__action-text {
+.filesystem__action__text {
   font-size: $filesystem-action-text-font-size;
   padding-left: $filesystem-action-text-padding;
 
@@ -124,7 +124,7 @@
   }
 }
 
-.filesystem__adress-bar {
+.filesystem__adress__bar {
   display: flex;
   align-items: center;
   width: 100%;
@@ -135,7 +135,7 @@
   font-size: $filesystem-adress-text-size;
 }
 
-.filesystem__adress-text {
+.filesystem__adress__text {
   color: $filesystem-adress-text-color;
   margin-right: $filesystem-adress-bar-padding-horizontal;
 }
@@ -146,7 +146,7 @@
   font-size: $filesysyem-location-font-size;
 }
 
-.filesystem__location-items {
+.filesystem__location__items {
   overflow-x: hidden;
   overflow-y: visible;
   display: flex;
@@ -158,7 +158,7 @@
   padding-right: 0;
 }
 
-.filesystem__location-icon-container {
+.filesystem__location__icon-container {
   @include flex-centered;
   @include all-widths($filesystem-location-icon-size);
   margin-right: $filesystem-location-icon-margin;
@@ -169,12 +169,12 @@
   }
 }
 
-.filesystem__location-icon {
+.filesystem__location__icon {
   width: 100%;
   height: auto;
 }
 
-.filesystem__location-input {
+.filesystem__location__input {
   display: flex;
   align-items: center;
   width: 100%;
@@ -194,21 +194,21 @@
   }
 }
 
-.filesystem__location-arrow {
-  @include scrollbar-button("down");
+.filesystem__location__arrow {
   @include all-widths($filesystem-location-arrow-width);
+  background-color: $filesystem-location-arrrow-background;
+  display: block;
   height: $filesystem-location-arrow-height;
-
-  &:hover {
-    background-image: url("../../assets/scrollbar/button-down.png");
-  }
+  background-size: cover;
+  border: 1px solid $filesystem-location-arrow-border-color;
+  background-image: url("../../assets/scrollbar/button-down.png");
 
   &:active {
     background-image: url("../../assets/scrollbar/button-down-active.png");
   }
 }
 
-.filesystem__location-list {
+.filesystem__location__list {
   z-index: $location-z-index;
   width: 100%;
   overflow-y: auto;
@@ -222,7 +222,7 @@
   max-height: $filesystem-location-list-max-height;
 }
 
-.filesystem__adress-go-container {
+.filesystem__go {
   display: flex;
   align-items: center;
   margin-left: $filesystem-adress-bar-padding-horizontal - 3px;
@@ -242,28 +242,28 @@
   }
 }
 
-.filesystem__adress-go-icon {
+.filesystem__go__icon {
   @include covered-background(
     "../../../assets/folder/arrow-right-rect-normal.png"
   );
   width: $filesystem-adress-go-icon-size;
   height: $filesystem-adress-go-icon-size;
 
-  .filesystem__navigation-go-container:hover & {
+  .filesystem__go:hover & {
     background-image: url("../../assets/folder/arrow-right-rect-hover.png");
   }
 }
 
-.filesystem__adress-go-text {
+.filesystem__go__text {
   margin-left: $filesystem-adress-bar-padding-horizontal;
 }
 
-.filesystem__content-divider {
+.filesystem__divider {
   display: flex;
   height: 100%;
 }
 
-.filesystem__side-bar {
+.filesystem__side__bar {
   overflow-y: auto;
   flex-shrink: 0;
   padding: $filesystem-side-padding;
@@ -274,12 +274,12 @@
   );
 }
 
-.filesystem__side-item {
+.filesystem__side__item {
   margin-bottom: $filesystem-side-padding;
   width: $filesystem-side-item-width;
 }
 
-.filesystem__side-header {
+.filesystem__side__header {
   display: flex;
   justify-content: space-between;
   border-top-left-radius: $filesystem-side-header-border-radius;
@@ -299,7 +299,7 @@
   }
 }
 
-.filesystem__side-header-arrow {
+.filesystem__side__arrow {
   position: relative;
   width: $filesystem-side-arrow-size;
   height: $filesystem-side-arrow-size;
@@ -325,8 +325,8 @@
     top: 8px;
   }
 
-  .filesystem__side-header:hover &::before,
-  .filesystem__side-header:hover &::after {
+  .filesystem__side__header:hover &::before,
+  .filesystem__side__header:hover &::after {
     border-color: $filesystem-side-header-color-hover;
   }
 
@@ -335,7 +335,7 @@
   }
 }
 
-.filesystem__side-content {
+.filesystem__side__content {
   font-size: $filesystem-side-content-size;
   border: 1px solid white;
   border-top: 0;
@@ -344,21 +344,21 @@
   background: $filesystem-side-content-bg;
 }
 
-.filesystem__side-content-heading {
+.filesystem__side__content__heading {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: $filesystem-side-content-heading-size;
 }
 
-.filesystem__side-content-list-item {
+.filesystem__side__list__item {
   display: flex;
   align-items: center;
   color: $filesystem-side-header-color;
   margin-bottom: $filesystem-side-content-list-item-margin;
 }
 
-.filesystem__side-content-list-item-container {
+.filesystem__side__list__item__content {
   display: flex;
   align-items: center;
 
@@ -369,12 +369,12 @@
   }
 }
 
-.filesystem__side-content-list-item-icon-container {
+.filesystem__side__list__item__icon-container {
   width: $filesystem-side-content-list-icon-width;
   margin-right: $filesystem-side-content-list-icon-margin;
 }
 
-.filesystem__side-content-list-item-icon {
+.filesystem__side__list__item__icon {
   width: 100%;
   height: auto;
 }
@@ -390,14 +390,14 @@
     $filesystem-folders-background;
 }
 
-.filesystem__folders-header {
+.filesystem__folders__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: $filesystem-folders-header-padding;
 }
 
-.filesystem__folders-close {
+.filesystem__folders__close {
   position: relative;
   width: $filesystem-folders-close-size;
   height: $filesystem-folders-close-size;
@@ -433,18 +433,18 @@
   background: white;
 }
 
-.filesystem__tree-list {
+.filesystem__tree__list {
   margin-left: $filesystem-tree-list-item-toggler-margin +
     $filesystem-tree-list-item-toggler-size - 4px;
 }
 
-.filesystem__tree-list-item-container {
+.filesystem__tree__item__content {
   display: flex;
   align-items: center;
   white-space: nowrap;
 }
 
-.filesystem__tree-list-item-text-container {
+.filesystem__tree__item__text-container {
   display: flex;
   align-items: center;
 
@@ -454,7 +454,7 @@
     text-decoration-color: $filesystem-tree-list-item-text-color-hover;
   }
 
-  .filesystem__tree-list-item--selected > div > & {
+  .filesystem__tree__item--selected > div > & {
     color: white;
     text-decoration-color: white;
 
@@ -469,13 +469,13 @@
   }
 }
 
-.filesystem__tree-list-item-text {
-  .filesystem__tree-list-item--selected > div > div > & {
+.filesystem__tree__item__text {
+  .filesystem__tree__item--selected > div > div > & {
     background: $focus-color;
   }
 
   .filesystem__tree--location
-    .filesystem__tree-list-item--selected
+    .filesystem__tree__item--selected
     > div
     > div
     > & {
@@ -483,24 +483,24 @@
   }
 
   .filesystem__tree--location
-    .filesystem__tree-list-item-text-container:hover
+    .filesystem__tree__item__text-container:hover
     > & {
     background: $focus-color;
   }
 }
 
-.filesystem__tree-list-item-icon-container {
+.filesystem__tree__item__icon-container {
   flex-shrink: 0;
   width: $filesystem-tree-list-item-icon-width;
   margin-right: $filesystem-tree-list-item-toggler-margin - 1px;
 }
 
-.filesystem__tree-list-item-icon {
+.filesystem__tree__item__icon {
   width: 100%;
   height: auto;
 }
 
-.filesystem__tree-list-item-toggler {
+.filesystem__tree__item__toggler {
   flex-shrink: 0;
   position: relative;
   width: $filesystem-tree-list-item-toggler-size;
@@ -540,23 +540,23 @@
   }
 }
 
-.filesystem__disk-header {
+.filesystem__disk {
   padding: $filesystem-tiles-padding;
   padding-bottom: 0;
 }
 
-.filesystem__disk-text {
+.filesystem__disk__text {
   font-weight: 500;
   margin-bottom: 2px;
 }
 
-.filesystem__disk-divider {
+.filesystem__disk__divider {
   background: linear-gradient(to right, $filesystem-disk-divider-color, white);
   width: $filesystem-disk-divider-width;
   height: 1px;
 }
 
-.filesystem__file-list {
+.filesystem__file__list {
   position: relative;
   display: flex;
   flex-wrap: wrap;
@@ -599,7 +599,7 @@
   }
 }
 
-.filesystem__file-content {
+.filesystem__file__content {
   display: flex;
 
   &--thumbnails {
@@ -622,7 +622,7 @@
   }
 }
 
-.filesystem__file-icon-container {
+.filesystem__file__icon-container {
   @include flex-centered;
 
   &--thumbnails {
@@ -652,7 +652,7 @@
   }
 }
 
-.filesystem__file-icon {
+.filesystem__file__icon {
   width: 100%;
   height: auto;
 
@@ -669,11 +669,11 @@
   }
 }
 
-.filesystem__file-name-container {
+.filesystem__file__name-container {
   @include flex-centered;
 }
 
-.filesystem__file-name {
+.filesystem__file__name {
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -698,7 +698,7 @@
   }
 }
 
-.filesystem__file-renamer {
+.filesystem__file__renamer {
   border: 1px solid black;
   padding: 0 $filesystem-renamer-padding;
   white-space: nowrap;
@@ -715,7 +715,7 @@
   }
 }
 
-.filesystem__file-focus-rect {
+.filesystem__file__focus-rect {
   border: 1px solid $focus-color;
   position: absolute;
 

@@ -88,14 +88,14 @@ export class Location extends Component<Props, State> {
     return (
       <>
         <div className="filesystem__location" data-test="location">
-          <div className="filesystem__location-items">
+          <div className="filesystem__location__items">
             <div
-              className="filesystem__location-icon-container"
+              className="filesystem__location__icon-container"
               onClick={this.handleIconClick}
               data-test="icon-container"
             >
               <img
-                className="filesystem__location-icon"
+                className="filesystem__location__icon"
                 alt="container-icon"
                 src={icon}
                 data-test="icon"

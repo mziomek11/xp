@@ -206,7 +206,7 @@ export class FocusRect extends Component<Props, State> {
 
     return (
       <div
-        className="filesystem__file-focus-rect"
+        className="filesystem__file__focus-rect"
         style={inlineStyles}
         data-test="rect"
       />

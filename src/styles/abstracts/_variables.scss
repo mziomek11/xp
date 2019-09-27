@@ -7,67 +7,6 @@ $focus-color: #316ac5;
 $font-family: "Roboto", sans-serif;
 $font-size: 10px;
 
-//Scrollbar
-
-$scrollbar-width: 14px;
-$scrollbar-track-color: #fbfbf8;
-$scrollbar-track-border-color: #eeede5;
-
-$scrollbar-thumb-color: (
-  "main-1": #b7caf5,
-  "main-2": #c8d6fb,
-  "main-3": #c6d6fd,
-  "main-4": #b9cbf3
-);
-
-$scrollbar-thumber-hover-lightness: 3%;
-$scrollbar-thumb-color-hover: (
-  "main-1":
-    lighten(
-      map-get($scrollbar-thumb-color, "main-1"),
-      $scrollbar-thumber-hover-lightness
-    ),
-  "main-2":
-    lighten(
-      map-get($scrollbar-thumb-color, "main-2"),
-      $scrollbar-thumber-hover-lightness
-    ),
-  "main-3":
-    lighten(
-      map-get($scrollbar-thumb-color, "main-3"),
-      $scrollbar-thumber-hover-lightness
-    ),
-  "main-4":
-    lighten(
-      map-get($scrollbar-thumb-color, "main-4"),
-      $scrollbar-thumber-hover-lightness
-    )
-);
-
-$scrollbar-thumber-active-darkness: 6%;
-$scrollbar-thumb-color-active: (
-  "main-1":
-    darken(
-      map-get($scrollbar-thumb-color, "main-1"),
-      $scrollbar-thumber-active-darkness
-    ),
-  "main-2":
-    darken(
-      map-get($scrollbar-thumb-color, "main-2"),
-      $scrollbar-thumber-active-darkness
-    ),
-  "main-3":
-    darken(
-      map-get($scrollbar-thumb-color, "main-3"),
-      $scrollbar-thumber-active-darkness
-    ),
-  "main-4":
-    darken(
-      map-get($scrollbar-thumb-color, "main-4"),
-      $scrollbar-thumber-active-darkness
-    )
-);
-
 //z-index
 
 $toolbar-z-index: 10;
@@ -86,7 +25,7 @@ $window-bar-padding: 4px;
 $window-bar-font-size: 0.92em;
 $window-icon-width: 18px;
 $window-title-margin: 4px;
-$window-action-size: 20px;
+$window-action-size: 21px;
 $window-actions-size: 3 * $window-action-size + 2 * $window-bar-padding;
 $window-resizer-size: 4px;
 $window-top-border-radius: 10px;
@@ -128,47 +67,9 @@ $window-bar-focused: (
   "main-4": #012f92
 );
 
-$window-blue-icon-start-focus: #7fa3f8;
-$window-blue-icon-end-focus: #0045d3;
-$window-blue-icon: (
-  "start": #809bea,
-  "end": #3f6ddc,
-  "start-hover": lighten($window-blue-icon-start-focus, $window-lightness-hover),
-  "end-hover": lighten($window-blue-icon-end-focus, $window-lightness-hover)
-);
-
-$window-blue-icon-focused: (
-  "start": $window-blue-icon-start-focus,
-  "end": $window-blue-icon-end-focus,
-  "start-hover": map-get($window-blue-icon, "start-hover"),
-  "end-hover": map-get($window-blue-icon, "end-hover")
-);
-
-$window-red-icon-start-focus: #ed957f;
-$window-red-icon-end-focus: #c22a00;
-$window-red-icon: (
-  "start": #b49cba,
-  "end": #a06072,
-  "start-hover": lighten($window-red-icon-start-focus, $window-lightness-hover),
-  "end-hover": lighten($window-red-icon-end-focus, $window-lightness-hover)
-);
-
-$window-red-icon-focused: (
-  "start": $window-red-icon-start-focus,
-  "end": $window-red-icon-end-focus,
-  "start-hover": map-get($window-red-icon, "start-hover"),
-  "end-hover": map-get($window-red-icon, "end-hover")
-);
-
 //Toolbar
 
 $toolbar-font-size: 1.3em;
-$toolbar-application-padding: 0.8em;
-$toolbar-application-menu-item-height: 21px;
-$toolbar-application-count-color: #ffcc6d;
-$toolbar-application-count-margin: 5px;
-$toolbar-application-icon-width: 15px;
-$toolbar-lightness-hover: 7%;
 
 $toolbar: (
   "main-1": #3168d5,
@@ -182,64 +83,62 @@ $toolbar: (
   "main-9": #1941a5
 );
 
-$toolbar-app-main-1: #4993ee;
-$toolbar-app-main-2: #397df3;
-$toolbar-app-main-3: #347cf1;
-$toolbar-application: (
-  "main-1": $toolbar-app-main-1,
-  "main-2": $toolbar-app-main-2,
-  "main-3": $toolbar-app-main-3,
-  "main-1-hover": lighten($toolbar-app-main-1, $toolbar-lightness-hover),
-  "main-2-hover": lighten($toolbar-app-main-2, $toolbar-lightness-hover),
-  "main-3-hover": lighten($toolbar-app-main-3, $toolbar-lightness-hover)
+//Taskbar
+
+$taskbar-padding: 0.8em;
+$taskbar-menu-item-height: 21px;
+$taskbar-count-color: #ffcc6d;
+$taskbar-count-margin: 5px;
+$taskbar-icon-width: 15px;
+$taskbar-lightness-hover: 7%;
+
+$taskbar-colors: (
+  "main-1": #4993ee,
+  "main-2": #397df3,
+  "main-3": #347cf1
 );
 
-$toolbar-application-border: (
+$taskbar-colors-focused: (
+  "main-1": #1650bc,
+  "main-2": #1a50b8,
+  "main-3": #2156b7
+);
+
+$taskbar-border-colors: (
   "left": #3067dd,
   "right": #2653ae,
   "top": #3172da,
   "bottom": #2652bc
 );
 
-$toolbar-application-item: (
-  "main": #2157d5,
-  "main-hover": #4f96ff
-);
-
-$toolbar-application-item-border: (
-  "left": #1e4fc3,
-  "right": #1d4ab5,
-  "left-hover": #4772d6,
-  "right-hover": #527bda
-);
-
-$toolbar-app-main-1-focused: #1650bc;
-$toolbar-app-main-2-focused: #1a50b8;
-$toolbar-app-main-3-focused: #2156b7;
-$toolbar-application-focused: (
-  "main-1": $toolbar-app-main-1-focused,
-  "main-2": $toolbar-app-main-2-focused,
-  "main-3": $toolbar-app-main-3-focused,
-  "main-1-hover": lighten($toolbar-app-main-1-focused, $toolbar-lightness-hover),
-  "main-2-hover": lighten($toolbar-app-main-2-focused, $toolbar-lightness-hover),
-  "main-3-hover": lighten($toolbar-app-main-3-focused, $toolbar-lightness-hover)
-);
-
-$toolbar-application-border-focused: (
+$taskbar-border-colors-focused: (
   "left": #0e3280,
   "right": #0e3ba1,
   "top": #123d94,
   "bottom": #0c3cac
 );
 
+$taskbar-item-color: #2157d5;
+$taskbar-item-color-hover: #4f96ff;
+
+$taskbar-item-border-colors: (
+  "left": #1e4fc3,
+  "right": #1d4ab5
+);
+
+$taskbar-item-border-colors-hover: (
+  "left": #4772d6,
+  "right": #527bda
+);
+
 //Start
+
 $start-border-radius: 7px;
 $start-margin: 9px;
 
-$time-width: 80px;
-
 //Time
 
+$time-width: 80px;
 $time: (
   "main-1": #095bc9,
   "main-2": #16adf0,
@@ -260,7 +159,6 @@ $time: (
 //Menu
 
 $menu-height: 24px;
-
 $menu: (
   "main": #f3f5f6,
   "border": #d8d2bd,
@@ -336,8 +234,10 @@ $filesystem-location-input-font-size: 1.05em;
 $filesystem-location-icon-margin: 3px;
 $filesystem-location-icon-size: 16px;
 
-$filesystem-location-arrow-width: 15px;
+$filesystem-location-arrow-width: 14px;
 $filesystem-location-arrow-height: 16px;
+$filesystem-location-arrrow-background: #bbbbbb;
+$filesystem-location-arrow-border-color: #eeede5;
 
 $filesystem-location-list-padding: 1px;
 $filesystem-location-list-max-height: 200px;

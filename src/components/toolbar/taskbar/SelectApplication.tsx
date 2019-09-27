@@ -22,7 +22,7 @@ type Props = OwnProps & StateProps;
 type State = { isOpen: boolean };
 
 export class SelectApplication extends React.Component<Props, State> {
-  private baseClassName = "toolbar__application";
+  private baseClassName = "taskbar__application";
 
   readonly state: State = { isOpen: false };
 
@@ -72,20 +72,16 @@ export class SelectApplication extends React.Component<Props, State> {
         onClick={this.toggleMenu}
         style={{ width }}
       >
-        <div className={`${this.baseClassName}-icon-container`}>
-          <img
-            className={`${this.baseClassName}-icon`}
-            src={icon}
-            alt="application-icon"
-          />
+        <div className="taskbar__icon-container">
+          <img className="taskbar__icon" src={icon} alt="application-icon" />
         </div>
-        <span className={`${this.baseClassName}-count`} data-test="count">
+        <span className="taskbar__count" data-test="count">
           {ids.length}
         </span>
-        <span className={`${this.baseClassName}-text`} data-test="text">
+        <span className="taskbar__text" data-test="text">
           {name}
         </span>
-        <div className={`${this.baseClassName}-arrow`} data-test="arrow" />
+        <div className="taskbar__arrow" data-test="arrow" />
         {isOpen && (
           <ApplicationMenu
             ids={ids}

@@ -15,7 +15,7 @@ const LocationList: React.FC<{ context: FilesystemContextType }> = ({
   };
 
   return (
-    <div className="filesystem__location-list">
+    <div className="filesystem__location__list">
       <Tree
         withToggler={false}
         selectedPath={path}

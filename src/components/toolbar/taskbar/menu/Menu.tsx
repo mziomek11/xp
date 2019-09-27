@@ -24,19 +24,13 @@ export class Menu extends React.Component<Props, State> {
 
   handleClickOutsideMenu = (e: MouseEvent) => {
     const { isOpeningClick } = this.state;
-    if (this.clickedOutsideMenu(e) && !isOpeningClick) this.props.closeMenu();
-    else if (isOpeningClick) this.setState({ isOpeningClick: false });
-  };
-
-  clickedOutsideMenu = (e: MouseEvent) => {
-    const expectedClass: string = "toolbar__application-menu-list";
-
-    return !(e.target as Element).classList.contains(expectedClass);
+    if (!isOpeningClick) this.props.closeMenu();
+    else this.setState({ isOpeningClick: false });
   };
 
   render() {
     return (
-      <div className="toolbar__application-menu" data-test="menu">
+      <div className="taskbar__menu" data-test="menu">
         {this.props.ids.map(id => (
           <MenuItem id={id} key={id} data-test="menu-item" />
         ))}
