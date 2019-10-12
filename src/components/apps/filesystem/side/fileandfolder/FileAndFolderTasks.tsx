@@ -8,19 +8,19 @@ import withContext from "../../../../../hoc/withContext";
 import { FilesystemContextType } from "ContextType";
 
 type Props = {
-  context: FilesystemContextType;
+  filesystem: FilesystemContextType;
 };
 
 export class FileAndFolderTasks extends Component<Props, {}> {
   getListOption = (): JSX.Element => {
-    const { focused } = this.props.context;
+    const { focused } = this.props.filesystem;
 
     if (focused.length === 0) return <NoFocusedOptions data-test="no" />;
     else if (focused.length === 1) return <OneFocusedOptions data-test="one" />;
     else return <ManyFocusedOptions data-test="many" />;
   };
   render() {
-    if (this.props.context.path.length === 0) return null;
+    if (this.props.filesystem.path.length === 0) return null;
     const options = this.getListOption();
 
     return (

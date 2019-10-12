@@ -1,13 +1,14 @@
 import * as actions from "./actions";
 import * as FilesystemAction from "./constants";
 import store from "../";
+import { File } from "./models";
 
 type AnyAction = {
   type: any;
   payload?: any;
 };
 
-const getFolderData = (x: number) => ({
+const getFolderData = (x: number): File => ({
   type: "folder",
   content: {},
   name: `New folder${x > 1 ? ` (${x})` : ""}`
@@ -21,9 +22,40 @@ describe("Filesystem actions", () => {
   });
 
   describe("create", () => {
+    const folder: File = { type: "folder", name: "MyFolder", content: {} };
+
+    it("should add folder", () => {
+      store.dispatch(actions.createFolder([]));
+      const action = actions.create([], folder) as AnyAction;
+
+      expect(action.type).toBe(FilesystemAction.CREATE);
+      expect(action.payload.files).toEqual({
+        "New folder": getFolderData(1),
+        MyFolder: folder
+      });
+    });
+
+    it("should fail when path is unknown", () => {
+      const unknownPath = ["path", "does", "not", "exist"];
+      const action = actions.create(unknownPath, folder) as AnyAction;
+
+      expect(action.type).toBe(FilesystemAction.CREATE_FAILED);
+      expect(action.payload).toBe(undefined);
+    });
+
+    it("should fail when file already exists", () => {
+      store.dispatch(actions.createFolder([]));
+      const action = actions.create([], getFolderData(1)) as AnyAction;
+
+      expect(action.type).toBe(FilesystemAction.CREATE_FAILED);
+      expect(action.payload).toBe(undefined);
+    });
+  });
+
+  describe("createFolder", () => {
     it("should add folders", () => {
-      store.dispatch(actions.create([], "folder"));
-      const action = actions.create([], "folder") as AnyAction;
+      store.dispatch(actions.createFolder([]));
+      const action = actions.createFolder([]) as AnyAction;
 
       expect(action.type).toBe(FilesystemAction.CREATE);
       expect(action.payload.files).toEqual({
@@ -32,25 +64,19 @@ describe("Filesystem actions", () => {
       });
     });
 
-    it("should fail", () => {
+    it("should fail when path is wrong", () => {
       const path = ["path", "no", "exists"];
-      const action = actions.create(path, "folder") as AnyAction;
+      const action = actions.createFolder(path) as AnyAction;
 
       expect(action.type).toBe(FilesystemAction.CREATE_FAILED);
       expect(action.payload).toBe(undefined);
-    });
-
-    it("should throw an error", () => {
-      expect(() => actions.create([], "computer")).toThrowError();
-      expect(() => actions.create([], "disk")).toThrowError();
-      expect(() => actions.create([], "text")).toThrowError();
     });
   });
 
   describe("remove", () => {
     it("should remove files", () => {
-      store.dispatch(actions.create([], "folder"));
-      store.dispatch(actions.create([], "folder"));
+      store.dispatch(actions.createFolder([]));
+      store.dispatch(actions.createFolder([]));
 
       const filesToDelete = ["New folder", "New folder (2)"];
       const action = actions.remove([], filesToDelete) as AnyAction;
@@ -59,7 +85,7 @@ describe("Filesystem actions", () => {
       expect(action.payload.files).toEqual({});
     });
 
-    it("should fail", () => {
+    it("should fail whem path is wrong", () => {
       const path = ["path", "not", "exists"];
       const action = actions.remove(path, []) as AnyAction;
 
@@ -68,11 +94,43 @@ describe("Filesystem actions", () => {
     });
   });
 
+  describe("updateContent", () => {
+    const file: File = { name: "txt", type: "text", content: "oldText" };
+
+    it("should update content", () => {
+      store.dispatch(actions.create([], file));
+
+      const action = actions.updateContent([], "txt", "newText") as AnyAction;
+      expect(action.type).toBe(FilesystemAction.UPDATE);
+      expect(action.payload.files["txt"]).toEqual({
+        ...file,
+        content: "newText"
+      });
+    });
+
+    it("should fail when path is wrong", () => {
+      store.dispatch(actions.create([], file));
+
+      const path = ["path", "not", "exists"];
+      const action = actions.updateContent(path, "txt", "newText") as AnyAction;
+
+      expect(action.type).toBe(FilesystemAction.UPDATE_FAILED);
+      expect(action.payload).toBe(undefined);
+    });
+
+    it("should fail when file does not exists", () => {
+      const action = actions.updateContent([], "txt", "newText") as AnyAction;
+
+      expect(action.type).toBe(FilesystemAction.UPDATE_FAILED);
+      expect(action.payload).toBe(undefined);
+    });
+  });
+
   describe("copy", () => {
     it("should copy files", () => {
-      store.dispatch(actions.create([], "folder"));
-      store.dispatch(actions.create([], "folder"));
-      store.dispatch(actions.create([], "folder"));
+      store.dispatch(actions.createFolder([]));
+      store.dispatch(actions.createFolder([]));
+      store.dispatch(actions.createFolder([]));
 
       const filesToCopy = ["New folder (2)"];
       const action = actions.copy([], filesToCopy);
@@ -86,8 +144,8 @@ describe("Filesystem actions", () => {
 
   describe("cut", () => {
     it("should cut files", () => {
-      store.dispatch(actions.create([], "folder"));
-      store.dispatch(actions.create([], "folder"));
+      store.dispatch(actions.createFolder([]));
+      store.dispatch(actions.createFolder([]));
 
       const filesToCut = ["New folder"];
       const action = actions.cut([], filesToCut);
@@ -102,9 +160,9 @@ describe("Filesystem actions", () => {
 
   describe("paste", () => {
     it("should paste files", () => {
-      store.dispatch(actions.create([], "folder"));
-      store.dispatch(actions.create([], "folder"));
-      store.dispatch(actions.create([], "folder"));
+      store.dispatch(actions.createFolder([]));
+      store.dispatch(actions.createFolder([]));
+      store.dispatch(actions.createFolder([]));
       store.dispatch(actions.cut([], ["New folder", "New folder (2)"]));
 
       const action = actions.paste([]);
@@ -119,8 +177,8 @@ describe("Filesystem actions", () => {
 
   describe("rename", () => {
     beforeEach(() => {
-      store.dispatch(actions.create([], "folder"));
-      store.dispatch(actions.create([], "folder"));
+      store.dispatch(actions.createFolder([]));
+      store.dispatch(actions.createFolder([]));
     });
 
     describe("should fail", () => {

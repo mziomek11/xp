@@ -6,7 +6,7 @@ import { findByTestAtrr } from "../../../../testingUtils";
 
 const createWrapper = (showFolders: boolean = false) => {
   const context = { options: { showFolders } } as any;
-  return shallow(<FileSystem context={context} />);
+  return shallow(<FileSystem filesystem={context} />);
 };
 
 const wrapper = createWrapper();

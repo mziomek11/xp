@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import uuid from "uuid";
+import { Dispatch } from "redux";
+import { connect } from "react-redux";
 
 import TileView from "./views/TileView";
 import ThumbnailView from "./views/ThumbnailView";
@@ -7,15 +10,18 @@ import ListView from "./views/ListView";
 
 import withDoubleClick from "../../../../hoc/withDoubleClick";
 import withContext from "../../../../hoc/withContext";
+import { open } from "../../../../store/window/actions";
 import { FilesystemContextType } from "ContextType";
+import { OpenData } from "../../../../store/window/models";
 import { File as IFile } from "../../../../store/filesystem/models";
+import { Application } from "../../../../store/models";
 import { getIcon } from "../../../../icons";
+import { containerClass } from "../classNames";
 import {
   getClassName,
   areArraysEqual,
   areObjectsEqual
 } from "../../../../utils";
-import { containerClass } from "../classNames";
 
 export type ViewProps = {
   containerClass: string;
@@ -27,30 +33,35 @@ export type ViewProps = {
 };
 
 type OwnProps = {
+  isFilePicker: boolean;
   file: IFile;
-  context: FilesystemContextType;
+  filesystem: FilesystemContextType;
 };
 
 type DoubleClickProps = {
   checkForDoubleClick: (onDoubleClick: () => void) => void;
 };
 
-type Props = OwnProps & DoubleClickProps;
+type DispatchProps = {
+  open: (app: Application, openData: OpenData) => void;
+};
+
+type Props = OwnProps & DoubleClickProps & DispatchProps;
 
 export class FileContainer extends Component<Props, {}> {
-  shouldComponentUpdate({ file, context }: Props) {
-    const { renamedFile, focused, options } = this.props.context;
+  shouldComponentUpdate({ file, filesystem }: Props) {
+    const { renamedFile, focused, options } = this.props.filesystem;
 
     if (!areObjectsEqual(this.props.file, file, ["type", "name"])) return true;
-    if (renamedFile !== context.renamedFile) return true;
-    if (!areArraysEqual(focused, context.focused)) return true;
-    if (options.display !== context.options.display) return true;
+    if (renamedFile !== filesystem.renamedFile) return true;
+    if (!areArraysEqual(focused, filesystem.focused)) return true;
+    if (options.display !== filesystem.options.display) return true;
 
     return false;
   }
 
   getContainerClass = (focused: boolean) => {
-    const { options, renamedFile } = this.props.context;
+    const { options, renamedFile } = this.props.filesystem;
     const { display } = options;
     const renaming = renamedFile === this.props.file.name;
 
@@ -58,29 +69,46 @@ export class FileContainer extends Component<Props, {}> {
   };
 
   getElementClass = (element: string) => {
-    const { display } = this.props.context.options;
+    const { display } = this.props.filesystem.options;
 
     return getClassName(`filesystem__file__${element}`, {}, [display]);
   };
 
   handleClick = () => {
-    const { context, file, checkForDoubleClick } = this.props;
-    if (context.renamedFile === file.name) return null;
+    const { filesystem, file, checkForDoubleClick } = this.props;
+    if (filesystem.renamedFile === file.name) return null;
 
-    context.setFocused([file.name]);
-    checkForDoubleClick(this.onDoubleClick);
+    filesystem.setFocused([file.name]);
+    checkForDoubleClick(this.onDoubleClick());
   };
 
   onDoubleClick = () => {
-    const { context, file } = this.props;
-    const { setPath, path, historyPosition } = context;
+    switch (this.props.file.type) {
+      case "text":
+        return this.openNotepad;
+      default:
+        return this.enterFolder;
+    }
+  };
+
+  enterFolder = () => {
+    const { filesystem, file } = this.props;
+    const { setPath, path, historyPosition } = filesystem;
 
     setPath([...path, file.name], historyPosition + 1);
   };
 
+  openNotepad = () => {
+    const { open, file, filesystem, isFilePicker } = this.props;
+
+    if (!isFilePicker) {
+      open("notepad", { path: filesystem.path, content: file.content });
+    }
+  };
+
   render() {
-    const { context, file } = this.props;
-    const { options, focused, renamedFile } = context;
+    const { filesystem, file } = this.props;
+    const { options, focused, renamedFile } = filesystem;
 
     const isFocused = focused.indexOf(file.name) > -1;
     const isRenamed = renamedFile === file.name;
@@ -110,4 +138,21 @@ export class FileContainer extends Component<Props, {}> {
   }
 }
 
-export default withDoubleClick(withContext(FileContainer, "filesystem"));
+const mapDispatchToProps = (
+  dispatch: Dispatch,
+  { file }: OwnProps
+): DispatchProps => {
+  return {
+    open: (app, openData) => dispatch(open(uuid(), app, file.name, openData))
+  };
+};
+
+export default withDoubleClick(
+  withContext(
+    connect(
+      null,
+      mapDispatchToProps
+    )(FileContainer),
+    "filesystem"
+  )
+);

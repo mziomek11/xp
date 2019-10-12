@@ -11,6 +11,7 @@ import {
   stateWithChangedMinimalize,
   secondWindowId
 } from "./testingData";
+import { Window } from "./models";
 
 type AnyAction = {
   type: any;
@@ -38,24 +39,50 @@ describe("Window actions", () => {
 
   describe("open", () => {
     it("should open new window", () => {
-      const action = actions.open(
-        windowId,
-        applicationName,
-        windowName,
-        windowIcon
-      );
+      const action = actions.open(windowId, applicationName, windowName);
 
       expect(action.type).toBe(WindowAction.OPEN);
       expect(action.payload).toEqual(stateWithOneWindow);
     });
   });
 
+  describe("replace", () => {
+    const newWindow: Window = {
+      name: "x",
+      application: "notepad",
+      icon: "i",
+      id: "id",
+      minimalized: false
+    };
+
+    describe("window exists", () => {
+      it("should return proper type and payload", () => {
+        store.dispatch(actions.open(windowId, applicationName, windowName));
+        const action = actions.replace(windowId, newWindow) as AnyAction;
+
+        expect(action.type).toBe(WindowAction.REPLACE);
+        expect(action.payload).toEqual({
+          byId: { id: newWindow },
+          allIds: ["id"],
+          focused: "id"
+        });
+      });
+    });
+
+    describe("window does not exists", () => {
+      it("should return error action", () => {
+        const action = actions.replace(windowId, newWindow) as AnyAction;
+
+        expect(action.type).toBe(WindowAction.REPLACE_FAILED);
+        expect(action.payload).toBe(undefined);
+      });
+    });
+  });
+
   describe("close", () => {
     describe("window exists", () => {
       it("should return proper type and payload", () => {
-        store.dispatch(
-          actions.open(windowId, applicationName, windowName, windowIcon)
-        );
+        store.dispatch(actions.open(windowId, applicationName, windowName));
         const action = actions.close(windowId) as AnyAction;
 
         expect(action.type).toBe(WindowAction.CLOSE);
@@ -76,9 +103,7 @@ describe("Window actions", () => {
   describe("toggleMinimalize", () => {
     describe("window exists", () => {
       it("should toggle minimalized when was NOT minimalized", () => {
-        store.dispatch(
-          actions.open(windowId, applicationName, windowName, windowIcon)
-        );
+        store.dispatch(actions.open(windowId, applicationName, windowName));
         const action = actions.toggleMinimalize(windowId) as AnyAction;
 
         expect(action.type).toBe(WindowAction.TOGGLE_MINIMALIZE);
@@ -89,9 +114,7 @@ describe("Window actions", () => {
       });
 
       it("should toggle minimalized when was minimalized", () => {
-        store.dispatch(
-          actions.open(windowId, applicationName, windowName, windowIcon)
-        );
+        store.dispatch(actions.open(windowId, applicationName, windowName));
         store.dispatch(actions.toggleMinimalize(windowId));
         const action = actions.toggleMinimalize(windowId) as AnyAction;
 
@@ -125,9 +148,7 @@ describe("Window actions", () => {
     });
 
     it("should change window name and icon", () => {
-      store.dispatch(
-        actions.open(windowId, applicationName, windowName, windowIcon)
-      );
+      store.dispatch(actions.open(windowId, applicationName, windowName));
       const action = actions.rename(windowId, "new Name", "disk") as AnyAction;
 
       expect(action.type).toBe(WindowAction.RENAME);
@@ -137,11 +158,9 @@ describe("Window actions", () => {
   describe("changePriority", () => {
     describe("window exists", () => {
       it("should change priority of window", () => {
+        store.dispatch(actions.open(windowId, applicationName, windowName));
         store.dispatch(
-          actions.open(windowId, applicationName, windowName, windowIcon)
-        );
-        store.dispatch(
-          actions.open(secondWindowId, applicationName, windowName, windowIcon)
+          actions.open(secondWindowId, applicationName, windowName)
         );
         let action = actions.changePriority(windowId) as AnyAction;
 

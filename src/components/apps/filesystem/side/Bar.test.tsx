@@ -6,7 +6,7 @@ import { findByTestAtrr } from "../../../../../testingUtils";
 
 const createWrapper = (width: number) => {
   const ctx = { width } as any;
-  return shallow<Bar>(<Bar context={ctx} />);
+  return shallow<Bar>(<Bar window={ctx} />);
 };
 
 const wrapper = createWrapper(1000);
@@ -38,8 +38,8 @@ describe("Filesystem Side Bar component", () => {
       expected: boolean
     ) => {
       const wrapper = createWrapper(startWidth);
-      const context = { width: newWidth } as any;
-      const result = wrapper.instance().shouldComponentUpdate({ context });
+      const window = { width: newWidth } as any;
+      const result = wrapper.instance().shouldComponentUpdate({ window });
 
       expect(result).toBe(expected);
     };

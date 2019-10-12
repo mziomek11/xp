@@ -8,17 +8,17 @@ import Navigation from "./navigation/Navigation";
 import Folders from "./Folders";
 import Views from "./Views";
 
-type Props = { context: FilesystemContextType };
+type Props = { filesystem: FilesystemContextType };
 
 export class Bar extends Component<Props, {}> {
-  shouldComponentUpdate({ context }: Props) {
-    const currOptions = this.props.context.options;
+  shouldComponentUpdate({ filesystem }: Props) {
+    const currOptions = this.props.filesystem.options;
     const values = ["showActionBar"];
 
-    return !areObjectsEqual(currOptions, context.options, values);
+    return !areObjectsEqual(currOptions, filesystem.options, values);
   }
   render() {
-    const { showActionBar } = this.props.context.options;
+    const { showActionBar } = this.props.filesystem.options;
     if (!showActionBar) return null;
 
     return (

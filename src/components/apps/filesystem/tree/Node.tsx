@@ -16,6 +16,10 @@ type State = {
   open: boolean;
 };
 
+const isFolderLikeType = (type: string) => {
+  return type === "folder" || type === "disk" || type === "computer";
+};
+
 class TreeNode extends Component<Props, State> {
   isOpenAtStart = () => {
     const { selectedPath, filePath } = this.props;
@@ -34,10 +38,16 @@ class TreeNode extends Component<Props, State> {
 
   shouldShowList = () => {
     const { content, type } = this.props;
-    const hasProperType =
-      type === "folder" || type === "disk" || type === "computer";
+    if (!isFolderLikeType(type)) return false;
 
-    const shouldShow = hasProperType && Object.keys(content!).length > 0;
+    let shouldShow = false;
+    for (let property of Object.keys(content!)) {
+      const { type } = (content as any)[property];
+      if (isFolderLikeType(type)) {
+        shouldShow = true;
+        break;
+      }
+    }
 
     return shouldShow;
   };
@@ -71,16 +81,32 @@ class TreeNode extends Component<Props, State> {
     if (!this.isSelected()) onClick(filePath);
   };
 
+  getNodes = () => {
+    const { content, filePath, onClick, selectedPath } = this.props;
+
+    return Object.keys(content!)
+      .filter(key => isFolderLikeType((content as any)[key].type))
+      .map(key => {
+        const file = (content as any)[key] as File;
+        return (
+          <TreeNode
+            name={file.name}
+            type={file.type}
+            content={file.content}
+            icon={getIcon(file.type as any)}
+            filePath={[...filePath, key]}
+            key={key}
+            onClick={onClick}
+            selectedPath={selectedPath}
+            withToggler={this.props.withToggler}
+            data-test="node"
+          />
+        );
+      });
+  };
+
   render() {
-    const {
-      icon,
-      content,
-      filePath,
-      onClick,
-      selectedPath,
-      withToggler,
-      name
-    } = this.props;
+    const { icon, withToggler, name } = this.props;
     const isSelected = this.isSelected();
     const showList = this.shouldShowList();
 
@@ -117,23 +143,7 @@ class TreeNode extends Component<Props, State> {
         </div>
         {showList && this.state.open && (
           <ul className="filesystem__tree__list" data-test="list">
-            {Object.keys(content!).map(key => {
-              const file = (content as any)[key] as File;
-              return (
-                <TreeNode
-                  name={file.name}
-                  type={file.type}
-                  content={file.content}
-                  icon={getIcon(file.type as any)}
-                  filePath={[...filePath, key]}
-                  key={key}
-                  onClick={onClick}
-                  selectedPath={selectedPath}
-                  withToggler={withToggler}
-                  data-test="node"
-                />
-              );
-            })}
+            {this.getNodes()}
           </ul>
         )}
       </li>

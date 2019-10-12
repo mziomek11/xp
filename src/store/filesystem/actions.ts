@@ -2,11 +2,11 @@ import { action } from "typesafe-actions";
 
 import store from "../";
 import * as FileSystemAction from "./constants";
-import { FileTree, FileType, File } from "./models";
+import { FileTree, File, Content } from "./models";
 import { deepCopy } from "../../utils";
 import { objectPropFromPath } from "../../utils/filesystem";
 
-export const create = (path: string[], type: FileType) => {
+export const createFolder = (path: string[]) => {
   const fileTree = getFileTreeCopy();
   const [possibleFiles, possiblePath] = objectPropFromPath(fileTree, path);
 
@@ -14,23 +14,23 @@ export const create = (path: string[], type: FileType) => {
     return action(FileSystemAction.CREATE_FAILED);
   }
 
-  const newFileName = getNewFileName(possibleFiles, type);
-  const newFileData = getFileData(newFileName, type);
+  const folderName = getNewFolderName(possibleFiles);
+  const folderData: File = { type: "folder", name: folderName, content: {} };
   const targetFolder = getTargetFolder(fileTree, possiblePath);
 
-  targetFolder[newFileName] = newFileData;
+  targetFolder[folderName] = folderData;
 
   return action(FileSystemAction.CREATE, { files: fileTree });
 };
 
-const getNewFileName = (files: File[], type: FileType): string => {
+const getNewFolderName = (files: File[]): string => {
   const namesInFolder = Array.from(files, file => file.name);
-  let newFileName = getStartFileName(type);
+  let newFolderName = "New folder";
 
-  if (namesInFolder.indexOf(newFileName) > -1) {
+  if (namesInFolder.indexOf(newFolderName) > -1) {
     let nthFolderName = 2;
     while (true) {
-      const testFolderName = `${newFileName} (${nthFolderName})`;
+      const testFolderName = `${newFolderName} (${nthFolderName})`;
       if (namesInFolder.indexOf(testFolderName) === -1) {
         return testFolderName;
       }
@@ -38,37 +38,51 @@ const getNewFileName = (files: File[], type: FileType): string => {
     }
   }
 
-  return newFileName;
+  return newFolderName;
 };
 
-const getStartFileName = (type: FileType): string => {
-  switch (type) {
-    case "folder":
-      return "New folder";
-    case "text":
-      throw Error("Not implemented");
-    case "disk":
-      throw Error("Can not create new disk");
-    default:
-      throw Error("Unknow file type");
+export const create = (path: string[], data: File) => {
+  const fileTree = getFileTreeCopy();
+  const [possibleFiles, possiblePath] = objectPropFromPath(fileTree, path);
+
+  if (path.length !== possiblePath.length) {
+    return action(FileSystemAction.CREATE_FAILED);
   }
+
+  for (let i = 0; i < possibleFiles.length; i++) {
+    if (possibleFiles[i].name === data.name) {
+      return action(FileSystemAction.CREATE_FAILED);
+    }
+  }
+
+  const targetFolder = getTargetFolder(fileTree, possiblePath);
+  targetFolder[data.name] = data;
+
+  return action(FileSystemAction.CREATE, { files: fileTree });
 };
 
-const getFileData = (name: string, type: FileType): File => {
-  let content;
+export const updateContent = (
+  path: string[],
+  fileName: string,
+  content: Content
+) => {
+  const fileTree = getFileTreeCopy();
+  const [, possiblePath] = objectPropFromPath(fileTree, path);
+  const targetFolder = getTargetFolder(fileTree, possiblePath);
 
-  switch (type) {
-    case "folder":
-      content = {};
-      break;
-    case "text":
-      content = "";
-      break;
-    default:
-      throw Error("Unknown file type");
+  if (path.length !== possiblePath.length) {
+    return action(FileSystemAction.UPDATE_FAILED);
   }
 
-  return { type, name, content };
+  const fileToUpdate = targetFolder[fileName];
+
+  if (!fileToUpdate) {
+    return action(FileSystemAction.UPDATE_FAILED);
+  }
+
+  fileToUpdate.content = content;
+
+  return action(FileSystemAction.UPDATE, { files: fileTree });
 };
 
 export const remove = (path: string[], files: string[]) => {

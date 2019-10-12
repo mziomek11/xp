@@ -9,7 +9,7 @@ let emit: jest.Mock;
 const createWrapper = (disabled: boolean) => {
   emit = jest.fn();
   const fakeContext = { shortcuts: { goUp: { disabled, emit } } } as any;
-  return shallow(<FolderUp context={fakeContext} />);
+  return shallow(<FolderUp filesystem={fakeContext} />);
 };
 
 describe("Filesystem Action FolderUp Component", () => {

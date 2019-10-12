@@ -1,7 +1,6 @@
 import uuid from "uuid";
 
 import { WindowState } from "./reducer";
-import { windowConfig } from "../../config";
 import { Application } from "../models";
 import { Window } from "./models";
 import { deepCopy } from "../../utils/";
@@ -19,7 +18,7 @@ export const getWindowData = (id: string): Window => {
     application: applicationName,
     name: windowName,
     icon: getIcon(windowIcon),
-    minimalized: windowConfig.INITIAL_MINIMALIZED
+    minimalized: false
   };
 };
 

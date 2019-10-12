@@ -22,8 +22,15 @@
   border-bottom: 1px solid map-get($menu, "border");
 }
 
-.filesystem__action__arrow {
+.filesystem__action__icon {
   padding: $filesystem-action-padding 0;
+  width: $filesystem-action-icon-width;
+  height: auto;
+
+  &--small {
+    width: $filesystem-action-icon-width-small;
+    padding: 0;
+  }
 }
 
 .filesystem__actions {
@@ -114,6 +121,13 @@
     padding-right: $filesystem-action-padding-with-arrow-right;
   }
 
+  &--small {
+    padding: $filesystem-action-padding-small;
+    height: $filesystem-action-height-small;
+    margin: 0;
+    margin-right: $filesystem-action-margin;
+  }
+
   &--disabled {
     &:hover,
     &:active {
@@ -138,124 +152,6 @@
 .filesystem__adress__text {
   color: $filesystem-adress-text-color;
   margin-right: $filesystem-adress-bar-padding-horizontal;
-}
-
-.filesystem__location {
-  width: 100%;
-  position: relative;
-  font-size: $filesysyem-location-font-size;
-}
-
-.filesystem__location__items {
-  overflow-x: hidden;
-  overflow-y: visible;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  background: white;
-  border: 1px solid $filesystem-location-border-color;
-  padding: $filesystem-location-padding;
-  padding-right: 0;
-}
-
-.filesystem__location__icon-container {
-  @include flex-centered;
-  @include all-widths($filesystem-location-icon-size);
-  margin-right: $filesystem-location-icon-margin;
-  height: $filesystem-location-icon-size;
-
-  &:hover {
-    cursor: pointer;
-  }
-}
-
-.filesystem__location__icon {
-  width: 100%;
-  height: auto;
-}
-
-.filesystem__location__input {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  max-width: 100%;
-  border: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  font-size: $filesystem-location-input-font-size;
-
-  &:focus {
-    outline: none;
-  }
-
-  &::selection {
-    background: $focus-color;
-    color: white;
-  }
-}
-
-.filesystem__location__arrow {
-  @include all-widths($filesystem-location-arrow-width);
-  background-color: $filesystem-location-arrrow-background;
-  display: block;
-  height: $filesystem-location-arrow-height;
-  background-size: cover;
-  border: 1px solid $filesystem-location-arrow-border-color;
-  background-image: url("../../assets/scrollbar/button-down.png");
-
-  &:active {
-    background-image: url("../../assets/scrollbar/button-down-active.png");
-  }
-}
-
-.filesystem__location__list {
-  z-index: $location-z-index;
-  width: 100%;
-  overflow-y: auto;
-  position: absolute;
-  left: 0;
-  top: 100%;
-  border: 1px solid black;
-  background: white;
-  padding: $filesystem-location-list-padding;
-
-  max-height: $filesystem-location-list-max-height;
-}
-
-.filesystem__go {
-  display: flex;
-  align-items: center;
-  margin-left: $filesystem-adress-bar-padding-horizontal - 3px;
-  padding: 0 $filesystem-adress-go-padding-horizontal;
-  border-left: 1px solid transparent;
-  border-right: 1px solid transparent;
-
-  &:hover {
-    background: $filesystem-adress-go-color-hover;
-    border-left-color: $filesystem-action-hover-color;
-    border-right-color: $filesystem-action-hover-color;
-  }
-
-  &:active {
-    background: $filesystem-action-active-color;
-    color: white;
-  }
-}
-
-.filesystem__go__icon {
-  @include covered-background(
-    "../../../assets/folder/arrow-right-rect-normal.png"
-  );
-  width: $filesystem-adress-go-icon-size;
-  height: $filesystem-adress-go-icon-size;
-
-  .filesystem__go:hover & {
-    background-image: url("../../assets/folder/arrow-right-rect-hover.png");
-  }
-}
-
-.filesystem__go__text {
-  margin-left: $filesystem-adress-bar-padding-horizontal;
 }
 
 .filesystem__divider {
@@ -557,6 +453,7 @@
 }
 
 .filesystem__file__list {
+  background: white;
   position: relative;
   display: flex;
   flex-wrap: wrap;

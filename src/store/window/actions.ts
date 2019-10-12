@@ -1,28 +1,51 @@
 import { action } from "typesafe-actions";
 
 import store from "../";
-import { windowConfig } from "../../config";
 import * as WindowAction from "./constants";
 import { WindowState } from "./reducer";
 import { deepCopy } from "../../utils";
-import { Window } from "./models";
+import { Window, OpenData } from "./models";
 import { Application } from "../models";
 import { getIcon, Icon } from "../../icons";
 
-export const open = (id: string, application: Application, name: string) => {
+export const open = (
+  id: string,
+  application: Application,
+  name: string,
+  openData?: OpenData
+) => {
   const { byId, allIds } = getCopyOfStore();
 
   const newWindow: Window = {
     id,
     application,
     name,
+    openData,
     icon: getIcon(application),
-    minimalized: windowConfig.INITIAL_MINIMALIZED
+    minimalized: false
   };
   byId[newWindow.id] = newWindow;
   allIds.push(id);
 
   return action(WindowAction.OPEN, { byId, allIds, focused: id });
+};
+
+export const replace = (toReplaceId: string, newWindow: Window) => {
+  let { byId, allIds } = getCopyOfStore();
+
+  if (allIds.indexOf(toReplaceId) === -1) {
+    return action(WindowAction.REPLACE_FAILED);
+  }
+
+  delete byId[toReplaceId];
+  const posInArray: number = allIds.indexOf(toReplaceId);
+  if (posInArray >= 0) allIds.splice(allIds.indexOf(toReplaceId), 1);
+
+  const focused = newWindow.id;
+  byId[newWindow.id] = newWindow;
+  allIds.push(newWindow.id);
+
+  return action(WindowAction.REPLACE, { byId, allIds, focused });
 };
 
 export const changePriority = (id: string) => {

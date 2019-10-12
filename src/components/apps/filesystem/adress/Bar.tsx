@@ -5,17 +5,17 @@ import withContext from "../../../../hoc/withContext";
 import { FilesystemContextType } from "ContextType";
 import { areObjectsEqual } from "../../../../utils";
 
-type Props = { context: FilesystemContextType };
+type Props = { filesystem: FilesystemContextType };
 
 export class Bar extends Component<Props, {}> {
-  shouldComponentUpdate({ context }: Props) {
-    const currOptions = this.props.context.options;
+  shouldComponentUpdate({ filesystem }: Props) {
+    const currOptions = this.props.filesystem.options;
     const values = ["showAdressBar"];
 
-    return !areObjectsEqual(currOptions, context.options, values);
+    return !areObjectsEqual(currOptions, filesystem.options, values);
   }
   render() {
-    const { showAdressBar } = this.props.context.options;
+    const { showAdressBar } = this.props.filesystem.options;
     if (!showAdressBar) return null;
 
     return (

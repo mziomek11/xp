@@ -5,14 +5,19 @@ import ArrowLeft from "./ArrowLeft";
 import { findByTestAtrr } from "../../../../../../testingUtils";
 
 const mockOnClickFn = jest.fn();
-const historyArrow = <div data-test="history-arrow" />;
-const props = {
-  disabled: false,
-  containerClass: "",
-  onClick: mockOnClickFn,
-  historyArrow
+const createWrapper = (onlyIcon: boolean) => {
+  const props = {
+    disabled: false,
+    containerClass: "containerClass",
+    arrowClass: "arrowClass",
+    onClick: mockOnClickFn,
+    historyArrow: <div data-test="history-arrow" />,
+    onlyIcon
+  };
+
+  return shallow(<ArrowLeft {...props} />);
 };
-const wrapper = shallow(<ArrowLeft {...props} />);
+const wrapper = createWrapper(false);
 const container = findByTestAtrr(wrapper, "container");
 
 describe("Filesystem Action ArrowLeft Component", () => {
@@ -31,6 +36,17 @@ describe("Filesystem Action ArrowLeft Component", () => {
 
     it("should render history arrow", () => {
       expect(findByTestAtrr(wrapper, "history-arrow").length).toBe(1);
+    });
+
+    describe("onlyIcon", () => {
+      const wrapper = createWrapper(true);
+      it("should NOT render text", () => {
+        expect(findByTestAtrr(wrapper, "text").length).toBe(0);
+      });
+
+      it("should NOT render history arrow", () => {
+        expect(findByTestAtrr(wrapper, "history-arrow").length).toBe(0);
+      });
     });
   });
 

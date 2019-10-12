@@ -4,10 +4,10 @@ import FoldersTree from "../tree/Tree";
 import withContext from "../../../../hoc/withContext";
 import { FilesystemContextType } from "ContextType";
 
-export const List: React.FC<{ context: FilesystemContextType }> = ({
-  context
+export const List: React.FC<{ filesystem: FilesystemContextType }> = ({
+  filesystem
 }) => {
-  const { path, setPath, historyPosition } = context;
+  const { path, setPath, historyPosition } = filesystem;
 
   const handleClick = (path: string[]) => {
     setPath(path, historyPosition + 1);

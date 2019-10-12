@@ -7,10 +7,10 @@ import { findByTestAtrr } from "../../../testingUtils";
 const mockCheckForDoubleClick = jest.fn();
 const props = {
   name: "MyFile",
-  left: 20,
-  top: 20,
   openWindow: jest.fn(),
-  checkForDoubleClick: mockCheckForDoubleClick
+  checkForDoubleClick: mockCheckForDoubleClick,
+  startWindowName: "name",
+  application: "Notepad" as any
 };
 const comp = <File {...props} />;
 const wrapper = shallow<File>(comp);
@@ -23,15 +23,6 @@ describe("File Component", () => {
 
     it("should render filename", () => {
       expect(findByTestAtrr(wrapper, "filename").length).toBe(1);
-    });
-  });
-
-  describe("props", () => {
-    it("should apply styles", () => {
-      expect(findByTestAtrr(wrapper, "file").prop("style")).toEqual({
-        left: props.left,
-        top: props.top
-      });
     });
   });
 

@@ -1,0 +1,80 @@
+.picker {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: $picker-padding;
+  background: map-get($menu, "main");
+}
+
+.picker__navigation {
+  display: flex;
+  align-items: center;
+  margin-right: $picker-navigation-padding !important;
+  margin-bottom: $picker-padding;
+}
+
+.picker__actions {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  margin-left: $picker-navigation-actions-margin;
+}
+
+.picker__files,
+.picker__form__input {
+  height: 100%;
+  border: 1px solid $location-border-color;
+}
+
+.picker__form {
+  font-size: $picker-font-size;
+  display: flex;
+  align-items: flex-start;
+  margin-top: 2 * $picker-padding;
+}
+
+.picker__form__left {
+  display: flex;
+  align-items: center;
+  margin-right: $picker-form-margin;
+  width: 100%;
+}
+
+.picker__form__right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.picker__form__label {
+  white-space: nowrap;
+  margin-right: $picker-form-label-margin;
+}
+
+.picker__form__input {
+  font-size: $location-input-font-size;
+  width: 100%;
+}
+
+.picker__form__button {
+  width: $picker-form-button-width;
+  height: $picker-form-button-height;
+  background: $picker-form-button-background;
+  font-size: $picker-form-button-font-size;
+  border-radius: 2px;
+  border: 1px solid $picker-form-button-border-color;
+  outline: none;
+
+  &:hover {
+    border-color: $picker-form-button-border-color-hover;
+  }
+
+  &:active {
+    border: 1px solid $picker-form-button-border-color;
+    background: $picker-form-button-background-active;
+  }
+
+  &:first-child {
+    margin-bottom: $picker-padding;
+  }
+}

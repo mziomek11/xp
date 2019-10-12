@@ -1,0 +1,5 @@
+@mixin all-heights($size) {
+  height: $size;
+  min-height: $size;
+  max-height: $size;
+}

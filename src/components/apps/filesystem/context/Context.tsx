@@ -2,7 +2,13 @@ import React, { Component, createContext } from "react";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
 
-import { Options, OptionData, Shortcuts, CtxFunctions } from "./models";
+import {
+  Options,
+  OptionData,
+  Shortcuts,
+  CtxFunctions,
+  Display
+} from "./models";
 import { RootState } from "MyTypes";
 import { FileTree, File } from "../../../../store/filesystem/models";
 import { remove, copy, cut, paste } from "../../../../store/filesystem/actions";
@@ -14,6 +20,8 @@ import { Icon } from "../../../../icons";
 
 type OwnProps = {
   id: string;
+  defaultDisplay: Display;
+  startPath: string[];
 };
 
 type StateProps = {
@@ -44,8 +52,7 @@ export type State = {
 
 export type Context = State & CtxFunctions & Shortcuts;
 
-export const defaultOptions: Options = {
-  display: "tiles",
+export const defaultOptions: Omit<Options, "display"> = {
   arrangeIconsBy: "type",
   showAdressBar: true,
   showActionBar: true,
@@ -56,18 +63,21 @@ const FilesystemContext = createContext<Context>({} as any);
 
 export class ContextProvider extends Component<Props, State> {
   readonly state: State = {
-    path: [],
+    path: this.props.startPath,
     files: [],
     focused: [],
     history: [],
     renamedFile: null,
-    options: defaultOptions,
+    options: {
+      ...defaultOptions,
+      display: this.props.defaultDisplay
+    },
     historyPosition: 0
   };
 
   componentDidMount() {
-    const { fileTree } = this.props;
-    const [files, possiblePath] = objectPropFromPath(fileTree, []);
+    const { fileTree, startPath } = this.props;
+    const [files, possiblePath] = objectPropFromPath(fileTree, startPath);
 
     this.setState({
       path: possiblePath,
@@ -79,14 +89,13 @@ export class ContextProvider extends Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: StateProps, prevState: State) {
+    const { fileTree, focusedWindow } = this.props;
+    const { options, path, files } = this.state;
     const newState: Partial<State> = {};
 
-    const [newFiles, newPath] = objectPropFromPath(
-      this.props.fileTree,
-      this.state.path
-    );
+    const [newFiles, newPath] = objectPropFromPath(fileTree, path);
     const newFilenames = Array.from(newFiles, file => file.name);
-    const oldFilenames = Array.from(this.state.files, file => file.name);
+    const oldFilenames = Array.from(files, file => file.name);
 
     if (!areArraysEqual(this.state.path, newPath)) {
       newState.files = newFiles;
@@ -98,19 +107,35 @@ export class ContextProvider extends Component<Props, State> {
       newState.files = newFiles;
       window.removeEventListener("mousedown", this.handleUnfocusClick);
       newState.focused = [];
-    } else if (this.props.focusedWindow !== prevProps.focusedWindow) {
+    } else if (focusedWindow !== prevProps.focusedWindow) {
       window.removeEventListener("mousedown", this.handleUnfocusClick);
       newState.focused = [];
     }
 
-    if (
-      this.state.options.arrangeIconsBy !== prevState.options.arrangeIconsBy
-    ) {
+    if (!newState.files && this.areFileContentsDifferent(files, newFiles)) {
+      newState.files = newFiles;
+    }
+
+    if (options.arrangeIconsBy !== prevState.options.arrangeIconsBy) {
       newState.files = this.getSortedFiles();
     }
 
     if (Object.keys(newState).length > 0) this.setState(newState as State);
   }
+
+  areFileContentsDifferent = (oldFiles: File[], newFiles: File[]) => {
+    const skipTypes = ["disk", "computer", "folder"];
+    for (let i = 0; i < newFiles.length; i++) {
+      const oldFile = oldFiles[i];
+      const newFile = newFiles[i];
+
+      if (skipTypes.indexOf(oldFile.type) !== -1) continue;
+      if (skipTypes.indexOf(newFile.type) !== -1) continue;
+      if (oldFile.content !== newFile.content) return true;
+    }
+
+    return false;
+  };
 
   componentWillUnmount() {
     window.removeEventListener("mousedown", this.handleUnfocusClick);
@@ -279,6 +304,7 @@ export class ContextProvider extends Component<Props, State> {
     }
 
     if (this.props.id !== this.props.focusedWindow) return null;
+    if (this.state.renamedFile !== null) return null;
     const canCutAndCopyAndDelete = this.canCutAndCopyAndDelete();
 
     if (e.key === "Delete" && canCutAndCopyAndDelete) {

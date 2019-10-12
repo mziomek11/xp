@@ -5,14 +5,14 @@ import { Dispatch } from "redux";
 
 import withDoubleClick from "../../hoc/withDoubleClick";
 import { open as openWindow } from "../../store/window/actions";
+import { OpenData } from "../../store/window/models";
 import { Application } from "../../store/models";
 
 type OwnProps = {
   name: string;
   startWindowName: string;
   application: Application;
-  top: number;
-  left: number;
+  openData?: OpenData;
 };
 
 type DispatchProps = {
@@ -27,20 +27,13 @@ type Props = OwnProps & DispatchProps & DoubleClickProps;
 
 export const File: React.FC<Props> = ({
   name,
-  top,
-  left,
   openWindow,
   checkForDoubleClick
 }) => {
   const handleClick = () => checkForDoubleClick(openWindow);
 
   return (
-    <div
-      className="file"
-      style={{ left, top }}
-      data-test="file"
-      onClick={handleClick}
-    >
+    <div className="desktop__file" data-test="file" onClick={handleClick}>
       <span data-test="filename">{name}</span>
     </div>
   );
@@ -48,9 +41,10 @@ export const File: React.FC<Props> = ({
 
 const mapDispatchToProps = (
   dispatch: Dispatch,
-  { startWindowName, application }: OwnProps
+  { startWindowName, application, openData }: OwnProps
 ): DispatchProps => ({
-  openWindow: () => dispatch(openWindow(uuid(), application, startWindowName))
+  openWindow: () =>
+    dispatch(openWindow(uuid(), application, startWindowName, openData))
 });
 
 export default connect(

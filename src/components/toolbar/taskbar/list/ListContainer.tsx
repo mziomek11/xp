@@ -5,11 +5,13 @@ import ApplicationList from "./List";
 import { RootState } from "MyTypes";
 import { WindowById } from "../../../../store/window/models";
 import { toolbarConfig } from "../../../../config";
+import { areArraysEqual } from "../../../../utils";
 
 type AppNamesWithIds = { [appName: string]: string[] };
 
 type StateProps = {
   windowById: WindowById;
+  allIds: string[];
   openWindowCount: number;
 };
 
@@ -28,9 +30,12 @@ export class ApplicationsListContainer extends React.Component<
   };
 
   shouldComponentUpdate(nextProps: StateProps, nextState: State) {
+    const { openWindowCount, allIds } = this.props;
+    const { maxAppsWithDefaultWidth } = this.state;
     return (
-      this.props.openWindowCount !== nextProps.openWindowCount ||
-      nextState.maxAppsWithDefaultWidth !== this.state.maxAppsWithDefaultWidth
+      nextProps.openWindowCount !== openWindowCount ||
+      nextState.maxAppsWithDefaultWidth !== maxAppsWithDefaultWidth ||
+      !areArraysEqual(nextProps.allIds, allIds)
     );
   }
 
@@ -71,8 +76,9 @@ export class ApplicationsListContainer extends React.Component<
 
   getAppsNamesWithIds = (): AppNamesWithIds => {
     const idsByApplicatioNames: AppNamesWithIds = {};
-    const { windowById } = this.props;
-    Object.keys(windowById).forEach(key => {
+    const { windowById, allIds } = this.props;
+
+    allIds.forEach(key => {
       const { application, id } = windowById[key];
       if (!idsByApplicatioNames[application]) {
         idsByApplicatioNames[application] = [id];
@@ -136,6 +142,7 @@ export class ApplicationsListContainer extends React.Component<
 
 const mapStateToProps = (state: RootState): StateProps => ({
   windowById: state.window.byId,
+  allIds: state.window.allIds,
   openWindowCount: state.window.allIds.length
 });
 

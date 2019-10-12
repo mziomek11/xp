@@ -7,24 +7,36 @@ import { getClassName, areObjectsEqual } from "../../../../../utils";
 import folderUpGrey from "../../../../../assets/folder/folder-up-grey.png";
 import folderUpColored from "../../../../../assets/folder/folder-up-colored.png";
 
-type Props = { context: FilesystemContextType };
+type Props = { filesystem: FilesystemContextType; small?: boolean };
 
 export class FolderUp extends Component<Props, {}> {
-  shouldComponentUpdate({ context }: Props) {
-    const currShorts = this.props.context.shortcuts;
+  public static defaultProps = {
+    small: false
+  };
+
+  shouldComponentUpdate({ filesystem }: Props) {
+    const currShorts = this.props.filesystem.shortcuts;
     const values = ["disabled"];
 
-    return !areObjectsEqual(currShorts.goUp, context.shortcuts.goUp, values);
+    return !areObjectsEqual(currShorts.goUp, filesystem.shortcuts.goUp, values);
   }
+
   handleClick = () => {
-    const { disabled, emit } = this.props.context.shortcuts.goUp;
+    const { disabled, emit } = this.props.filesystem.shortcuts.goUp;
     if (!disabled) emit();
   };
 
   render() {
-    const { disabled } = this.props.context.shortcuts.goUp;
-    const className = getClassName("filesystem__action", { disabled });
+    const { small, filesystem } = this.props;
+    const { disabled } = filesystem.shortcuts.goUp;
     const icon = disabled ? folderUpGrey : folderUpColored;
+    const className = getClassName("filesystem__action", {
+      disabled,
+      small: small!
+    });
+    const iconClass = getClassName("filesystem__action__icon", {
+      small: small!
+    });
 
     return (
       <div
@@ -32,7 +44,12 @@ export class FolderUp extends Component<Props, {}> {
         onClick={this.handleClick}
         data-test="container"
       >
-        <img src={icon} alt="folder with arrow up" data-test="image" />
+        <img
+          src={icon}
+          className={iconClass}
+          alt="folder with arrow up"
+          data-test="image"
+        />
       </div>
     );
   }

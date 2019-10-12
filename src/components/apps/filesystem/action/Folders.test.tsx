@@ -9,7 +9,7 @@ const context = {
   options: { showFolders: false },
   setOptions: mockSetOptionFn
 } as any;
-const wrapper = shallow(<Folders context={context} />);
+const wrapper = shallow(<Folders filesystem={context} />);
 
 describe("Window Action Folders Component", () => {
   describe("render", () => {

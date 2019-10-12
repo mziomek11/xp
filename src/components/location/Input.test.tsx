@@ -1,8 +1,8 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import LocationInput from "./LocationInput";
-import { findByTestAtrr } from "../../../../../testingUtils";
+import LocationInput from "./Input";
+import { findByTestAtrr } from "../../../testingUtils";
 
 const text = "Example text";
 let mockOnChangeFn = jest.fn();
@@ -24,7 +24,7 @@ const createWrapper = () => {
 let wrapper = createWrapper();
 let input = findByTestAtrr(wrapper, "input");
 
-describe("Filesystem Adress LocationInput Component", () => {
+describe("LocationInput Component", () => {
   describe("render", () => {
     it("should render without throwing an error", () => {
       expect(input.length).toBe(1);

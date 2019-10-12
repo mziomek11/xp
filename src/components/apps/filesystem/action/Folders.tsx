@@ -6,24 +6,24 @@ import { getClassName, areObjectsEqual } from "../../../../utils";
 
 import foldersIcon from "../../../../assets/folder/folders.png";
 
-type Props = { context: FilesystemContextType };
+type Props = { filesystem: FilesystemContextType };
 
 export class Folders extends Component<Props, {}> {
-  shouldComponentUpdate({ context }: Props) {
-    const currOptions = this.props.context.options;
+  shouldComponentUpdate({ filesystem }: Props) {
+    const currOptions = this.props.filesystem.options;
     const values = ["showFolders"];
 
-    return !areObjectsEqual(currOptions, context.options, values);
+    return !areObjectsEqual(currOptions, filesystem.options, values);
   }
 
   handleClick = () => {
-    const { setOptions, options } = this.props.context;
+    const { setOptions, options } = this.props.filesystem;
     setOptions({ showFolders: !options.showFolders });
   };
 
   render() {
     const className = getClassName("filesystem__action", {
-      activated: this.props.context.options.showFolders
+      activated: this.props.filesystem.options.showFolders
     });
 
     return (

@@ -4,7 +4,7 @@ import withContext from "../../../hoc/withContext";
 import { WindowContextType } from "ContextType";
 
 type Props = {
-  context: WindowContextType;
+  window: WindowContextType;
   type: "exit" | "minimalize" | "fullscreen";
   onClick: () => void;
 };
@@ -15,10 +15,10 @@ export class Action extends Component<Props, {}> {
   }
 
   handleClick = () => {
-    const { onClick, context, type } = this.props;
+    const { onClick, window, type } = this.props;
 
     onClick();
-    if (type === "fullscreen") context.changePriority();
+    if (type === "fullscreen") window.changePriority();
   };
 
   render() {

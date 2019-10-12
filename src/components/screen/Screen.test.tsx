@@ -1,10 +1,11 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import Screen from "./Screen";
+import { Screen } from "./Screen";
 import { findByTestAtrr } from "../../../testingUtils";
 
-const wrapper = shallow(<Screen />);
+const mockSetSizeFn = jest.fn();
+const wrapper = shallow<Screen>(<Screen setSize={mockSetSizeFn} />);
 
 describe("Screen Component", () => {
   describe("render", () => {
@@ -18,6 +19,18 @@ describe("Screen Component", () => {
 
     it("should render Toolbar Componenet", () => {
       expect(findByTestAtrr(wrapper, "toolbar").length).toBe(1);
+    });
+  });
+
+  describe("handleWindowResize", () => {
+    it("should call setSize", () => {
+      wrapper.instance().handleWindowResize();
+
+      expect(mockSetSizeFn.mock.calls.length).toBe(1);
+      expect(mockSetSizeFn.mock.calls[0]).toEqual([
+        window.innerWidth,
+        window.innerHeight
+      ]);
     });
   });
 });

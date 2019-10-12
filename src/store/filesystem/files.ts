@@ -10,6 +10,11 @@ const initFileTree: FileTree = {
         type: "folder",
         content: {}
       },
+      TEXTFILE: {
+        name: "TEXTFILE",
+        type: "text",
+        content: "content text file"
+      },
       "Program files": {
         name: "Program files",
         type: "folder",
@@ -28,7 +33,13 @@ const initFileTree: FileTree = {
           "IMPORTANT DONT DELETE": {
             name: "IMPORTANT DONT DELETE",
             type: "folder",
-            content: {}
+            content: {
+              PASSWORDS: {
+                name: "PASSWORDS",
+                type: "text",
+                content: ":)"
+              }
+            }
           }
         }
       }

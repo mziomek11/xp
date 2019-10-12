@@ -1,7 +1,6 @@
 .time {
   height: 100%;
-  width: $time-width;
-  border-left: 1px solid time-color("border");
+  border-left: 1px solid map-get($time, "border");
   border-radius: 2px;
   user-select: none;
   font-size: 0.9em;

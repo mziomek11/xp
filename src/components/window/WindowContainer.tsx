@@ -4,10 +4,12 @@ import Window from "./Window";
 import withContext from "../../hoc/withContext";
 import { WindowContextType } from "ContextType";
 import { getClassName, areObjectsEqual } from "../../utils";
+import { clickedWindow } from "../../utils/window";
 
 type OwnProps = {
-  context: WindowContextType;
+  window: WindowContextType;
   children: React.ReactNode;
+  classModifiers?: string[];
 };
 
 type Props = OwnProps;
@@ -16,6 +18,10 @@ type State = {
 };
 
 export class WindowContainer extends Component<Props, State> {
+  public static defaultProps = {
+    classModifiers: []
+  };
+
   readonly state: State = {
     mouseDownAtWindow: false
   };
@@ -29,7 +35,7 @@ export class WindowContainer extends Component<Props, State> {
     window.removeEventListener("mouseup", this.checkForUnfocus);
   }
 
-  shouldComponentUpdate({ context }: Props) {
+  shouldComponentUpdate({ window }: Props) {
     const values = [
       "width",
       "height",
@@ -37,48 +43,49 @@ export class WindowContainer extends Component<Props, State> {
       "left",
       "focused",
       "minimalized",
-      "fullscreened"
+      "fullscreened",
+      "disabled"
     ];
 
-    return !areObjectsEqual(this.props.context, context, values);
+    return !areObjectsEqual(this.props.window, window, values);
   }
 
   checkForMouseDownPosition = (e: MouseEvent) => {
-    if (!this.props.context.focused) return;
+    const { focused, disabled } = this.props.window;
+    if (!focused || disabled) return;
 
-    const mouseDownAtWindow = this.clickedWindow(e);
+    const mouseDownAtWindow = clickedWindow(
+      e,
+      this.props.window.left,
+      this.props.window.top,
+      this.props.window.width,
+      this.props.window.height,
+      this.props.window.fullscreened
+    );
+
     if (this.state.mouseDownAtWindow !== mouseDownAtWindow) {
       this.setState({ mouseDownAtWindow });
     }
   };
 
   checkForUnfocus = (e: MouseEvent) => {
-    const { context } = this.props;
-    const { removeFocus, focused } = context;
-    if (!focused) return;
+    const { window } = this.props;
+    const { removeFocus, focused, disabled } = window;
+    if (!focused || disabled) return;
 
     if (this.shouldUnfocus(e)) {
-      removeFocus();
+      removeFocus(e);
     }
   };
 
   shouldUnfocus = (e: MouseEvent) => {
+    const { left, top, width, height, fullscreened } = this.props.window;
     const { mouseDownAtWindow } = this.state;
     return (
       !mouseDownAtWindow &&
-      !this.clickedWindow(e) &&
+      !clickedWindow(e, left, top, width, height, fullscreened) &&
       !this.clickedOnToolbarApp(e)
     );
-  };
-
-  clickedWindow = ({ clientX, clientY }: MouseEvent) => {
-    const { left, top, width, height, fullscreened } = this.props.context;
-    if (fullscreened) return true;
-
-    const isXProper = clientX >= left && clientX <= left + width;
-    const isYProper = clientY >= top && clientY <= top + height;
-
-    return isXProper && isYProper;
   };
 
   clickedOnToolbarApp = (e: MouseEvent) => {
@@ -89,16 +96,22 @@ export class WindowContainer extends Component<Props, State> {
   };
 
   handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    const { changePriority, focused } = this.props.window;
+    if (focused) return;
     if (!(e.target as Element).classList.contains("window__action")) {
-      this.props.context.changePriority();
+      changePriority();
     }
   };
 
   getClassName = () => {
-    const { focused, fullscreened } = this.props.context;
-    const modifiersObj = { focused, fullscreen: fullscreened };
+    const { focused, disabled, fullscreened } = this.props.window;
+    const modifiersObj = {
+      focused: focused && !disabled,
+      fullscreen: fullscreened,
+      disabled
+    };
 
-    return getClassName("window", modifiersObj);
+    return getClassName("window", modifiersObj, this.props.classModifiers);
   };
 
   getInlineStyles = () => {
@@ -109,7 +122,7 @@ export class WindowContainer extends Component<Props, State> {
       left,
       width,
       height
-    } = this.props.context;
+    } = this.props.window;
 
     const styles: React.CSSProperties = {
       top,
@@ -137,13 +150,15 @@ export class WindowContainer extends Component<Props, State> {
     const className = this.getClassName();
 
     return (
-      <Window
-        className={className}
-        inlineStyles={inlineStyles}
-        children={children}
-        onMouseDown={this.handleMouseDown}
-        data-test="window"
-      />
+      <>
+        <Window
+          className={className}
+          inlineStyles={inlineStyles}
+          children={children}
+          onMouseDown={this.handleMouseDown}
+          data-test="window"
+        />
+      </>
     );
   }
 }

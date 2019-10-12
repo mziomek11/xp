@@ -6,26 +6,26 @@ import withContext from "../../../../hoc/withContext";
 import { WindowContextType } from "ContextType";
 
 type Props = {
-  context: WindowContextType;
+  window: WindowContextType;
 };
 
 const minWithToRender = 420;
 
 export class Bar extends Component<Props, {}> {
-  shouldComponentUpdate(nextProps: Props) {
-    const { width } = this.props.context;
-    if (width < minWithToRender && nextProps.context.width >= minWithToRender) {
+  shouldComponentUpdate({ window }: Props) {
+    const { width } = this.props.window;
+    if (width < minWithToRender && window.width >= minWithToRender) {
       return true;
     }
 
-    if (nextProps.context.width < minWithToRender && width >= minWithToRender) {
+    if (window.width < minWithToRender && width >= minWithToRender) {
       return true;
     }
 
     return false;
   }
   render() {
-    const shouldRender = this.props.context.width >= minWithToRender;
+    const shouldRender = this.props.window.width >= minWithToRender;
 
     if (!shouldRender) return null;
 

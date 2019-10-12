@@ -5,7 +5,6 @@ import IconView from "./IconView";
 import ThumbnailView from "./ThumbnailView";
 import ListView from "./ListView";
 import TileView from "./TileView";
-import { filesystemConfig } from "../../../../../config";
 import { findByTestAtrr } from "../../../../../../testingUtils";
 
 type View = "Icon" | "Thumbnail" | "List" | "Tile";

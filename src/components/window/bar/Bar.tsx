@@ -6,12 +6,23 @@ import MinimalizeAction from "../action/MinimalizeAction";
 import FullscreenAction from "../action/FullscreenAction";
 import ExitAction from "../action/ExitAction";
 
-type Props = {
+export type Props = {
   onMouseDown: (e: React.MouseEvent<HTMLDivElement>) => void;
   onClick: () => void;
+  showMinimalize: boolean;
+  showFullscreen: boolean;
+  showExit: boolean;
+  showIcon: boolean;
 };
 
-export const Bar: React.FC<Props> = ({ onMouseDown, onClick }) => {
+export const Bar: React.FC<Props> = ({
+  onMouseDown,
+  onClick,
+  showMinimalize,
+  showFullscreen,
+  showExit,
+  showIcon
+}) => {
   return (
     <div
       className="window__bar"
@@ -20,13 +31,13 @@ export const Bar: React.FC<Props> = ({ onMouseDown, onClick }) => {
       onClick={onClick}
     >
       <div className="window__bar__left">
-        <Icon data-test="icon" />
+        {showIcon && <Icon data-test="icon" />}
         <Title data-test="title" />
       </div>
       <div className="window__actions" data-test="actions">
-        <MinimalizeAction data-test="action-minimalize" />
-        <FullscreenAction data-test="action-fullscreen" />
-        <ExitAction data-test="action-exit" />
+        {showMinimalize && <MinimalizeAction data-test="action-minimalize" />}
+        {showFullscreen && <FullscreenAction data-test="action-fullscreen" />}
+        {showExit && <ExitAction data-test="action-exit" />}
       </div>
     </div>
   );

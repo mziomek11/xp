@@ -40,7 +40,7 @@ const createWrapper = (
     ...contextOverride
   } as any;
 
-  return shallow<Arrow>(<Arrow isLeft={isLeft} context={newContext} />);
+  return shallow<Arrow>(<Arrow isLeft={isLeft} filesystem={newContext} />);
 };
 
 const el = document.createElement("p");

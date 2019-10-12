@@ -5,7 +5,7 @@ import withContext from "../../../hoc/withContext";
 import { WindowContextType } from "ContextType";
 
 type Props = {
-  context: WindowContextType;
+  window: WindowContextType;
 };
 
 export class MinimalizeAction extends Component<Props, {}> {
@@ -14,7 +14,7 @@ export class MinimalizeAction extends Component<Props, {}> {
   }
 
   render() {
-    const { toggleMinimalize } = this.props.context;
+    const { toggleMinimalize } = this.props.window;
     return (
       <Action type="minimalize" onClick={toggleMinimalize} data-test="action" />
     );

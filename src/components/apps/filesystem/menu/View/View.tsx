@@ -11,16 +11,16 @@ import OptionToolbars from "./Toolbars";
 import { DropDown, Divider, Option, RadioGroup } from "../../../../dropdown/";
 
 type Props = {
-  context: FilesystemContextType;
+  filesystem: FilesystemContextType;
 };
 
 class View extends Component<Props, {}> {
-  shouldComponentUpdate({ context }: Props) {
-    const { display } = this.props.context.options;
-    return display !== context.options.display;
+  shouldComponentUpdate({ filesystem }: Props) {
+    const { display } = this.props.filesystem.options;
+    return display !== filesystem.options.display;
   }
   handleDisplayClick = (option: string) => {
-    this.props.context.setOptions({ display: option as any });
+    this.props.filesystem.setOptions({ display: option as any });
   };
 
   render() {
@@ -30,7 +30,7 @@ class View extends Component<Props, {}> {
         <OptionExplorerBar />
         <Divider />
         <RadioGroup
-          checkedValue={this.props.context.options.display}
+          checkedValue={this.props.filesystem.options.display}
           onClick={this.handleDisplayClick}
           options={[
             { name: "Thumbnails", value: "thumbnails" },

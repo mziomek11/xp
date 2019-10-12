@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import Application from "../apps/Application";
-import WindowContainer from "./WindowContainer";
-import { Provider as WindowContextProvider } from "./Context";
 import { RootState } from "MyTypes";
 import { areArraysEqual } from "../../utils";
 
@@ -22,11 +20,7 @@ export class List extends Component<Props, {}> {
     return (
       <React.Fragment>
         {this.props.windowsIds.map(id => (
-          <WindowContextProvider id={id} startFullscreened={false} key={id}>
-            <WindowContainer data-test="window">
-              <Application id={id} />
-            </WindowContainer>
-          </WindowContextProvider>
+          <Application id={id} key={id} data-test="app" />
         ))}
       </React.Fragment>
     );

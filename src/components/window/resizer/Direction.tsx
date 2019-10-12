@@ -2,7 +2,7 @@ import React from "react";
 
 import Resizer, { OwnProps as ResizerProps } from "./Resizer";
 
-type ResizeProps = Omit<ResizerProps, "context">;
+type ResizeProps = Omit<ResizerProps, "window">;
 
 export const createResizer = (resizeProps: ResizeProps) => {
   return () => {

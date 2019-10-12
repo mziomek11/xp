@@ -1,4 +1,10 @@
-import { deepCopy, capitalize, getClassName, areArraysEqual } from "./";
+import {
+  deepCopy,
+  capitalize,
+  getClassName,
+  areArraysEqual,
+  areObjectsEqual
+} from "./";
 
 describe("Utils functions", () => {
   describe("deepCopy", () => {
@@ -24,6 +30,27 @@ describe("Utils functions", () => {
       expect(capitalize("boOk")).toBe("BoOk");
       expect(capitalize("Fee")).toBe("Fee");
       expect(capitalize("q")).toBe("Q");
+    });
+  });
+
+  describe("areObjectsEqual", () => {
+    it("should return true", () => {
+      const obj = { a: "a", b: "b", c: "c" };
+      expect(areObjectsEqual(obj, obj, ["a", "b", "c"])).toBe(true);
+    });
+
+    it("should return false", () => {
+      const obj1 = { a: "a", b: "b" };
+      const obj2 = { a: "a", b: "c" };
+
+      expect(areObjectsEqual(obj1, obj2, ["a", "b"])).toBe(false);
+    });
+
+    it("should throw an error", () => {
+      const obj1 = { a: "a", b: "b" };
+      const obj2 = { a: "a", b: "b" };
+
+      expect(() => areObjectsEqual(obj1, obj2, ["a", "b", "c"])).toThrowError();
     });
   });
 

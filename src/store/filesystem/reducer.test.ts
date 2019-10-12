@@ -67,6 +67,17 @@ describe("Filesystem reducer", () => {
     });
   });
 
+  describe("update", () => {
+    it("should update state", () => {
+      const updatedState = reducer(initState, {
+        type: FilesystemAction.UPDATE,
+        payload: { files: updatedFiles }
+      });
+
+      expect(updatedState).toEqual({ ...initState, files: updatedFiles });
+    });
+  });
+
   describe("create", () => {
     it("should update state", () => {
       const updatedState = reducer(initState, {

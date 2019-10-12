@@ -7,8 +7,10 @@ import arrowRightColored from "../../../../../assets/folder/arrow-right-green.pn
 const ArrowRight: React.FC<DirectionArrowProps> = ({
   disabled,
   containerClass,
+  arrowClass,
   onClick,
-  historyArrow
+  historyArrow,
+  onlyIcon
 }) => {
   const container = createRef<HTMLDivElement>();
   const arrow = createRef<HTMLImageElement>();
@@ -27,12 +29,12 @@ const ArrowRight: React.FC<DirectionArrowProps> = ({
     >
       <img
         src={icon}
-        className="filesystem__action__arrow"
+        className={arrowClass}
         alt="navigation forward arrow"
         ref={arrow}
         data-test="arrow"
       />
-      {historyArrow}
+      {!onlyIcon && historyArrow}
     </div>
   );
 };

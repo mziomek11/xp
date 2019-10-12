@@ -8,11 +8,11 @@ import copyIcon from "../../../../../assets/folder/copy.png";
 import deleteIcon from "../../../../../assets/folder/delete.png";
 
 type Props = {
-  context: FilesystemContextType;
+  filesystem: FilesystemContextType;
 };
 
-export const ManyFocusedOptions: React.FC<Props> = ({ context }) => {
-  const { shortcuts } = context;
+export const ManyFocusedOptions: React.FC<Props> = ({ filesystem }) => {
+  const { shortcuts } = filesystem;
 
   return (
     <ul className="filesystem__side-content-list" data-test="container">

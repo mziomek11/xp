@@ -10,7 +10,7 @@ const createWrapper = (
   files: Array<{ name: string; type: string }> = []
 ) => {
   const ctx = { path, focused, files } as any;
-  return shallow<Details>(<Details context={ctx} />);
+  return shallow<Details>(<Details filesystem={ctx} />);
 };
 
 const wrapper = createWrapper();

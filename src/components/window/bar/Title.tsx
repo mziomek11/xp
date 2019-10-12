@@ -4,18 +4,20 @@ import withContext from "../../../hoc/withContext";
 import { WindowContextType } from "ContextType";
 
 type Props = {
-  context: WindowContextType;
+  window: WindowContextType;
 };
 
 export class Title extends Component<Props, {}> {
-  shouldComponentUpdate({ context }: Props) {
-    return this.props.context.name !== context.name;
+  shouldComponentUpdate({ window }: Props) {
+    if (this.props.window.staticWindowName) return false;
+    return this.props.window.name !== window.name;
   }
 
   render() {
+    const { staticWindowName, name } = this.props.window;
     return (
       <h4 className="window__title" data-test="title">
-        {this.props.context.name}
+        {staticWindowName ? staticWindowName : name}
       </h4>
     );
   }

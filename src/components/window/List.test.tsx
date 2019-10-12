@@ -6,16 +6,16 @@ import { findByTestAtrr } from "../../../testingUtils";
 
 describe("WindowList Component", () => {
   describe("render", () => {
-    it("should render windows", () => {
+    it("should render apps", () => {
       const wrapper = shallow(<List windowsIds={["1", "2", "3"]} />);
 
-      expect(findByTestAtrr(wrapper, "window").length).toBe(3);
+      expect(findByTestAtrr(wrapper, "app").length).toBe(3);
     });
 
-    it("should not render windows", () => {
+    it("should not render apps", () => {
       const wrapper = shallow(<List windowsIds={[]} />);
 
-      expect(findByTestAtrr(wrapper, "window").length).toBe(0);
+      expect(findByTestAtrr(wrapper, "app").length).toBe(0);
     });
   });
 });

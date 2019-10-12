@@ -6,7 +6,7 @@ import { findByTestAtrr } from "../../../../../testingUtils";
 
 const mockSetOptionsFn = jest.fn();
 const ctx = { setOptions: mockSetOptionsFn } as any;
-const wrapper = shallow(<Folders context={ctx} />);
+const wrapper = shallow(<Folders filesystem={ctx} />);
 
 describe("Filesystem Folders component", () => {
   describe("render", () => {

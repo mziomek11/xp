@@ -1,5 +1,24 @@
 .desktop {
   position: relative;
-  padding: 2em;
   background: rgb(24, 24, 24);
+}
+
+.desktop__file__list {
+  display: flex;
+  flex-direction: column;
+}
+
+.desktop__file {
+  position: relative;
+  width: $desktop-file-size;
+  height: $desktop-file-size;
+  margin: $desktop-file-margin;
+  background: black;
+  color: white;
+  @include flex-centered;
+
+  &:hover {
+    cursor: pointer;
+    background: aquamarine;
+  }
 }

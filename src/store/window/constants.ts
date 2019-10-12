@@ -1,4 +1,6 @@
 export const OPEN = "@@window/OPEN";
+export const REPLACE = "@@window/REPLACE";
+export const REPLACE_FAILED = "@@window/REPLACE_FAILED";
 export const CHANGE_PRIORITY = "@@window/CHANGE_PRIORITY";
 export const CHANGE_PRIORITY_FAILED = "@@window/CHANGE_PRIORITY_FAILED";
 export const TOGGLE_MINIMALIZE = "@@window/TOGGLE_MINIMALIZE";

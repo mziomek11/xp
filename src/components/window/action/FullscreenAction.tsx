@@ -5,7 +5,7 @@ import withContext from "../../../hoc/withContext";
 import { WindowContextType } from "ContextType";
 
 type Props = {
-  context: WindowContextType;
+  window: WindowContextType;
 };
 
 export class FullscreenAction extends Component<Props, {}> {
@@ -14,7 +14,7 @@ export class FullscreenAction extends Component<Props, {}> {
   }
 
   handleClick = () => {
-    const { fullscreened, setContext } = this.props.context;
+    const { fullscreened, setContext } = this.props.window;
     setContext({ fullscreened: !fullscreened });
   };
 

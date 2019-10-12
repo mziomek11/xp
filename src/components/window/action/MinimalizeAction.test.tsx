@@ -10,7 +10,7 @@ const context = {
   ...testContextData,
   toggleMinimalize: mockMinimalizeWindowFn
 };
-const wrapper = shallow(<MinimalizeAction context={context} />);
+const wrapper = shallow(<MinimalizeAction window={context} />);
 
 describe("MinimalizeAction Component", () => {
   describe("render", () => {

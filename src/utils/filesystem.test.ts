@@ -28,7 +28,7 @@ describe("Filesystem utils funtions", () => {
       };
 
       expect(objectPropFromPath(tree, ["a", "b"])).toEqual([
-        [{ name: "c", type: "folder" }],
+        [{ name: "c", type: "folder", content: {} }],
         ["a", "b"]
       ]);
     });
@@ -48,7 +48,10 @@ describe("Filesystem utils funtions", () => {
       };
 
       expect(objectPropFromPath(tree, ["c"])).toEqual([
-        [{ name: "a", type: "folder" }, { name: "b", type: "folder" }],
+        [
+          { name: "a", type: "folder", content: {} },
+          { name: "b", type: "folder", content: {} }
+        ],
         []
       ]);
     });

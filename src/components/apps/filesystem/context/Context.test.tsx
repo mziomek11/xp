@@ -5,7 +5,7 @@ import { findByTestAtrr } from "../../../../../testingUtils";
 
 import { ContextProvider, Props, State } from "./Context";
 import { listClass, containerClass } from "../classNames";
-import { FileTree } from "../../../../store/filesystem/models";
+import { FileTree, File, FileType } from "../../../../store/filesystem/models";
 
 let mockRemoveFn: jest.Mock;
 let mockCopyFn: jest.Mock;
@@ -44,6 +44,8 @@ const createWrapper = (
 
   const defaultProps: Props = {
     id: "id",
+    startPath: [],
+    defaultDisplay: "tiles",
     fileTree: fileTree,
     copiedFiles: {},
     focusedWindow: null,
@@ -66,12 +68,10 @@ describe("Filesystem ContextProvider Component", () => {
   describe("componentDidMount", () => {
     it("should update state", () => {
       const { state } = wrapper.instance();
-      expect(state).toEqual({
-        ...state,
-        path: [],
-        files: [{ name: "Local Disk (C:)", type: "disk" }],
-        history: [[]]
-      });
+
+      expect(state.path).toEqual([]);
+      expect(state.history).toEqual([[]]);
+      expect(state.files.length).toBe(1);
     });
   });
 
@@ -101,25 +101,21 @@ describe("Filesystem ContextProvider Component", () => {
           ...prevState,
           path: ["Local Disk (C:)"],
           files: [
-            { name: "Folder1", type: "folder" },
-            { name: "aTextFile1", type: "text" }
+            { name: "Folder1", type: "folder", content: {} },
+            { name: "aTextFile1", type: "text", content: "adasdasd" }
           ],
           focused: []
         });
       });
 
       it("file name change", () => {
-        const prevState = deepCopy<State>(instance.state);
         instance.setState({
-          files: [{ name: "unknow", type: "folder" }],
+          files: [{ name: "unknow", type: "folder", content: {} }],
           focused: ["focus"]
         });
 
-        expect(instance.state).toEqual({
-          ...prevState,
-          files: [{ name: "Local Disk (C:)", type: "disk" }],
-          focused: []
-        });
+        expect(instance.state.files.length).toBe(1);
+        expect(instance.state.focused).toEqual([]);
       });
 
       it("focused window change", () => {
@@ -132,6 +128,32 @@ describe("Filesystem ContextProvider Component", () => {
     });
   });
 
+  describe("areFileContentsDifferent", () => {
+    const testAreDifferent = (type: FileType, same: boolean) => {
+      const oldFiles: File[] = [{ name: "x", type, content: "a" }];
+      const newFiles: File[] = [{ name: "x", type, content: same ? "a" : "b" }];
+
+      const instance = wrapper.instance();
+      return instance.areFileContentsDifferent(oldFiles, newFiles);
+    };
+
+    describe("return true", () => {
+      it("text contents are different", () => {
+        expect(testAreDifferent("text", false)).toBe(true);
+      });
+    });
+
+    describe("return false", () => {
+      it("folder contents are the different", () => {
+        expect(testAreDifferent("folder", false)).toBe(false);
+      });
+
+      it("text contents are the same", () => {
+        expect(testAreDifferent("text", true)).toBe(false);
+      });
+    });
+  });
+
   describe("getSortedFiles", () => {
     it("should return files sorted by name", () => {
       wrapper.instance().setState({
@@ -140,8 +162,8 @@ describe("Filesystem ContextProvider Component", () => {
       });
 
       expect(wrapper.instance().getSortedFiles()).toEqual([
-        { name: "aTextFile1", type: "text" },
-        { name: "Folder1", type: "folder" }
+        { name: "aTextFile1", type: "text", content: "adasdasd" },
+        { name: "Folder1", type: "folder", content: {} }
       ]);
     });
 
@@ -152,8 +174,8 @@ describe("Filesystem ContextProvider Component", () => {
       });
 
       expect(wrapper.instance().getSortedFiles()).toEqual([
-        { name: "Folder1", type: "folder" },
-        { name: "aTextFile1", type: "text" }
+        { name: "Folder1", type: "folder", content: {} },
+        { name: "aTextFile1", type: "text", content: "adasdasd" }
       ]);
     });
   });

@@ -7,7 +7,7 @@ import { findByTestAtrr } from "../../../../testingUtils";
 
 const mockSetContext = jest.fn();
 const context = { ...testContextData, setContext: mockSetContext };
-const wrapper = shallow(<FullscreenAction context={context} />);
+const wrapper = shallow(<FullscreenAction window={context} />);
 
 describe("FullscreenComponent Component", () => {
   describe("render", () => {

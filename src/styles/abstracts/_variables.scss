@@ -14,12 +14,14 @@ $window-z-index: 9;
 $dropdown-z-index: 8;
 $location-z-index: 7;
 
-//File
+//Desktop
 
-$file-size: 64px;
+$desktop-file-margin: 10px;
+$desktop-file-size: 64px;
 
 //Window
 
+$window-font-size: 1.55rem;
 $window-bar-height: 30px;
 $window-bar-padding: 4px;
 $window-bar-font-size: 0.92em;
@@ -138,7 +140,6 @@ $start-margin: 9px;
 
 //Time
 
-$time-width: 80px;
 $time: (
   "main-1": #095bc9,
   "main-2": #16adf0,
@@ -184,6 +185,48 @@ $dropdown-size-arrow: 3px;
 $dropdown-size-check: 2px;
 $dropdown-size-circle: 6px;
 
+//Location
+
+$location-padding: 1px 2px;
+$location-border-color: #7f9db9;
+$location-font-size: 1.05rem;
+
+$location-input-font-size: 1.05em;
+
+$location-icon-margin: 3px;
+$location-icon-size: 16px;
+
+$location-arrow-width: 14px;
+$location-arrow-height: 16px;
+$location-arrrow-background: #bbbbbb;
+$location-arrow-border-color: #eeede5;
+
+$location-list-padding: 1px;
+$location-list-max-height: 200px;
+
+$location-go-icon-size: 18px;
+$location-go-padding-horizontal: 4px;
+$location-go-color-hover: #f9f9f5;
+
+//Subwindow picker
+
+$picker-padding: 5px;
+$picker-font-size: 0.85em;
+
+$picker-navigation-padding: 70px;
+$picker-navigation-actions-margin: 10px;
+
+$picker-form-margin: 35px;
+$picker-form-label-margin: 10px;
+
+$picker-form-button-font-size: 0.9em;
+$picker-form-button-width: 70px;
+$picker-form-button-height: 20px;
+$picker-form-button-border-color: #00498d;
+$picker-form-button-border-color-hover: #c99630;
+$picker-form-button-background: #f4f4f0;
+$picker-form-button-background-active: #deddd5;
+
 //Filesystem tree
 
 $filesystem-tree-list-item-icon-width: 16px;
@@ -207,8 +250,13 @@ $filesystem-action-hover-color: #cecec3;
 $filesystem-action-active-color: #e4e3dc;
 $filesystem-action-active-border-color: #9d9d92;
 $filesystem-action-padding: 5px;
+$filesystem-action-padding-small: 2px;
+$filesystem-action-height-small: 24px;
 $filesystem-action-padding-with-arrow-right: 2px;
 $filesystem-action-margin: 1px;
+
+$filesystem-action-icon-width: 23px;
+$filesystem-action-icon-width-small: 16px;
 
 $filesystem-action-opened-background: #ffffff;
 
@@ -218,29 +266,6 @@ $filesystem-adress-bar-padding-horizontal: 6px;
 
 $filesystem-adress-text-size: 0.75em;
 $filesystem-adress-text-color: #7f7c73;
-
-$filesystem-adress-go-icon-size: 18px;
-$filesystem-adress-go-padding-horizontal: 4px;
-$filesystem-adress-go-color-hover: #f9f9f5;
-
-//Filesystem location
-
-$filesystem-location-padding: 1px 2px;
-$filesystem-location-border-color: #7f9db9;
-$filesysyem-location-font-size: 0.88em;
-
-$filesystem-location-input-font-size: 1.05em;
-
-$filesystem-location-icon-margin: 3px;
-$filesystem-location-icon-size: 16px;
-
-$filesystem-location-arrow-width: 14px;
-$filesystem-location-arrow-height: 16px;
-$filesystem-location-arrrow-background: #bbbbbb;
-$filesystem-location-arrow-border-color: #eeede5;
-
-$filesystem-location-list-padding: 1px;
-$filesystem-location-list-max-height: 200px;
 
 //Filesystem side
 

@@ -4,16 +4,17 @@ import withContext from "../../../hoc/withContext";
 import { WindowContextType } from "ContextType";
 
 type Props = {
-  context: WindowContextType;
+  window: WindowContextType;
 };
 
 export class Icon extends Component<Props, {}> {
-  shouldComponentUpdate({ context }: Props) {
-    return this.props.context.icon !== context.icon;
+  shouldComponentUpdate({ window }: Props) {
+    return this.props.window.icon !== window.icon;
   }
 
   render() {
-    const { icon } = this.props.context;
+    const { icon } = this.props.window;
+
     return (
       <div className="window__icon-container" data-test="container">
         <img

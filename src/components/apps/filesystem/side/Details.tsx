@@ -7,21 +7,21 @@ import { FileType } from "../../../../store/filesystem/models";
 import { areArraysEqual } from "../../../../utils";
 
 type Props = {
-  context: FilesystemContextType;
+  filesystem: FilesystemContextType;
 };
 
 export class Details extends Component<Props, {}> {
-  shouldComponentUpdate({ context }: Props) {
-    const { path, focused } = this.props.context;
+  shouldComponentUpdate({ filesystem }: Props) {
+    const { path, focused } = this.props.filesystem;
 
-    if (!areArraysEqual(path, context.path)) return true;
-    if (!areArraysEqual(focused, context.focused)) return true;
+    if (!areArraysEqual(path, filesystem.path)) return true;
+    if (!areArraysEqual(focused, filesystem.focused)) return true;
 
     return false;
   }
 
   getFileInfo = (): [string, string] => {
-    const { focused, path, files } = this.props.context;
+    const { focused, path, files } = this.props.filesystem;
 
     if (focused.length === 0) {
       if (path.length === 0) return ["Computer", "System folder"];

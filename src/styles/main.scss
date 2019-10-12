@@ -4,10 +4,9 @@
 
 @import "base/base", "base/typography", "base/cursor";
 
-@import "layout/screen", "layout/desktop", "layout/toolbar/toolbar",
-  "layout/toolbar/start", "layout/toolbar/time", "layout/toolbar/taskbar";
+@import "layout/screen", "layout/desktop", "layout/toolbar/main";
 
-@import "components/file", "components/window/window",
-  "components/window/resizer", "components/menu", "components/dropdown";
+@import "components/window/main", "components/subwindow/main", "components/menu",
+  "components/dropdown", "components/location";
 
 @import "apps/filesystem", "apps/notepad";

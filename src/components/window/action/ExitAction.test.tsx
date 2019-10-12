@@ -7,7 +7,7 @@ import { findByTestAtrr } from "../../../../testingUtils";
 
 const mockCloseWindowFn = jest.fn();
 const context = { ...testContextData, close: mockCloseWindowFn };
-const wrapper = shallow(<ExitAction context={context} />);
+const wrapper = shallow(<ExitAction window={context} />);
 
 describe("ExitAction Component", () => {
   describe("render", () => {

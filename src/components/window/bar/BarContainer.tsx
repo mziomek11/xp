@@ -7,7 +7,7 @@ import { toolbarConfig, windowConfig } from "../../../config";
 import { Context } from "../Context";
 
 type OwnProps = {
-  context: Context;
+  window: Context;
 };
 
 type DoubleClickProps = {
@@ -65,11 +65,11 @@ export class BarContainer extends React.Component<Props, State> {
     const actionClass: string = "window__action";
     const clickedOnAction: boolean = e.target.classList.contains(actionClass);
 
-    return !clickedOnAction && !this.props.context.fullscreened;
+    return !clickedOnAction && !this.props.window.fullscreened;
   };
 
   calculateNewState = (e: React.MouseEvent<HTMLDivElement>): State => {
-    const { left, top, width } = this.props.context;
+    const { left, top, width } = this.props.window;
 
     const barX: number = e.clientX - left;
     const barY: number = e.clientY - top;
@@ -84,7 +84,7 @@ export class BarContainer extends React.Component<Props, State> {
   handleMouseMove = (e: MouseEvent) => {
     const newPosition = this.calculateNewPosition(e);
 
-    this.props.context.setContext(newPosition);
+    this.props.window.setContext(newPosition);
   };
 
   calculateNewPosition = (e: MouseEvent): { left: number; top: number } => {
@@ -97,8 +97,11 @@ export class BarContainer extends React.Component<Props, State> {
   };
 
   onDoubleClick = () => {
-    const { fullscreened, setContext } = this.props.context;
-    setContext({ fullscreened: !fullscreened });
+    const { fullscreened, setContext, hideFullscreen } = this.props.window;
+
+    if (!hideFullscreen) {
+      setContext({ fullscreened: !fullscreened });
+    }
   };
 
   handleClick = () => {
@@ -106,11 +109,21 @@ export class BarContainer extends React.Component<Props, State> {
   };
 
   render() {
+    const {
+      hideMinimalize,
+      hideFullscreen,
+      hideExit,
+      hideIcon
+    } = this.props.window;
     return (
       <Bar
         onMouseDown={this.handleMouseDown}
         onClick={this.handleClick}
         data-test="bar"
+        showMinimalize={!hideMinimalize}
+        showFullscreen={!hideFullscreen}
+        showExit={!hideExit}
+        showIcon={!hideIcon}
       />
     );
   }

@@ -5,23 +5,22 @@ import { connect } from "react-redux";
 import ListItem from "../ListItem";
 import withContext from "../../../../../hoc/withContext";
 import { FilesystemContextType } from "ContextType";
-import { FileType } from "../../../../../store/filesystem/models";
-import { create } from "../../../../../store/filesystem/actions";
+import { createFolder } from "../../../../../store/filesystem/actions";
 
 import createIcon from "../../../../../assets/folder/create.png";
 
 type OwnProps = {
-  context: FilesystemContextType;
+  filesystem: FilesystemContextType;
 };
 
 type DispatchProps = {
-  createFolder: (path: string[], type: FileType) => void;
+  createFolder: (path: string[]) => void;
 };
 
 type Props = OwnProps & DispatchProps;
 
-const NoFocusedOptions: React.FC<Props> = ({ context, createFolder }) => {
-  const handleCreateClick = () => createFolder(context.path, "folder");
+const NoFocusedOptions: React.FC<Props> = ({ filesystem, createFolder }) => {
+  const handleCreateClick = () => createFolder(filesystem.path);
 
   return (
     <ul className="filesystem__side__list">
@@ -34,7 +33,7 @@ const NoFocusedOptions: React.FC<Props> = ({ context, createFolder }) => {
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => {
   return {
-    createFolder: (path, type) => dispatch(create(path, type))
+    createFolder: path => dispatch(createFolder(path))
   };
 };
 

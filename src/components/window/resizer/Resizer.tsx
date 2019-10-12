@@ -5,7 +5,7 @@ import { WindowContextType } from "ContextType";
 import { windowConfig, toolbarConfig } from "../../../config";
 
 export type OwnProps = {
-  context: WindowContextType;
+  window: WindowContextType;
   resizesWidth?: boolean;
   resizesHeight?: boolean;
   isLeft?: boolean;
@@ -39,8 +39,8 @@ export class WindowResizer extends Component<OwnProps, State> {
   static defaultProps = defaultProps;
 
   shouldComponentUpdate(nextProps: OwnProps) {
-    const { fullscreened } = this.props.context;
-    return fullscreened !== nextProps.context.fullscreened;
+    const { fullscreened } = this.props.window;
+    return fullscreened !== nextProps.window.fullscreened;
   }
 
   componentWillUnmount() {
@@ -56,7 +56,7 @@ export class WindowResizer extends Component<OwnProps, State> {
     window.removeEventListener("mousemove", this.handleMouseMove);
     window.removeEventListener("mouseup", this.removeListeners);
     this.changeCursor();
-    this.props.context.setContext({ resizing: false });
+    this.props.window.setContext({ resizing: false });
   };
 
   changeCursor = (cursor?: string) => {
@@ -88,7 +88,7 @@ export class WindowResizer extends Component<OwnProps, State> {
     const newState = this.calculateNewState(e.clientX, e.clientY);
 
     this.setState(newState);
-    this.props.context.setContext({ resizing: true });
+    this.props.window.setContext({ resizing: true });
     this.changeCursor(this.getOwnCursor());
     this.addListeners();
   };
@@ -103,8 +103,8 @@ export class WindowResizer extends Component<OwnProps, State> {
 
   calculateStateDataX = (clientX: number) => {
     const { endY, edgeDistanceY, ...calculatedStateData } = this.state;
-    const { context, isLeft, resizesWidth } = this.props;
-    const { left, width } = context;
+    const { window, isLeft, resizesWidth } = this.props;
+    const { left, width } = window;
 
     if (resizesWidth) {
       if (isLeft) calculatedStateData.endX = left + width;
@@ -116,8 +116,8 @@ export class WindowResizer extends Component<OwnProps, State> {
 
   calculateStateDataY = (clientY: number) => {
     const { endX, edgeDistanceX, ...calculatedStateData } = this.state;
-    const { context, isTop, resizesHeight } = this.props;
-    const { top, height } = context;
+    const { window, isTop, resizesHeight } = this.props;
+    const { top, height } = window;
 
     if (resizesHeight) {
       if (isTop) calculatedStateData.endY = top + height;
@@ -155,9 +155,9 @@ export class WindowResizer extends Component<OwnProps, State> {
   };
 
   calculateNewWidth = (clientX: number): number => {
-    const { isLeft, resizesWidth, context } = this.props;
+    const { isLeft, resizesWidth, window } = this.props;
     const { endX, edgeDistanceX } = this.state;
-    const { width, left } = context;
+    const { width, left, maxWidth, minWidth } = window;
 
     let newWidth: number = width;
 
@@ -165,18 +165,21 @@ export class WindowResizer extends Component<OwnProps, State> {
       if (isLeft) newWidth = endX - clientX + edgeDistanceX;
       else newWidth = clientX - left - edgeDistanceX;
 
-      newWidth = Math.min(window.innerWidth, newWidth);
+      if (newWidth > maxWidth) {
+        if (newWidth >= width) newWidth = width;
+        else if (width < maxWidth) newWidth = maxWidth;
+      }
     }
 
-    newWidth = Math.max(newWidth, windowConfig.MINIMAL_WIDTH);
+    newWidth = Math.max(newWidth, minWidth);
+
     return newWidth;
   };
 
   calculateNewHeight = (clientY: number): number => {
-    const { isTop, resizesHeight, context } = this.props;
+    const { isTop, resizesHeight, window } = this.props;
     const { edgeDistanceY, endY } = this.state;
-    const { top, height } = context;
-    const { innerHeight } = window;
+    const { top, height, minHeight, maxHeight } = window;
 
     let newHeight: number = height;
 
@@ -184,17 +187,20 @@ export class WindowResizer extends Component<OwnProps, State> {
       if (isTop) newHeight = endY - clientY + edgeDistanceY;
       else newHeight = clientY - top - edgeDistanceY;
 
-      newHeight = Math.min(innerHeight - toolbarConfig.HEIGHT, newHeight);
+      if (newHeight > maxHeight) {
+        if (newHeight >= height) newHeight = height;
+        else if (height < maxHeight) newHeight = maxHeight;
+      }
     }
 
-    newHeight = Math.max(newHeight, windowConfig.MINIMAL_HEIGHT);
+    newHeight = Math.max(newHeight, minHeight);
 
     return newHeight;
   };
 
   resize = (newSize: { width: number; height: number }): void => {
-    const { isTop, isLeft, context } = this.props;
-    const { top, left, setContext } = context;
+    const { isTop, isLeft, window } = this.props;
+    const { top, left, setContext } = window;
     const { endX, endY } = this.state;
 
     if (!isLeft && !isTop) {
@@ -232,7 +238,7 @@ export class WindowResizer extends Component<OwnProps, State> {
   }
 
   render() {
-    if (this.props.context.fullscreened) return null;
+    if (this.props.window.fullscreened) return null;
     return (
       <div
         className={this.getClassModifier()}

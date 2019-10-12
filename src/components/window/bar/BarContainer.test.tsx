@@ -6,7 +6,16 @@ import { windowConfig, toolbarConfig } from "../../../config";
 import { BarContainer, initState } from "./BarContainer";
 import { findByTestAtrr } from "../../../../testingUtils";
 
-const wrapper = shallow(<BarContainer context={testContextData} />);
+let mockCheckForDoubleClick: jest.Mock;
+
+const createWrapper = (ctxOverride: Partial<typeof testContextData> = {}) => {
+  mockCheckForDoubleClick = jest.fn();
+  const window = { ...testContextData, ...ctxOverride };
+  const props = { window, checkForDoubleClick: mockCheckForDoubleClick };
+  return shallow<BarContainer>(<BarContainer {...props} />);
+};
+
+const wrapper = createWrapper();
 
 const getMouseEventData = (contains: boolean) => ({
   clientX: testContextData.left + testContextData.width / 2,
@@ -44,17 +53,14 @@ describe("WindowBarContainer Component", () => {
     });
 
     it("should NOT update state when is fullscreened", () => {
-      const fullScrContext = { ...testContextData, fullscreened: true };
-      const fullScrWrapper = shallow(<BarContainer context={fullScrContext} />);
-      const bar = findByTestAtrr(fullScrWrapper, "bar");
+      const wrapper = createWrapper({ fullscreened: true });
+      findByTestAtrr(wrapper, "bar").simulate("mousedown", mouseDownFalse);
 
-      bar.simulate("mousedown", mouseDownFalse);
-
-      expect(fullScrWrapper.instance().state).toEqual(initState);
+      expect(wrapper.instance().state).toEqual(initState);
     });
 
     it("should NOT update state when clicked on action", () => {
-      const wrapper = shallow(<BarContainer context={testContextData} />);
+      const wrapper = createWrapper();
       findByTestAtrr(wrapper, "bar").simulate("mousedown", mouseDownTrue);
 
       expect(wrapper.instance().state).toEqual(initState);
@@ -72,11 +78,7 @@ describe("WindowBarContainer Component", () => {
 
     beforeEach(() => {
       mockSetContext = jest.fn();
-      wrapper = shallow<BarContainer>(
-        <BarContainer
-          context={{ ...testContextData, setContext: mockSetContext }}
-        />
-      );
+      wrapper = createWrapper({ setContext: mockSetContext });
     });
 
     it("should not be called when mouseDown did not occur", () => {

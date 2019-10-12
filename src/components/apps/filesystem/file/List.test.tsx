@@ -18,7 +18,7 @@ const createWrapper = (
     options: { display }
   } as any;
 
-  return shallow<List>(<List context={context} />);
+  return shallow<List>(<List filesystem={context} />);
 };
 
 const wrapper = createWrapper([], ["a", "b", "c"], "tiles", null);

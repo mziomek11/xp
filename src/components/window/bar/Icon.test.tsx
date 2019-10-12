@@ -5,7 +5,7 @@ import { Icon } from "./Icon";
 import { findByTestAtrr } from "../../../../testingUtils";
 
 const icon = "img src";
-const wrapper = shallow(<Icon context={{ icon } as any} />);
+const wrapper = shallow(<Icon window={{ icon } as any} />);
 
 describe("Window Bar Icon Component", () => {
   describe("render", () => {

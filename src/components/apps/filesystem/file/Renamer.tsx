@@ -9,7 +9,7 @@ import { rename } from "../../../../store/filesystem/actions";
 type OwnProps = {
   startText: string;
   className: string;
-  context: FilesystemContextType;
+  filesystem: FilesystemContextType;
 };
 
 type DispatchProps = {
@@ -36,7 +36,7 @@ export class Renamer extends Component<Props, State> {
 
   componentWillUnmount() {
     window.removeEventListener("mousedown", this.handleWindowMouseDown);
-    this.props.context.setRenamedFile(true);
+    this.props.filesystem.setRenamedFile(true);
   }
 
   handleWindowMouseDown = (e: MouseEvent) => {
@@ -48,8 +48,8 @@ export class Renamer extends Component<Props, State> {
   renameFile = () => {
     window.removeEventListener("mousedown", this.handleWindowMouseDown);
 
-    const { context, rename, startText } = this.props;
-    const { path, setRenamedFile } = context;
+    const { filesystem, rename, startText } = this.props;
+    const { path, setRenamedFile } = filesystem;
 
     rename(path, startText, this.state.text);
     setRenamedFile(true);

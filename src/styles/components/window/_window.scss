@@ -4,12 +4,25 @@
   padding: $window-resizer-size;
   border-top-left-radius: $window-top-border-radius;
   border-top-right-radius: $window-top-border-radius;
-  font-size: 1.55em;
+  font-size: $window-font-size;
   z-index: $window-z-index;
 
   &--fullscreen {
     padding: 0;
     border-radius: 0;
+  }
+
+  &--fixed {
+    position: fixed;
+  }
+
+  &--disabled::after {
+    position: absolute;
+    content: "";
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
   }
 }
 
@@ -58,7 +71,6 @@
 .window__actions {
   display: flex;
   height: 100%;
-  width: $window-actions-size;
   align-items: center;
 }
 

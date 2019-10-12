@@ -183,4 +183,26 @@ describe("Filesystem Node Component", () => {
       expect(mockOnClickFn.mock.calls.length).toBe(0);
     });
   });
+
+  describe("getNodes", () => {
+    it("should return one node", () => {
+      const content = {
+        f1: { name: "f1", type: "folder", content: {} },
+        t1: { name: "t1", type: "text", content: {} }
+      } as any;
+
+      const wrapper = createWrapper([], [], true, "folder", content);
+      expect(wrapper.instance().getNodes().length).toBe(1);
+    });
+
+    it("should return two nodes", () => {
+      const content = {
+        f1: { name: "f1", type: "folder", content: {} },
+        f2: { name: "f2", type: "folder", content: {} }
+      } as any;
+
+      const wrapper = createWrapper([], [], true, "folder", content);
+      expect(wrapper.instance().getNodes().length).toBe(2);
+    });
+  });
 });

@@ -6,7 +6,7 @@ import { findByTestAtrr } from "../../../../../testingUtils";
 
 const createWrapper = (showAdressBar: boolean) => {
   const context = { options: { showAdressBar } } as any;
-  return shallow(<Bar context={context} />);
+  return shallow(<Bar filesystem={context} />);
 };
 
 const wrapper = createWrapper(true);

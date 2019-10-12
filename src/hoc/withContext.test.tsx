@@ -24,4 +24,13 @@ describe("Higher Order Component withContext", () => {
       expect(findByTestAtrr(wrapper, "filesystem").length).toBe(1);
     });
   });
+
+  describe("Notepad", () => {
+    it("should render without throwing an error", () => {
+      const Enchanced = withContext(BaseComp, "notepad");
+      const wrapper = shallow(<Enchanced />);
+
+      expect(findByTestAtrr(wrapper, "notepad").length).toBe(1);
+    });
+  });
 });

@@ -7,8 +7,10 @@ import arrowLeftColored from "../../../../../assets/folder/arrow-left-green.png"
 const ArrowLeft: React.FC<DirectionArrowProps> = ({
   disabled,
   containerClass,
+  arrowClass,
   onClick,
-  historyArrow
+  historyArrow,
+  onlyIcon
 }) => {
   const container = createRef<HTMLDivElement>();
   const text = createRef<HTMLDivElement>();
@@ -28,15 +30,23 @@ const ArrowLeft: React.FC<DirectionArrowProps> = ({
     >
       <img
         src={icon}
-        className="filesystem__action__arrow"
+        className={arrowClass}
         alt="navigation back arrow"
         ref={arrow}
         data-test="arrow"
       />
-      <span className="filesystem__action__text" ref={text} data-test="text">
-        Back
-      </span>
-      {historyArrow}
+      {!onlyIcon && (
+        <>
+          <span
+            className="filesystem__action__text"
+            ref={text}
+            data-test="text"
+          >
+            Back
+          </span>
+          {historyArrow}
+        </>
+      )}
     </div>
   );
 };

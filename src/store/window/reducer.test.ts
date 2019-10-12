@@ -21,40 +21,24 @@ describe("Window reducer", () => {
     });
   });
 
-  describe("changePropFailed", () => {
-    it("should NOT update state", () => {
-      const updatedState = reducer(stateWithOneWindow, {
-        type: WindowAction.CHANGE_PROP_FAILED
-      });
-
-      expect(updatedState).toEqual(stateWithOneWindow);
-    });
-  });
-
-  describe("closeFailed", () => {
-    it("should NOT update state", () => {
-      const updatedState = reducer(stateWithOneWindow, {
-        type: WindowAction.CLOSE_FAILED
-      });
-
-      expect(updatedState).toEqual(stateWithOneWindow);
-    });
-  });
-
-  describe("changePriorityFailed", () => {
-    it("should NOT update state", () => {
-      const updatedState = reducer(stateWithOneWindow, {
-        type: WindowAction.CHANGE_PRIORITY_FAILED
-      });
-
-      expect(updatedState).toEqual(stateWithOneWindow);
-    });
-  });
-
   describe("open", () => {
     it("should update state", () => {
       const updatedState = reducer(emptyState, {
         type: WindowAction.OPEN,
+        payload: {
+          allIds: stateWithOneWindow.allIds,
+          byId: stateWithOneWindow.byId,
+          focused: stateWithOneWindow.focused as string
+        }
+      });
+      expect(updatedState).toEqual(stateWithOneWindow);
+    });
+  });
+
+  describe("replcae", () => {
+    it("should update state", () => {
+      const updatedState = reducer(emptyState, {
+        type: WindowAction.REPLACE,
         payload: {
           allIds: stateWithOneWindow.allIds,
           byId: stateWithOneWindow.byId,

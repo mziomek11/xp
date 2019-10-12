@@ -13,7 +13,8 @@ const createWindow = (id: string, app: string): Window => ({
   name: "Window name",
   minimalized: false,
   application: app as Application,
-  id
+  id,
+  icon: ""
 });
 
 const windowById: WindowById = {
@@ -37,7 +38,7 @@ const appNamesWithIds = {
   A4: ["A4W1"]
 };
 
-const props = { openWindowCount, windowById };
+const props = { openWindowCount, windowById, allIds: Object.keys(windowById) };
 const wrapper = shallow<ListContainer>(<ListContainer {...props} />);
 const instance = wrapper.instance();
 

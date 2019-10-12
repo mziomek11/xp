@@ -39,7 +39,7 @@ const createWrapper = (
         ...refData
       }
     },
-    context: {
+    filesystem: {
       setFocused: mockSetFocusedFn,
       path: [],
       focused: [],

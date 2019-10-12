@@ -5,7 +5,7 @@ import withContext from "../../../hoc/withContext";
 import { WindowContextType } from "ContextType";
 
 type Props = {
-  context: WindowContextType;
+  window: WindowContextType;
 };
 
 export class ExitAction extends Component<Props, {}> {
@@ -14,7 +14,7 @@ export class ExitAction extends Component<Props, {}> {
   }
 
   render() {
-    const { close } = this.props.context;
+    const { close } = this.props.window;
     return <Action type="exit" onClick={close} data-test="action" />;
   }
 }

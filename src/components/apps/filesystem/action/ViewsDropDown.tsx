@@ -4,10 +4,10 @@ import withContext from "../../../../hoc/withContext";
 import { FilesystemContextType } from "ContextType";
 import { DropDown, RadioGroup } from "../../../dropdown";
 
-export const ViewsDropDown: React.FC<{ context: FilesystemContextType }> = ({
-  context
+export const ViewsDropDown: React.FC<{ filesystem: FilesystemContextType }> = ({
+  filesystem
 }) => {
-  const { options, setOptions } = context;
+  const { options, setOptions } = filesystem;
   const { display } = options;
   const handleClick = (option: string) =>
     setOptions({ display: option as any });

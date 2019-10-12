@@ -5,12 +5,28 @@ import { testContextData } from "../Context.test";
 import { Action } from "./Action";
 import { findByTestAtrr } from "../../../../testingUtils";
 
-const actionProps = {
-  type: "exit" as "exit",
-  context: testContextData,
-  onClick: jest.fn()
+let mockOnClickFn: jest.Mock;
+let mockChangePriorityFn: jest.Mock;
+
+type ActionType = "minimalize" | "exit" | "fullscreen";
+const createWrapper = (
+  type: ActionType,
+  ctxOverride: Partial<typeof testContextData> = {}
+) => {
+  mockOnClickFn = jest.fn();
+  mockChangePriorityFn = jest.fn();
+
+  const window = {
+    ...testContextData,
+    ...ctxOverride,
+    changePriority: mockChangePriorityFn
+  };
+
+  const props = { type, window, onClick: mockOnClickFn };
+  return shallow(<Action {...props} />);
 };
-const wrapper = shallow(<Action {...actionProps} />);
+
+const wrapper = createWrapper("exit");
 
 describe("WindowAction Component", () => {
   describe("render", () => {
@@ -29,48 +45,33 @@ describe("WindowAction Component", () => {
   });
 
   describe("onClick", () => {
-    let onClickMockFn: jest.Mock, changePriorityMockFn: jest.Mock;
-
-    const getWrapperWithType = (type: "minimalize" | "exit" | "fullscreen") => {
-      onClickMockFn = jest.fn();
-      changePriorityMockFn = jest.fn();
-
-      const props = {
-        type,
-        onClick: onClickMockFn,
-        context: { ...testContextData, changePriority: changePriorityMockFn }
-      };
-
-      return shallow(<Action {...props} />);
-    };
-
     describe("minimalize", () => {
-      it("should call only onClickMockFn once", () => {
-        const minimalizeWrapper = getWrapperWithType("minimalize");
-        findByTestAtrr(minimalizeWrapper, "action").simulate("click");
+      it("should call only mockOnClickFn once", () => {
+        const wrapper = createWrapper("minimalize");
+        findByTestAtrr(wrapper, "action").simulate("click");
 
-        expect(onClickMockFn.mock.calls.length).toBe(1);
-        expect(changePriorityMockFn.mock.calls.length).toBe(0);
+        expect(mockOnClickFn.mock.calls.length).toBe(1);
+        expect(mockChangePriorityFn.mock.calls.length).toBe(0);
       });
     });
 
     describe("exit", () => {
-      it("should call only onClickMockFn once", () => {
-        const exitWrapper = getWrapperWithType("exit");
-        findByTestAtrr(exitWrapper, "action").simulate("click");
+      it("should call only mockOnClickFn once", () => {
+        const wrapper = createWrapper("exit");
+        findByTestAtrr(wrapper, "action").simulate("click");
 
-        expect(onClickMockFn.mock.calls.length).toBe(1);
-        expect(changePriorityMockFn.mock.calls.length).toBe(0);
+        expect(mockOnClickFn.mock.calls.length).toBe(1);
+        expect(mockChangePriorityFn.mock.calls.length).toBe(0);
       });
     });
 
     describe("fullscreen", () => {
-      it("should call onClickMock and changePriorityMock once", () => {
-        const fullScreenWrapper = getWrapperWithType("fullscreen");
-        findByTestAtrr(fullScreenWrapper, "action").simulate("click");
+      it("should call mockOnClickFn and mockChangePriorityFn once", () => {
+        const wrapper = createWrapper("fullscreen");
+        findByTestAtrr(wrapper, "action").simulate("click");
 
-        expect(onClickMockFn.mock.calls.length).toBe(1);
-        expect(changePriorityMockFn.mock.calls.length).toBe(1);
+        expect(mockOnClickFn.mock.calls.length).toBe(1);
+        expect(mockChangePriorityFn.mock.calls.length).toBe(1);
       });
     });
   });

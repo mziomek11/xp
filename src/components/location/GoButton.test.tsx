@@ -2,12 +2,12 @@ import React from "react";
 import { shallow } from "enzyme";
 
 import GoButton from "./GoButton";
-import { findByTestAtrr } from "../../../../../testingUtils";
+import { findByTestAtrr } from "../../../testingUtils";
 
 const mockOnClickFn = jest.fn();
 const wrapper = shallow(<GoButton onClick={mockOnClickFn} />);
 
-describe("Filesystem Adress GoButton Component", () => {
+describe("Location GoButton Component", () => {
   describe("render", () => {
     it("should render without throwing an error", () => {
       expect(findByTestAtrr(wrapper, "container").length).toBe(1);

@@ -17,7 +17,7 @@ const LocationInput = forwardRef<Ref, Props>(
     return (
       <input
         type="text"
-        className="filesystem__location__input"
+        className="location__input"
         data-test="input"
         value={text}
         onChange={onChange}

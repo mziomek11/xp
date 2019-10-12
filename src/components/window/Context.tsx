@@ -3,7 +3,7 @@ import { Dispatch } from "redux";
 import { connect } from "react-redux";
 
 import { RootState } from "MyTypes";
-import { windowConfig } from "../../config";
+import { ParentProps } from "./subwindow/SubWindow";
 import {
   changePriority,
   toggleMinimalize,
@@ -11,16 +11,35 @@ import {
   removeFocus
 } from "../../store/window/actions";
 
-type OwnProps = {
+export type OwnProps = {
   id: string;
+  minWidth: number;
+  maxWidth: number;
+  minHeight: number;
+  maxHeight: number;
+};
+
+export type StartProps = {
+  startWidth: number;
+  startHeight: number;
+  startLeft: number;
+  startTop: number;
   startFullscreened: boolean;
+};
+
+type OptionalProps = {
+  hideMinimalize: boolean;
+  hideFullscreen: boolean;
+  hideExit: boolean;
+  hideIcon: boolean;
+  staticWindowName: string | null;
 };
 
 type DispatchProps = {
   changePriority: () => void;
   toggleMinimalize: () => void;
   close: () => void;
-  removeFocus: () => void;
+  removeFocus: (e: MouseEvent) => void;
 };
 
 type StateProps = {
@@ -30,9 +49,14 @@ type StateProps = {
   focused: boolean;
 };
 
-type Props = OwnProps & DispatchProps & StateProps;
+export type Props = OwnProps &
+  StartProps &
+  DispatchProps &
+  StateProps &
+  OptionalProps;
 
 type State = {
+  disabled: boolean;
   resizing: boolean;
   left: number;
   top: number;
@@ -43,25 +67,56 @@ type State = {
 
 type SetStateData = Partial<State>;
 type SetState = { setContext: (data: SetStateData) => void };
-export type Context = DispatchProps & StateProps & State & SetState;
+type GetSWProps = { getSubWindowProps: () => ParentProps };
+export type Context = OwnProps &
+  DispatchProps &
+  StateProps &
+  State &
+  SetState &
+  GetSWProps &
+  OptionalProps;
 
 const WindowContext = createContext<Partial<Context>>({});
 
 export class ContextProvider extends Component<Props, State> {
+  public static defaultProps = {
+    hideMinimalize: false,
+    hideFullscreen: false,
+    hideExit: false,
+    hideIcon: false,
+    staticWindowName: null
+  };
+
   readonly state: State = {
+    disabled: false,
     resizing: false,
-    left: windowConfig.INITIAL_LEFT,
-    top: windowConfig.INITIAL_TOP,
-    width: windowConfig.INITIAL_WIDTH,
-    height: windowConfig.INITIAL_HEIGHT,
+    left: this.props.startLeft,
+    top: this.props.startTop,
+    width: this.props.startWidth,
+    height: this.props.startHeight,
     fullscreened: this.props.startFullscreened
   };
 
   getContextValue = (): Context => {
+    const { startFullscreened, startHeight, startWidth, ...rest } = this.props;
     return {
       ...this.state,
-      ...this.props,
-      setContext: (data: SetStateData) => this.setState(data as any)
+      ...rest,
+      setContext: (data: SetStateData) => this.setState(data as any),
+      getSubWindowProps: this.getSubWindowProps
+    };
+  };
+
+  getSubWindowProps = (): ParentProps => {
+    return {
+      focused: this.props.focused,
+      changePriority: this.props.changePriority,
+      removeFocus: this.props.removeFocus,
+      left: this.state.left,
+      top: this.state.top,
+      width: this.state.width,
+      height: this.state.height,
+      fullScr: this.state.fullscreened
     };
   };
 
@@ -88,7 +143,7 @@ const mapDistapchToProps = (
   changePriority: () => dispatch(changePriority(id)),
   toggleMinimalize: () => dispatch(toggleMinimalize(id)),
   close: () => dispatch(close(id)),
-  removeFocus: () => dispatch(removeFocus())
+  removeFocus: (e: MouseEvent) => dispatch(removeFocus())
 });
 
 export const Provider = connect(

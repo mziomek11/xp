@@ -4,12 +4,13 @@ import { shallow } from "enzyme";
 import Window from "./Window";
 import { findByTestAtrr } from "../../../testingUtils";
 
+const mockOnMouseDownFn = jest.fn();
 const wrapper = shallow(
   <Window
     className="window"
     inlineStyles={{}}
     children={null}
-    onMouseDown={jest.fn()}
+    onMouseDown={mockOnMouseDownFn}
   />
 );
 
@@ -33,6 +34,14 @@ describe("Window Component", () => {
 
     it("should render Content Component", () => {
       expect(findByTestAtrr(wrapper, "content").length).toBe(1);
+    });
+  });
+
+  describe("onMouseDown", () => {
+    it("should call mockOnMouseDownFn", () => {
+      findByTestAtrr(wrapper, "window").simulate("mousedown");
+
+      expect(mockOnMouseDownFn.mock.calls.length).toBe(1);
     });
   });
 });

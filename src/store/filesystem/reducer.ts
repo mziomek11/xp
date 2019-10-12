@@ -25,6 +25,7 @@ export default combineReducers<FileSystemState, FileSystemAction>({
       case FileSystemAction.REMOVE:
       case FileSystemAction.CREATE:
       case FileSystemAction.RENAME:
+      case FileSystemAction.UPDATE:
         return action.payload.files;
       default:
         return state;

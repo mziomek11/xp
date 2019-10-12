@@ -6,7 +6,7 @@ import { findByTestAtrr } from "../../../../../../testingUtils";
 
 const createWrapper = (path: string[] = [], focused: string[] = []) => {
   const ctx = { path, focused } as any;
-  return shallow(<FileAndFolderTasks context={ctx} />);
+  return shallow(<FileAndFolderTasks filesystem={ctx} />);
 };
 
 describe("Filesystem Side FileAndFolderTasks component", () => {

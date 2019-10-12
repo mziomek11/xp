@@ -10,36 +10,44 @@ import { getClassName, areArraysEqual } from "../../../../../utils";
 export type DirectionArrowProps = {
   disabled: boolean;
   containerClass: string;
+  arrowClass: string;
   onClick: any;
   historyArrow: JSX.Element;
+  onlyIcon?: boolean;
 };
 
 type Props = {
   isLeft: boolean;
-  context: FilesystemContextType;
-};
+  filesystem: FilesystemContextType;
+  small?: boolean;
+} & Pick<DirectionArrowProps, "onlyIcon">;
 
 type State = {
   isOpen: boolean;
 };
 
 export class Arrow extends Component<Props, State> {
+  public static defaultProps = {
+    onlyIcon: false,
+    small: false
+  };
+
   readonly state: State = {
     isOpen: false
   };
 
-  shouldComponentUpdate({ context }: Props, prevState: State) {
-    const { shortcuts, history, historyPosition } = this.props.context;
+  shouldComponentUpdate({ filesystem }: Props, prevState: State) {
+    const { shortcuts, history, historyPosition } = this.props.filesystem;
     const { back, forward } = shortcuts;
 
     if (prevState.isOpen !== this.state.isOpen) return true;
-    if (context.shortcuts.back.disabled !== back.disabled) return true;
-    if (context.shortcuts.forward.disabled !== forward.disabled) return true;
-    if (historyPosition !== context.historyPosition) return true;
-    if (!areArraysEqual(history, context.history)) return true;
+    if (filesystem.shortcuts.back.disabled !== back.disabled) return true;
+    if (filesystem.shortcuts.forward.disabled !== forward.disabled) return true;
+    if (historyPosition !== filesystem.historyPosition) return true;
+    if (!areArraysEqual(history, filesystem.history)) return true;
 
     for (let i = 0; i < history.length; i++) {
-      if (!areArraysEqual(history[i], context.history[i])) return true;
+      if (!areArraysEqual(history[i], filesystem.history[i])) return true;
     }
 
     return false;
@@ -53,8 +61,8 @@ export class Arrow extends Component<Props, State> {
     arrow: Element,
     text: Element | null = null
   ) => {
-    const { isLeft, context } = this.props;
-    const { back, forward } = context.shortcuts;
+    const { isLeft, filesystem } = this.props;
+    const { back, forward } = filesystem.shortcuts;
 
     const shouldChange = this.shouldChangeHistory(
       target as Element,
@@ -86,15 +94,26 @@ export class Arrow extends Component<Props, State> {
 
   getContainerClassName = (disabled: boolean) => {
     const baseClass = "filesystem__action";
-    const modifiers = { disabled, open: this.state.isOpen };
-    const baseModifiers = ["with-arrow"];
+    const modifiers = {
+      disabled,
+      open: this.state.isOpen,
+      small: this.props.small!,
+      "with-arrow": this.props.onlyIcon!
+    };
 
-    return getClassName(baseClass, modifiers, baseModifiers);
+    return getClassName(baseClass, modifiers);
+  };
+
+  getArrowClass = () => {
+    const baseClass = "filesystem__action__icon";
+    const modifiers = { small: this.props.small! };
+
+    return getClassName(baseClass, modifiers);
   };
 
   getOptionsData = () => {
-    const { isLeft, context } = this.props;
-    const { historyPosition, getLocationOptions, history } = context;
+    const { isLeft, filesystem } = this.props;
+    const { historyPosition, getLocationOptions, history } = filesystem;
 
     const start = historyPosition + (isLeft ? -1 : 1);
     const end = isLeft ? 0 : history.length;
@@ -103,8 +122,8 @@ export class Arrow extends Component<Props, State> {
   };
 
   isDisabled = () => {
-    const { isLeft, context } = this.props;
-    const { back, forward } = context.shortcuts;
+    const { isLeft, filesystem } = this.props;
+    const { back, forward } = filesystem.shortcuts;
 
     return isLeft ? back.disabled : forward.disabled;
   };
@@ -112,6 +131,7 @@ export class Arrow extends Component<Props, State> {
   render() {
     const disabled = this.isDisabled();
     const containerClass = this.getContainerClassName(disabled);
+    const arrowClass = this.getArrowClass();
     const dropdownOptions = this.getOptionsData();
 
     const historyArrow = (
@@ -123,11 +143,13 @@ export class Arrow extends Component<Props, State> {
       />
     );
 
-    const arrowProps = {
+    const arrowProps: DirectionArrowProps = {
       disabled,
       containerClass,
+      arrowClass,
+      historyArrow,
       onClick: this.handleClick,
-      historyArrow
+      onlyIcon: this.props.onlyIcon
     };
 
     if (this.props.isLeft) {

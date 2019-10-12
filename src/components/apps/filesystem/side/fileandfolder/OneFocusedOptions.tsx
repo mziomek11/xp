@@ -9,11 +9,11 @@ import copyIcon from "../../../../../assets/folder/copy.png";
 import deleteIcon from "../../../../../assets/folder/delete.png";
 
 type Props = {
-  context: FilesystemContextType;
+  filesystem: FilesystemContextType;
 };
 
-const OneFocusedOptions: React.FC<Props> = ({ context }) => {
-  const { files, focused, setRenamedFile, shortcuts } = context;
+const OneFocusedOptions: React.FC<Props> = ({ filesystem }) => {
+  const { files, focused, setRenamedFile, shortcuts } = filesystem;
   const { type } = files.filter(({ name }) => name === focused[0])[0];
   const typeText = type === "folder" ? "folder" : "file";
 

@@ -24,8 +24,10 @@ export function objectPropFromPath(
 
 function createFileArray(obj: FileTree) {
   const fileArray: File[] = Array.from(Object.keys(obj), name => {
-    const { type } = obj[name] as File;
-    return { name, type };
+    if (obj[name].type === "folder" || obj[name].type === "disk") {
+      return { name, type: obj[name].type, content: obj[name].content };
+    }
+    return obj[name];
   });
 
   return fileArray;

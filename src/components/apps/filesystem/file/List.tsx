@@ -14,7 +14,8 @@ import {
 } from "../../../../utils";
 
 type Props = {
-  context: FilesystemContextType;
+  isFilePicker: boolean;
+  filesystem: FilesystemContextType;
 };
 
 type State = {
@@ -36,15 +37,15 @@ export class List extends Component<Props, State> {
 
   private container = createRef<HTMLDivElement>();
 
-  shouldComponentUpdate({ context }: Props, { creatingRect }: State) {
-    const { path, options, files } = this.props.context;
+  shouldComponentUpdate({ filesystem }: Props, { creatingRect }: State) {
+    const { path, options, files } = this.props.filesystem;
 
     if (this.state.creatingRect !== creatingRect) return true;
-    if (!areArraysEqual(path, context.path)) return true;
-    if (options.display !== context.options.display) return true;
-    if (files.length !== context.files.length) return true;
+    if (!areArraysEqual(path, filesystem.path)) return true;
+    if (options.display !== filesystem.options.display) return true;
+    if (files.length !== filesystem.files.length) return true;
     for (let i = 0; i < files.length; i++) {
-      if (!areObjectsEqual(files[i], context.files[i], ["name", "type"])) {
+      if (!areObjectsEqual(files[i], filesystem.files[i], ["name", "type"])) {
         return true;
       }
     }
@@ -53,7 +54,8 @@ export class List extends Component<Props, State> {
   }
 
   handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (this.props.context.renamedFile !== null) return null;
+    const { filesystem, isFilePicker } = this.props;
+    if (isFilePicker || filesystem.renamedFile !== null) return null;
     const clientRects = (e.currentTarget as Element).getClientRects()[0];
     const { left, top, width } = clientRects;
 
@@ -72,7 +74,8 @@ export class List extends Component<Props, State> {
   handleMouseUp = () => this.setState({ creatingRect: false });
 
   render() {
-    const { path, files, options } = this.props.context;
+    const { isFilePicker, filesystem } = this.props;
+    const { path, files, options } = filesystem;
     const { creatingRect, mouseDownData } = this.state;
 
     const showDiskHeader = path.length === 0 && options.display !== "list";
@@ -90,6 +93,7 @@ export class List extends Component<Props, State> {
         {files.map(file => (
           <FileContainer
             file={file}
+            isFilePicker={isFilePicker}
             key={pathWithSlashes + file.name}
             data-test="file"
           />

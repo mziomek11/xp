@@ -4,10 +4,10 @@ import List from "./List";
 import withContext from "../../../../hoc/withContext";
 import { FilesystemContextType } from "ContextType";
 
-export const Folders: React.FC<{ context: FilesystemContextType }> = ({
-  context
+export const Folders: React.FC<{ filesystem: FilesystemContextType }> = ({
+  filesystem
 }) => {
-  const handleCloseClick = () => context.setOptions({ showFolders: false });
+  const handleCloseClick = () => filesystem.setOptions({ showFolders: false });
 
   return (
     <div className="filesystem__folders" data-test="container">

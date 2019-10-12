@@ -17,7 +17,7 @@ type OwnProps = {
   mouseDownData: StartEventData;
   onMouseUp: () => void;
   containerRef: React.RefObject<HTMLDivElement>;
-  context: FilesystemContextType;
+  filesystem: FilesystemContextType;
 };
 
 type Props = OwnProps;
@@ -68,7 +68,7 @@ export class FocusRect extends Component<Props, State> {
   };
 
   handleMouseMove = ({ clientX, clientY }: MouseEvent) => {
-    const { setFocused, focused } = this.props.context;
+    const { setFocused, focused } = this.props.filesystem;
 
     const newState: StyleState = this.calculateNewState(clientX, clientY);
     this.setState(newState);
@@ -125,7 +125,7 @@ export class FocusRect extends Component<Props, State> {
   };
 
   calculateFocusedFiles = (styleState: StyleState) => {
-    const { files } = this.props.context;
+    const { files } = this.props.filesystem;
     const loopData = this.calculateFocusLoopData(styleState);
     const { filesInCol, startCol, endCol, startRow, endRow } = loopData;
 
@@ -147,7 +147,7 @@ export class FocusRect extends Component<Props, State> {
     const { floor, max, min } = Math;
     const { fileWidth, fileHeight } = this.getFileWidthAndHeight();
     const { filesWidth } = this.props.mouseDownData;
-    const { path } = this.props.context;
+    const { path } = this.props.filesystem;
 
     if (path.length === 0) {
       top -= filesystemConfig.DISK_HEADER_HEIGHT;
@@ -163,7 +163,7 @@ export class FocusRect extends Component<Props, State> {
   };
 
   getFileWidthAndHeight = (): { fileWidth: number; fileHeight: number } => {
-    switch (this.props.context.options.display) {
+    switch (this.props.filesystem.options.display) {
       case "thumbnails":
         return {
           fileWidth: filesystemConfig.THUMBNAIL_WIDTH,

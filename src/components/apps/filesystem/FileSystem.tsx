@@ -11,14 +11,14 @@ import SideBar from "./side/Bar";
 import FileList from "./file/List";
 import Folders from "./folders/Folders";
 
-type Props = { context: FilesystemContextType };
+type Props = { filesystem: FilesystemContextType };
 
 export class FileSystem extends Component<Props> {
-  shouldComponentUpdate({ context }: Props) {
-    const currOptions = this.props.context.options;
+  shouldComponentUpdate({ filesystem }: Props) {
+    const currOptions = this.props.filesystem.options;
     const values = ["showFolders"];
 
-    return !areObjectsEqual(currOptions, context.options, values);
+    return !areObjectsEqual(currOptions, filesystem.options, values);
   }
 
   render() {
@@ -31,12 +31,12 @@ export class FileSystem extends Component<Props> {
         <ActionBar data-test="action-bar" />
         <AdressBar data-test="adress-bar" />
         <div className="filesystem__divider">
-          {this.props.context.options.showFolders ? (
+          {this.props.filesystem.options.showFolders ? (
             <Folders data-test="folders" />
           ) : (
             <SideBar data-test="side-bar" />
           )}
-          <FileList data-test="file-list" />
+          <FileList isFilePicker={false} data-test="file-list" />
         </div>
       </div>
     );

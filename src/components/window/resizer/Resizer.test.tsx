@@ -14,11 +14,11 @@ import {
 } from "./Resizer";
 
 const compProps = {
-  context: contextData,
+  window: contextData,
   ...defaultResizeProps
 };
 
-type CreateInstance = Omit<OwnProps, "context"> & {
+type CreateInstance = Omit<OwnProps, "window"> & {
   setContext?: () => void;
 };
 
@@ -30,7 +30,7 @@ const createInstance = ({
     ...contextData,
     setContext: setContext ? setContext : jest.fn()
   };
-  const props = { context: { ...contextProps }, ...resizingProps };
+  const props = { window: { ...contextProps }, ...resizingProps };
   const comp = <WindowResizer {...props} />;
   const wrapper = shallow<WindowResizer>(comp);
   return wrapper.instance();
@@ -45,7 +45,7 @@ describe("WindowResizer Component", () => {
     it("should update when isFullscreen changes", () => {
       const changedProps = {
         ...compProps,
-        context: { ...compProps.context, fullscreened: true }
+        window: { ...compProps.window, fullscreened: true }
       };
       const result = instance.shouldComponentUpdate(changedProps);
 
@@ -54,7 +54,7 @@ describe("WindowResizer Component", () => {
 
     it("should NOT update when isFullscreen NOT changes", () => {
       const changedProps = {
-        context: { ...contextData },
+        window: { ...contextData },
         resizesWidth: false,
         resizesHeight: false,
         isLeft: false,
@@ -78,7 +78,7 @@ describe("WindowResizer Component", () => {
     it("should NOT render when window is fullscreen", () => {
       const fullscreenProps = {
         ...compProps,
-        context: { ...compProps.context, fullscreened: true }
+        window: { ...compProps.window, fullscreened: true }
       };
       const fullScreenWrapper = shallow(<WindowResizer {...fullscreenProps} />);
 
@@ -93,7 +93,7 @@ describe("WindowResizer Component", () => {
       const result = instance.calculateStateDataX(clientX);
       const expectedResult = {
         endX: contextData.left + contextData.width,
-        edgeDistanceX: clientX - compProps.context.left
+        edgeDistanceX: clientX - compProps.window.left
       };
 
       expect(result).toEqual(expectedResult);
@@ -236,15 +236,6 @@ describe("WindowResizer Component", () => {
 
         expect(result).toBe(expectedResult);
       });
-
-      it("should return max width", () => {
-        const clientX: number = -999999;
-
-        const result = instance.calculateNewWidth(clientX);
-        const expectedResult = window.innerWidth;
-
-        expect(result).toBe(expectedResult);
-      });
     });
 
     describe("resizesWidth and !isLeft", () => {
@@ -265,15 +256,6 @@ describe("WindowResizer Component", () => {
 
         const result = instance.calculateNewWidth(clientX);
         const expectedResult = windowConfig.MINIMAL_WIDTH;
-
-        expect(result).toBe(expectedResult);
-      });
-
-      it("should return max width", () => {
-        const clientX: number = 999999;
-
-        const result = instance.calculateNewWidth(clientX);
-        const expectedResult = window.innerWidth;
 
         expect(result).toBe(expectedResult);
       });
@@ -315,15 +297,6 @@ describe("WindowResizer Component", () => {
 
         expect(result).toBe(expectedResult);
       });
-
-      it("should return max height", () => {
-        const clientY: number = -999999;
-
-        const result = instance.calculateNewHeight(clientY);
-        const expectedResult = window.innerHeight - toolbarConfig.HEIGHT;
-
-        expect(result).toBe(expectedResult);
-      });
     });
 
     describe("resizesHeight and !isTop", () => {
@@ -344,15 +317,6 @@ describe("WindowResizer Component", () => {
 
         const result = instance.calculateNewHeight(clientY);
         const expectedResult = windowConfig.MINIMAL_HEIGHT;
-
-        expect(result).toBe(expectedResult);
-      });
-
-      it("should return max height", () => {
-        const clientY: number = 999999;
-
-        const result = instance.calculateNewHeight(clientY);
-        const expectedResult = window.innerHeight - toolbarConfig.HEIGHT;
 
         expect(result).toBe(expectedResult);
       });

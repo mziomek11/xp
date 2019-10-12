@@ -1,6 +1,8 @@
 export const SET_FOCUSING_RECT = "@@filesystem/SET_FOCUSING_RECT";
 export const CREATE = "@@filesystem/CREATE";
 export const CREATE_FAILED = "@@filesystem/CREATE_FAILED";
+export const UPDATE = "@@filesystem/UPDATE";
+export const UPDATE_FAILED = "@@filesystem/UPDATE_FAILED";
 export const REMOVE = "@@filesystem/REMOVE";
 export const REMOVE_FAILED = "@@filesystem/REMOVE_FAILED";
 export const COPY = "@@filesystem/COPY";
