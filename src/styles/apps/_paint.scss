@@ -52,6 +52,7 @@
 }
 
 .paint__canvas-container {
+  position: relative;
   padding: $paint-canvas-container-padding;
   background: $paint-canvas-container-background;
   height: 100%;
@@ -63,6 +64,20 @@
   width: 100px;
   height: 100px;
   background: white;
+}
+
+.paint__canvas__resizer {
+  position: absolute;
+  width: $paint-canvas-resizer-size;
+  height: $paint-canvas-resizer-size;
+  background: $focus-color;
+}
+
+.paint__canvas__resizer__rect {
+  position: absolute;
+  left: $paint-canvas-container-padding;
+  top: $paint-canvas-container-padding;
+  border: 1px dashed black;
 }
 
 .paint__color__bar {

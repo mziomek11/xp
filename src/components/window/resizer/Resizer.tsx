@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import withContext from "../../../hoc/withContext";
 import { WindowContextType } from "ContextType";
 import { windowConfig, toolbarConfig } from "../../../config";
+import { changeCursor } from "../../../utils/dom";
 
 export type OwnProps = {
   window: WindowContextType;
@@ -55,13 +56,8 @@ export class WindowResizer extends Component<OwnProps, State> {
   removeListeners = () => {
     window.removeEventListener("mousemove", this.handleMouseMove);
     window.removeEventListener("mouseup", this.removeListeners);
-    this.changeCursor();
+    changeCursor();
     this.props.window.setContext({ resizing: false });
-  };
-
-  changeCursor = (cursor?: string) => {
-    if (!cursor) document.body.className = "";
-    else document.body.className = cursor;
   };
 
   getOwnCursor = () => {
@@ -89,7 +85,7 @@ export class WindowResizer extends Component<OwnProps, State> {
 
     this.setState(newState);
     this.props.window.setContext({ resizing: true });
-    this.changeCursor(this.getOwnCursor());
+    changeCursor(this.getOwnCursor());
     this.addListeners();
   };
 
