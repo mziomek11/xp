@@ -3,8 +3,9 @@ import React from "react";
 import WindowContext from "../components/window/Context";
 import FilesystemContext from "../components/apps/filesystem/context/Context";
 import NotepadContext from "../components/apps/notepad/context/Context";
+import PaintContext from "../components/apps/paint/context/Context";
 
-type ContextType = "window" | "filesystem" | "notepad";
+type ContextType = "window" | "filesystem" | "notepad" | "paint";
 
 const getContext = (type: ContextType): React.Context<any> => {
   switch (type) {
@@ -14,6 +15,8 @@ const getContext = (type: ContextType): React.Context<any> => {
       return FilesystemContext;
     case "notepad":
       return NotepadContext;
+    case "paint":
+      return PaintContext;
     default:
       throw Error("Unknown context type");
   }

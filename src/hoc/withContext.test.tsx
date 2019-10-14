@@ -33,4 +33,13 @@ describe("Higher Order Component withContext", () => {
       expect(findByTestAtrr(wrapper, "notepad").length).toBe(1);
     });
   });
+
+  describe("Paing", () => {
+    it("should render without throwing an error", () => {
+      const Enchanced = withContext(BaseComp, "paint");
+      const wrapper = shallow(<Enchanced />);
+
+      expect(findByTestAtrr(wrapper, "paint").length).toBe(1);
+    });
+  });
 });

@@ -331,3 +331,27 @@ $filesystem-list-icon-margin: 1px;
 
 $filesystem-renamer-min-width: 38px;
 $filesystem-renamer-padding: 2px;
+
+//Paint toolbar
+
+$paint-toolbar-padding: 3px;
+
+$paint-tool-padding: 2px;
+$paint-tool-background-hover: #f9f9f5;
+$paint-tool-border-color-hover: #cecec3;
+$paint-tool-background-active: #e3e3db;
+$paint-tool-border-color-active: #9d9d92;
+$paint-tool-border-color-selected: #7a98af;
+
+//Paint canvas
+
+$paint-canvas-container-background: #808080;
+$paint-canvas-container-padding: 3px;
+
+//Paint colors
+
+$paint-colors-current-width: 30px;
+$paint-colors-current-rect-distance: 3px;
+
+$paint-colors-padding: 7px;
+$paint-colors-rect-size: 15px;

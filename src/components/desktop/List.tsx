@@ -1,26 +1,15 @@
 import React from "react";
 
-import File from "./File";
+import Computer from "./file/Computer";
+import Notepad from "./file/Notepad";
+import Paint from "./file/Paint";
 
 const FileList = () => {
   return (
     <div className="desktop__file__list" data-test="file-list">
-      <File
-        name="Computer"
-        startWindowName="Computer"
-        application="filesystem"
-        data-test="computer"
-      />
-      <File
-        name="Notepad"
-        startWindowName="Untilted - Notepad"
-        application="notepad"
-        openData={{
-          content: "",
-          path: undefined
-        }}
-        data-test="notepad"
-      />
+      <Computer data-test="computer" />
+      <Notepad data-test="notepad" />
+      <Paint data-test="paint" />
     </div>
   );
 };

@@ -12,6 +12,9 @@ import textFocused from "./assets/icons/text-focused.png";
 
 import computer from "./assets/icons/computer.png";
 
+import paint from "./assets/icons/paint.png";
+import paintFocused from "./assets/icons/paint-focused.png";
+
 import { Application } from "./store/models";
 
 export type FileIcon = "folder" | "disk" | "text";
@@ -29,12 +32,15 @@ const getNormalIcon = (type: Icon): string => {
       return folder;
     case "disk":
       return disk;
-    case "notepad":
-      return notepad;
-    case "filesystem":
-      return computer;
     case "text":
       return text;
+    case "filesystem":
+      return computer;
+    case "notepad":
+      return notepad;
+    case "paint":
+      return paint;
+
     default:
       throw Error("This icon does not exists");
   }
@@ -52,6 +58,8 @@ const getFocusedIcon = (type: Icon): string => {
       return computer;
     case "notepad":
       return notepadFocused;
+    case "paint":
+      return paintFocused;
     default:
       throw Error("This icon does not exists");
   }

@@ -1,1 +1,1 @@
-export type Application = "filesystem" | "notepad";
+export type Application = "filesystem" | "notepad" | "paint";

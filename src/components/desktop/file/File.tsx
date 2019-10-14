@@ -3,10 +3,10 @@ import uuid from "uuid";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 
-import withDoubleClick from "../../hoc/withDoubleClick";
-import { open as openWindow } from "../../store/window/actions";
-import { OpenData } from "../../store/window/models";
-import { Application } from "../../store/models";
+import withDoubleClick from "../../../hoc/withDoubleClick";
+import { open as openWindow } from "../../../store/window/actions";
+import { OpenData } from "../../../store/window/models";
+import { Application } from "../../../store/models";
 
 type OwnProps = {
   name: string;

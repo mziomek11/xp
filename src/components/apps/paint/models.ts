@@ -1,0 +1,17 @@
+export type Tool =
+  | "anySelect"
+  | "rectSelect"
+  | "rubber"
+  | "fill"
+  | "pick"
+  | "zoom"
+  | "pencil"
+  | "brush"
+  | "aero"
+  | "text"
+  | "line"
+  | "curve"
+  | "rect"
+  | "poly"
+  | "circle"
+  | "rounded";

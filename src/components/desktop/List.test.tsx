@@ -16,5 +16,13 @@ describe("FileList Component", () => {
     it("should render computer", () => {
       expect(findByTestAtrr(wrapper, "computer").length).toBe(1);
     });
+
+    it("should render notepad", () => {
+      expect(findByTestAtrr(wrapper, "notepad").length).toBe(1);
+    });
+
+    it("should render paint", () => {
+      expect(findByTestAtrr(wrapper, "paint").length).toBe(1);
+    });
   });
 });

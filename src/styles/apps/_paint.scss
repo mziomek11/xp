@@ -1,0 +1,109 @@
+.paint {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.paint__middle {
+  display: flex;
+  height: 100%;
+}
+
+.paint__toolbar {
+  background: map-get($menu, "main");
+  padding: $paint-toolbar-padding;
+  border-right: 1px solid $dropdown-border-color;
+  border-top: 1px solid white;
+}
+
+.paint__toolbar__tools {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: $paint-toolbar-padding;
+}
+
+.paint__toolbar__tool {
+  display: flex;
+  padding: $paint-tool-padding;
+  border-radius: 3px;
+  border: 1px solid transparent;
+
+  &:hover {
+    background: $paint-tool-background-hover;
+    border-color: $paint-tool-border-color-hover;
+  }
+
+  &:active {
+    background: $paint-tool-background-active;
+    border-color: $paint-tool-border-color-active;
+  }
+
+  &--selected,
+  &--selected:hover {
+    background: white;
+    border-color: $paint-tool-border-color-selected;
+  }
+}
+
+.paint__toolbar__options {
+  border-width: 1px;
+  border-style: solid;
+  border-color: $dropdown-border-color #fff #fff $dropdown-border-color;
+}
+
+.paint__canvas-container {
+  padding: $paint-canvas-container-padding;
+  background: $paint-canvas-container-background;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+}
+
+.paint__canvas {
+  width: 100px;
+  height: 100px;
+  background: white;
+}
+
+.paint__color__bar {
+  display: flex;
+  background: map-get($menu, "main");
+  padding: $paint-colors-padding 0;
+}
+
+.paint__color__current {
+  position: relative;
+  width: $paint-colors-current-width;
+  border: 1px solid $dropdown-border-color;
+  background: map-get($menu, "main");
+}
+
+.paint__color__list {
+  display: grid;
+  border-top: 0;
+  background: white;
+  grid-template-columns: repeat(14, 1fr);
+  border-left: 1px solid white;
+  grid-gap: 1px;
+}
+
+.paint__color__rect {
+  width: $paint-colors-rect-size;
+  height: $paint-colors-rect-size;
+  border: 1px solid $dropdown-border-color;
+  background: white;
+
+  &--current {
+    position: absolute;
+  }
+
+  &--primary {
+    left: $paint-colors-current-rect-distance;
+    top: $paint-colors-current-rect-distance;
+  }
+
+  &--secondary {
+    right: $paint-colors-current-rect-distance + 1px;
+    bottom: $paint-colors-current-rect-distance + 1px;
+  }
+}

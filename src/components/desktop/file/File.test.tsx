@@ -2,7 +2,7 @@ import React from "react";
 import { shallow } from "enzyme";
 
 import { File } from "./File";
-import { findByTestAtrr } from "../../../testingUtils";
+import { findByTestAtrr } from "../../../../testingUtils";
 
 const mockCheckForDoubleClick = jest.fn();
 const props = {

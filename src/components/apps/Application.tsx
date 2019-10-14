@@ -3,11 +3,13 @@ import { connect } from "react-redux";
 
 import FileSystem from "./filesystem/FileSystem";
 import Notepad from "./notepad/Notepad";
+import Paint from "./paint/Paint";
 import WindowContainer from "../window/WindowContainer";
 import windowConfig from "../../config/window";
 import toolbarConfig from "../../config/toolbar";
 import { Provider as FilesystemContextProvider } from "./filesystem/context/Context";
 import { Provider as NotepadContextProvider } from "./notepad/context/Context";
+import { Provider as PaintContextProvider } from "./paint/context/Context";
 import { RootState } from "MyTypes";
 import { Window } from "../../store/window/models";
 import {
@@ -37,6 +39,8 @@ export class Application extends Component<Props, {}> {
         return this.getFilesystemApp();
       case "notepad":
         return this.getNotepadApp();
+      case "paint":
+        return this.getPaintApp();
       default:
         throw Error(`${this.props.window.application} is not an application`);
     }
@@ -58,6 +62,14 @@ export class Application extends Component<Props, {}> {
       <NotepadContextProvider startText={content as string} startPath={path}>
         <Notepad data-test="notepad" />
       </NotepadContextProvider>
+    );
+  };
+
+  getPaintApp = () => {
+    return (
+      <PaintContextProvider>
+        <Paint data-test="paint" />
+      </PaintContextProvider>
     );
   };
 

@@ -42,6 +42,8 @@ export class SelectApplication extends React.Component<Props, State> {
         return getIcon("folder", false);
       case "notepad":
         return getIcon("notepad", false);
+      case "paint":
+        return getIcon("paint", false);
       default:
         throw Error("Unknown app");
     }
@@ -53,6 +55,8 @@ export class SelectApplication extends React.Component<Props, State> {
         return "Windows explorer";
       case "notepad":
         return "Notepad";
+      case "paint":
+        return "Paint";
       default:
         throw Error("Unknown app");
     }

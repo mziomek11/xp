@@ -43,6 +43,12 @@ describe("Application Component", () => {
       expect(findByTestAtrr(wrapper, "notepad").length).toBe(1);
     });
 
+    it("should render Paint app", () => {
+      const wrapper = createWrapper("paint");
+
+      expect(findByTestAtrr(wrapper, "paint").length).toBe(1);
+    });
+
     it("should throw an error", () => {
       expect(() => createWrapper("+++" as any)).toThrowError();
     });
