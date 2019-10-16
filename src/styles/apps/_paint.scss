@@ -60,12 +60,6 @@
   overflow: auto;
 }
 
-.paint__canvas {
-  width: 100px;
-  height: 100px;
-  background: white;
-}
-
 .paint__canvas__resizer {
   position: absolute;
   width: $paint-canvas-resizer-size;

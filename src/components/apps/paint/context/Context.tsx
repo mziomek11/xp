@@ -6,6 +6,7 @@ type State = {
   selectedTool: Tool;
   primaryColor: string;
   secondaryColor: string;
+  canvasCtx: CanvasRenderingContext2D | null;
 };
 
 type SetStateData = Partial<State>;
@@ -18,7 +19,8 @@ export class ContextProvider extends Component<{}, State> {
   readonly state: State = {
     selectedTool: "pencil",
     primaryColor: "#000000",
-    secondaryColor: "#ffffff"
+    secondaryColor: "#ffffff",
+    canvasCtx: null
   };
 
   getContextValue = (): Context => ({

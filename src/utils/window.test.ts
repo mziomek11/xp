@@ -3,8 +3,8 @@ import { clickedWindow } from "./window";
 
 describe("Window utils functions", () => {
   describe("clickedWindow", () => {
-    const left: number = windowConfig.INITIAL_LEFT;
-    const top: number = windowConfig.INITIAL_TOP;
+    const left: number = 0;
+    const top: number = 0;
     const width: number = windowConfig.INITIAL_WIDTH;
     const height: number = windowConfig.MINIMAL_HEIGHT;
     const fullScr: boolean = false;

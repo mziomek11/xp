@@ -1,7 +1,7 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import Resizer from "./Resizer";
+import Resizer, { minRectSize } from "./Resizer";
 import { findByTestAtrr } from "../../../../../testingUtils";
 
 const defualtWidth: number = 100;
@@ -127,6 +127,17 @@ describe("Paint CanvasResizer component", () => {
 
       expect(instance.state.rectWidth).toBe(0);
       expect(instance.state.rectHeight).toBe(450);
+    });
+
+    it("should return minRectSize", () => {
+      const instance = wrapperSE.instance();
+      const event = { clientX: -9999, clientY: -9999 };
+
+      instance.setState(startState);
+      instance.handleMouseMove(event as any);
+
+      expect(instance.state.rectWidth).toBe(minRectSize);
+      expect(instance.state.rectHeight).toBe(minRectSize);
     });
   });
 

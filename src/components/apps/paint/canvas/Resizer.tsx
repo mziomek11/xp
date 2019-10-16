@@ -19,6 +19,8 @@ type State = {
   rectHeight: number;
 };
 
+export const minRectSize: number = 20;
+
 class Resizer extends Component<Props, State> {
   readonly state: State = {
     isResizing: false,
@@ -63,17 +65,17 @@ class Resizer extends Component<Props, State> {
     else throw Error("Wrong resizer position");
   };
 
-  handleMouseMove = (e: MouseEvent) => {
+  handleMouseMove = ({ clientX, clientY }: MouseEvent) => {
     const { isHorizontal, isVertical, width, height } = this.props;
     const { startLeft, startTop } = this.state;
 
     let newState: Partial<State> = {};
 
     if (isHorizontal) {
-      newState.rectWidth = Math.max(e.clientX - startLeft + width, 0);
+      newState.rectWidth = Math.max(clientX - startLeft + width, minRectSize);
     }
     if (isVertical) {
-      newState.rectHeight = Math.max(e.clientY - startTop + height, 0);
+      newState.rectHeight = Math.max(clientY - startTop + height, minRectSize);
     }
 
     this.setState(newState as State);
