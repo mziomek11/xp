@@ -49,6 +49,135 @@
   border-width: 1px;
   border-style: solid;
   border-color: $dropdown-border-color #fff #fff $dropdown-border-color;
+  height: $paint-tool-options-height;
+  padding: $paint-tool-options-padding;
+  margin-top: $paint-tool-options-margin;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-auto-rows: 1fr;
+
+  &--brush {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  &--aero {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.paint__toolbar__options__option {
+  @include flex-centered;
+  padding: 0 $paint-tool-options-option-padding;
+
+  &--focused {
+    background: $focus-color;
+  }
+
+  &--span {
+    grid-column: 1/3;
+  }
+}
+
+.paint__toolbar__options__shape {
+  width: 100%;
+  height: $paint-tool-options-rect-height;
+  background: $dropdown-border-color;
+  border: 1px solid black;
+
+  &--stroke {
+    background: white;
+  }
+
+  &--fill {
+    border-color: $dropdown-border-color;
+  }
+
+  .paint__toolbar__options__option--focused & {
+    &--stroke,
+    &--both {
+      border-color: white;
+    }
+
+    &--stroke {
+      background: $focus-color;
+    }
+  }
+}
+
+.paint__toolbar__options__line,
+.paint__toolbar__options__circle,
+.paint__toolbar__options__circle::before,
+.paint__toolbar__options__circle::after,
+.paint__toolbar__options__slash,
+.paint__toolbar__options__square {
+  background: black;
+
+  .paint__toolbar__options__option--focused & {
+    background: white;
+  }
+}
+
+.paint__toolbar__options__line {
+  width: 100%;
+}
+
+.paint__toolbar__options__circle {
+  position: relative;
+
+  &::before,
+  &--big::after {
+    position: absolute;
+    content: "";
+  }
+
+  &::before {
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    transform: rotate(90deg);
+  }
+
+  &--big::after {
+    width: 5px;
+    height: 5px;
+    left: -1px;
+    top: 1px;
+  }
+}
+
+.paint__toolbar__options__slash {
+  transform: rotate(-45deg);
+
+  &--back {
+    transform: rotate(45deg);
+  }
+}
+
+.paint__toolbar__options__zoom {
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  grid-gap: 4px;
+  grid-template-columns: repeat(2, 1fr);
+  font-size: $paint-tool-options-zoom-font-size;
+}
+
+.paint__toolbar__options__zoom__text {
+  .paint__toolbar__options__option--focused & {
+    color: white;
+  }
+}
+
+.paint__toolbar__options__transparency {
+  width: 100%;
+  height: auto;
+}
+
+.paint__toolbar__options__aero {
+  .paint__toolbar__options__option--focused & {
+    filter: invert(1);
+  }
 }
 
 .paint__canvas-container {

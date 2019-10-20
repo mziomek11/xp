@@ -1,32 +1,64 @@
 import React, { Component, createContext } from "react";
 
-import { Tool } from "../models";
+import {
+  Tool,
+  Options,
+  BrushSize,
+  LineWidth,
+  RubberSize,
+  ZoomSize,
+  AeroSize
+} from "../models";
 
 type State = {
   selectedTool: Tool;
   primaryColor: string;
   secondaryColor: string;
   canvasCtx: CanvasRenderingContext2D | null;
+  options: Options;
 };
 
 type SetStateData = Partial<State>;
 type SetState = { setContext: (data: SetStateData) => void };
-export type Context = State & SetState;
+type SetOptions = { setOptions: (options: Partial<Options>) => void };
+export type Context = State & SetState & SetOptions;
 
 const PaintContext = createContext<Partial<Context>>({});
 
 export class ContextProvider extends Component<{}, State> {
   readonly state: State = {
     selectedTool: "pencil",
-    primaryColor: "#000000",
-    secondaryColor: "#ffffff",
-    canvasCtx: null
+    primaryColor: "black",
+    secondaryColor: "white",
+    canvasCtx: null,
+    options: {
+      lineWidth: LineWidth.ExtraSmall,
+      rubberSize: RubberSize.Small,
+      aeroSize: AeroSize.Small,
+      zoom: ZoomSize.Default,
+      isSelectTransparent: false,
+      brush: {
+        type: "circle",
+        size: BrushSize.Small
+      },
+      shapeDrawMode: {
+        circle: "stroke",
+        rect: "stroke",
+        rounded: "stroke",
+        poly: "stroke"
+      }
+    }
   };
 
   getContextValue = (): Context => ({
     ...this.state,
-    setContext: (data: SetStateData) => this.setState(data as any)
+    setContext: (data: SetStateData) => this.setState(data as any),
+    setOptions: this.setOptions
   });
+
+  setOptions = (newOptions: Partial<Options>) => {
+    this.setState({ options: { ...this.state.options, ...newOptions } });
+  };
 
   render() {
     const contextValue = this.getContextValue();

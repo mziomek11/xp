@@ -21,7 +21,7 @@ import Polygon from "./shape/Polygon";
 import Circle from "./shape/Circle";
 import Rounded from "./shape/Rounded";
 
-import Options from "./Options";
+import CurrentOptions from "./options/Current";
 
 const Bar = () => {
   return (
@@ -51,7 +51,7 @@ const Bar = () => {
         <Circle data-test="tool" />
         <Rounded data-test="tool" />
       </div>
-      <Options data-test="options" />
+      <CurrentOptions data-test="options" />
     </div>
   );
 };
