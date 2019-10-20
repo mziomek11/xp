@@ -27,6 +27,15 @@ describe("Paint Pencil Tool component", () => {
     });
   });
 
+  describe("setColor", () => {
+    it("should change stroke and fill style", () => {
+      instance.setColor();
+
+      expect(paint.canvasCtx.strokeStyle).toBe(paint.primaryColor);
+      expect(paint.canvasCtx.fillStyle).toBe(paint.primaryColor);
+    });
+  });
+
   describe("handleMouseDown", () => {
     it("should updateState", () => {
       const newX = 10;
@@ -48,15 +57,6 @@ describe("Paint Pencil Tool component", () => {
 
       expect(instance.state.lastX).toBe(newX);
       expect(instance.state.lastY).toBe(newY);
-    });
-  });
-
-  describe("setColor", () => {
-    it("should change stroke and fill style", () => {
-      instance.setColor();
-
-      expect(paint.canvasCtx.strokeStyle).toBe(paint.primaryColor);
-      expect(paint.canvasCtx.fillStyle).toBe(paint.primaryColor);
     });
   });
 });

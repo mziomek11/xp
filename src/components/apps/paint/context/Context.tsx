@@ -27,13 +27,13 @@ const PaintContext = createContext<Partial<Context>>({});
 
 export class ContextProvider extends Component<{}, State> {
   readonly state: State = {
-    selectedTool: "pencil",
+    selectedTool: "rubber",
     primaryColor: "black",
-    secondaryColor: "white",
+    secondaryColor: "blue",
     canvasCtx: null,
     options: {
       lineWidth: LineWidth.ExtraSmall,
-      rubberSize: RubberSize.Small,
+      rubberSize: RubberSize.ExtraBig,
       aeroSize: AeroSize.Small,
       zoom: ZoomSize.Default,
       isSelectTransparent: false,
