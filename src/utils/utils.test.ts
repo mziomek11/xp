@@ -3,7 +3,8 @@ import {
   capitalize,
   getClassName,
   areArraysEqual,
-  areObjectsEqual
+  areObjectsEqual,
+  pickRandomItemsFromArray
 } from "./";
 
 describe("Utils functions", () => {
@@ -82,6 +83,38 @@ describe("Utils functions", () => {
       expect(areArraysEqual([1], [])).toBe(false);
       expect(areArraysEqual([], [1])).toBe(false);
       expect(areArraysEqual([1], ["1"] as any)).toBe(false);
+    });
+  });
+
+  describe("pickRandomItemsFromArray", () => {
+    it("should throw an error", () => {
+      expect(() => pickRandomItemsFromArray([], 101)).toThrow();
+      expect(() => pickRandomItemsFromArray([], -1)).toThrow();
+    });
+
+    it("should contain all pieces from start array", () => {
+      const startArr = [10, 22, 13, 10, -5];
+      const randomedArr = pickRandomItemsFromArray(startArr, 100);
+
+      expect(startArr.length).toBe(randomedArr.length);
+
+      randomedArr.forEach(item => {
+        expect(startArr.indexOf(item)).toBeGreaterThan(-1);
+      });
+    });
+
+    it("should return empty array", () => {
+      const startArr = [10, 22, 13, 10, -5];
+      const randomedArr = pickRandomItemsFromArray(startArr, 0);
+
+      expect(randomedArr.length).toBe(0);
+    });
+
+    it("should return three items", () => {
+      const startArr = [10, 15, 20, 44, 11, 6];
+      const randomedArr = pickRandomItemsFromArray(startArr, 50);
+
+      expect(randomedArr.length).toBe(3);
     });
   });
 });

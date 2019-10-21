@@ -47,6 +47,27 @@ export function areObjectsEqual<T>(a: T, b: T, properties: string[]) {
   return true;
 }
 
+export function pickRandomItemsFromArray<T>(arr: T[], percent: number) {
+  if (percent > 100) throw Error("Cannot pick more than 100% items from array");
+  if (percent < 0) throw Error("Cannot pick less than 0% items from array");
+
+  const targetLen: number = Math.floor(arr.length * (percent / 100));
+  const pickedIndexes: number[] = [];
+  const availbeIndexes: number[] = Array.from(
+    new Array(arr.length),
+    (_, i) => i
+  );
+
+  for (let i = 0; i < targetLen; i++) {
+    const index: number = Math.floor(Math.random() * availbeIndexes.length);
+
+    pickedIndexes.push(index);
+    availbeIndexes.slice(index);
+  }
+
+  return pickedIndexes.map(i => arr[i]);
+}
+
 export function deepCopy<T>(a: any): T {
   if (("object" != typeof a || null === a) && !(a instanceof Function))
     return a;

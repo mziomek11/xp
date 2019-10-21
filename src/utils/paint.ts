@@ -1,4 +1,6 @@
 type Ctx = CanvasRenderingContext2D;
+export type Vector = { x: number; y: number };
+type RowAndDist = { row: number; distanceX: number };
 
 export const fillCircle = (x: number, y: number, size: number, ctx: Ctx) => {
   ctx.beginPath();
@@ -67,6 +69,102 @@ export const fillBrushBigCircle = (x: number, y: number, ctx: Ctx) => {
   ctx.lineTo(x - 1, y - 2); // One right
   ctx.lineTo(x - 1, y - 3); // One up
   ctx.fill();
+};
+
+export const getAeroSmallVectors = (): Vector[] => {
+  const zeroRowAndDist: number = 4;
+  const posRowsAndDits: RowAndDist[] = [
+    { row: 4, distanceX: 1 },
+    { row: 3, distanceX: 3 },
+    { row: 2, distanceX: 3 },
+    { row: 1, distanceX: 4 }
+  ];
+
+  return getAeroVectorsFromPositiveAndZeroRowsAndDists(
+    posRowsAndDits,
+    zeroRowAndDist
+  );
+};
+
+export const getAeroMediumVectors = (): Vector[] => {
+  const zeroRowAndDist: number = 7;
+  const posRowsAndDits: RowAndDist[] = [
+    { row: 7, distanceX: 3 },
+    { row: 6, distanceX: 5 },
+    { row: 5, distanceX: 6 },
+    { row: 4, distanceX: 6 },
+    { row: 3, distanceX: 7 },
+    { row: 2, distanceX: 7 },
+    { row: 1, distanceX: 7 }
+  ];
+
+  return getAeroVectorsFromPositiveAndZeroRowsAndDists(
+    posRowsAndDits,
+    zeroRowAndDist
+  );
+};
+
+export const getAeroBigVectors = (): Vector[] => {
+  const zeroRowAndDist: number = 11;
+  const posRowsAndDits: RowAndDist[] = [
+    { row: 11, distanceX: 4 },
+    { row: 10, distanceX: 6 },
+    { row: 9, distanceX: 7 },
+    { row: 8, distanceX: 8 },
+    { row: 7, distanceX: 9 },
+    { row: 6, distanceX: 10 },
+    { row: 5, distanceX: 10 },
+    { row: 4, distanceX: 11 },
+    { row: 3, distanceX: 11 },
+    { row: 2, distanceX: 11 },
+    { row: 1, distanceX: 11 }
+  ];
+
+  return getAeroVectorsFromPositiveAndZeroRowsAndDists(
+    posRowsAndDits,
+    zeroRowAndDist
+  );
+};
+
+export const getAeroVectorsFromPositiveAndZeroRowsAndDists = (
+  positiveRowAndDists: RowAndDist[],
+  rowZeroDistance: number
+) => {
+  const zeroRowsAndDists: RowAndDist = { row: 0, distanceX: rowZeroDistance };
+  const negRowsAndDists: RowAndDist[] = positiveRowAndDists.map(reverseObjRow);
+  const rowsAndDists: RowAndDist[] = [
+    ...positiveRowAndDists,
+    zeroRowsAndDists,
+    ...negRowsAndDists
+  ];
+
+  return createAeroVectorArrayFromRowsAndDists(rowsAndDists);
+};
+
+export const reverseObjRow = (obj: RowAndDist) => {
+  return { ...obj, row: -obj.row };
+};
+
+export const createAeroVectorArrayFromRowsAndDists = (
+  rowsAndDists: RowAndDist[]
+): Vector[] => {
+  const vectors: Vector[] = [];
+
+  rowsAndDists.forEach(({ row, distanceX }) =>
+    vectors.push(...getAeroRowVector(row, distanceX))
+  );
+
+  return vectors;
+};
+
+export const getAeroRowVector = (y: number, xDistance: number): Vector[] => {
+  const vectors = [];
+
+  for (let x = -xDistance; x <= xDistance; x++) {
+    vectors.push({ y, x });
+  }
+
+  return vectors;
 };
 
 export const fillSpaceBeetwenPoints = (

@@ -6,7 +6,11 @@ import {
   calculateDistance,
   calculateDistancePerTick,
   fillBrushMediumCircle,
-  fillBrushBigCircle
+  fillBrushBigCircle,
+  getAeroRowVector,
+  createAeroVectorArrayFromRowsAndDists,
+  reverseObjRow,
+  getAeroVectorsFromPositiveAndZeroRowsAndDists
 } from "./paint";
 
 let mockBeginPathFn: jest.Mock;
@@ -250,6 +254,62 @@ describe("Paint utils functions", () => {
       expect(call1).toEqual([0, -1]);
       expect(call2).toEqual([1, 0]);
       expect(call3).toEqual([2, 1]);
+    });
+  });
+
+  describe("getAeroRowVector", () => {
+    it("should retun proper value", () => {
+      const result = getAeroRowVector(4, 2);
+
+      expect(result).toEqual([
+        { y: 4, x: -2 },
+        { y: 4, x: -1 },
+        { y: 4, x: 0 },
+        { y: 4, x: 1 },
+        { y: 4, x: 2 }
+      ]);
+    });
+  });
+
+  describe("createAeroVectorArrayFromRowsAndDists", () => {
+    it("should return proper value", () => {
+      const rowsAndDist = [{ row: 1, distanceX: 1 }, { row: 1, distanceX: 2 }];
+      const result = createAeroVectorArrayFromRowsAndDists(rowsAndDist);
+
+      expect(result).toEqual([
+        ...getAeroRowVector(rowsAndDist[0].row, rowsAndDist[0].distanceX),
+        ...getAeroRowVector(rowsAndDist[1].row, rowsAndDist[1].distanceX)
+      ]);
+    });
+  });
+
+  describe("reverseObjRow", () => {
+    it("should work when row is positive", () => {
+      const row = 10;
+      const obj = { row, distanceX: 1 };
+
+      expect(reverseObjRow(obj).row).toBe(-10);
+    });
+
+    it("should work when row is negative", () => {
+      const row = -10;
+      const obj = { row, distanceX: 1 };
+
+      expect(reverseObjRow(obj).row).toBe(10);
+    });
+  });
+
+  describe("getAeroVectorsFromPositiveAndZeroRowsAndDists", () => {
+    it("should return proper value", () => {
+      const rowsAndDists = [
+        { row: 1, distanceX: 1 },
+        { row: 0, distanceX: 2 },
+        { row: -1, distanceX: 1 }
+      ];
+
+      const [posRows] = rowsAndDists;
+      const res = getAeroVectorsFromPositiveAndZeroRowsAndDists([posRows], 2);
+      expect(res).toEqual(createAeroVectorArrayFromRowsAndDists(rowsAndDists));
     });
   });
 });
