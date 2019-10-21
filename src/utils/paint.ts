@@ -25,6 +25,50 @@ export const fillRect = (x: number, y: number, size: number, ctx: Ctx) => {
   ctx.fillRect(x - size / 2, y - size / 2, size, size);
 };
 
+export const fillBrushMediumCircle = (x: number, y: number, ctx: Ctx) => {
+  ctx.beginPath();
+  ctx.moveTo(x, y - 1); // One up
+  ctx.lineTo(x + 2, y - 1); // Two right
+  ctx.lineTo(x + 2, y); // One down
+  ctx.lineTo(x + 3, y); // One right
+  ctx.lineTo(x + 3, y + 2); // Two down
+  ctx.lineTo(x + 2, y + 2); // One left
+  ctx.lineTo(x + 2, y + 3); // One down
+  ctx.lineTo(x, y + 3); // Two left
+  ctx.lineTo(x, y + 2); // One up
+  ctx.lineTo(x - 1, y + 2); // One left
+  ctx.lineTo(x - 1, y); // Two up
+  ctx.lineTo(x, y); // One right
+  ctx.lineTo(x, y - 1); // One up
+  ctx.fill();
+};
+
+export const fillBrushBigCircle = (x: number, y: number, ctx: Ctx) => {
+  ctx.beginPath();
+  ctx.moveTo(x - 1, y - 3); // One left, three up
+  ctx.lineTo(x + 2, y - 3); // Three right
+  ctx.lineTo(x + 2, y - 2); // One down
+  ctx.lineTo(x + 3, y - 2); // One right
+  ctx.lineTo(x + 3, y - 1); // One down
+  ctx.lineTo(x + 4, y - 1); // One right
+  ctx.lineTo(x + 4, y + 2); // Three down
+  ctx.lineTo(x + 3, y + 2); // One left
+  ctx.lineTo(x + 3, y + 3); // One down
+  ctx.lineTo(x + 2, y + 3); // One left
+  ctx.lineTo(x + 2, y + 4); // One down
+  ctx.lineTo(x - 1, y + 4); // Three left
+  ctx.lineTo(x - 1, y + 3); // One up
+  ctx.lineTo(x - 2, y + 3); // One left
+  ctx.lineTo(x - 2, y + 2); // One up
+  ctx.lineTo(x - 3, y + 2); // One left
+  ctx.lineTo(x - 3, y - 1); // Three up
+  ctx.lineTo(x - 2, y - 1); // One right
+  ctx.lineTo(x - 2, y - 2); // One up
+  ctx.lineTo(x - 1, y - 2); // One right
+  ctx.lineTo(x - 1, y - 3); // One up
+  ctx.fill();
+};
+
 export const fillSpaceBeetwenPoints = (
   startX: number,
   startY: number,

@@ -27,9 +27,9 @@ const PaintContext = createContext<Partial<Context>>({});
 
 export class ContextProvider extends Component<{}, State> {
   readonly state: State = {
-    selectedTool: "rubber",
-    primaryColor: "black",
-    secondaryColor: "blue",
+    selectedTool: "brush",
+    primaryColor: "#000000",
+    secondaryColor: "#ffffff",
     canvasCtx: null,
     options: {
       lineWidth: LineWidth.ExtraSmall,
@@ -38,7 +38,7 @@ export class ContextProvider extends Component<{}, State> {
       zoom: ZoomSize.Default,
       isSelectTransparent: false,
       brush: {
-        type: "circle",
+        type: "rect",
         size: BrushSize.Small
       },
       shapeDrawMode: {

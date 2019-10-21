@@ -27,23 +27,17 @@ export class Rubber extends Component<CtxProps, State> {
   }
 
   handleMouseDown = (x: number, y: number) => {
-    const { canvasCtx, options } = this.props.paint;
-
     this.setColor();
-    fillRect(x, y, options.rubberSize, canvasCtx!);
+    this.draw(x, y);
     this.setState({ lastX: x, lastY: y });
   };
 
   handleMouseMove = (x: number, y: number) => {
     const { lastX, lastY } = this.state;
 
-    fillSpaceBeetwenPoints(lastX, lastY, x, y, this.moveFillFn);
+    fillSpaceBeetwenPoints(lastX, lastY, x, y, this.draw);
+    this.draw(x, y);
     this.setState({ lastX: x, lastY: y });
-  };
-
-  moveFillFn = (x: number, y: number) => {
-    const { options, canvasCtx } = this.props.paint;
-    fillRect(x, y, options.rubberSize, canvasCtx!);
   };
 
   setColor = () => {
@@ -51,6 +45,11 @@ export class Rubber extends Component<CtxProps, State> {
 
     canvasCtx!.fillStyle = secondaryColor;
     canvasCtx!.strokeStyle = secondaryColor;
+  };
+
+  draw = (x: number, y: number) => {
+    const { options, canvasCtx } = this.props.paint;
+    fillRect(x, y, options.rubberSize, canvasCtx!);
   };
 
   render() {

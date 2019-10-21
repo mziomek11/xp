@@ -88,7 +88,7 @@ export class BrushOptions extends Component<CtxProps> {
     width: size === BrushSize.Small ? 1 : size === BrushSize.Medium ? 2 : 3
   });
 
-  getSlashInlineStyles = (size: BrushSize) => ({ width: size + 1, height: 1 });
+  getSlashInlineStyles = (size: BrushSize) => ({ width: size + 1, height: 2 });
 
   render() {
     const types: BrushType[] = ["circle", "rect", "slash", "backSlash"];
