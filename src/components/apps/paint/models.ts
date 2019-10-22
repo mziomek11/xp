@@ -41,6 +41,7 @@ export type Options = {
   isSelectTransparent: boolean;
   zoom: ZoomSize;
   aeroSize: AeroSize;
+  pickColor: string;
   brush: {
     type: Brush;
     size: BrushSize;

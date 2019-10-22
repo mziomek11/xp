@@ -103,7 +103,11 @@ export class Tool extends Component<Props, State> {
   };
 
   handleIconClick = () => {
-    this.props.paint.setContext({ selectedTool: this.props.toolType });
+    const { setContext, selectedTool } = this.props.paint;
+    setContext({
+      lastSelectedTool: selectedTool,
+      selectedTool: this.props.toolType
+    });
   };
 
   getClassName = () => {

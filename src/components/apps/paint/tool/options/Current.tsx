@@ -8,6 +8,7 @@ import TransparencyOptions from "./Transparency";
 import ZoomOptions from "./Zoom";
 import BrushOptions from "./Brush";
 import AeroOptions from "./Aero";
+import PickOptions from "./Pick";
 import withContext from "../../../../../hoc/withContext";
 import { PaintContextType } from "ContextType";
 
@@ -42,6 +43,8 @@ export class Current extends Component<CtxProps> {
         return <BrushOptions data-test="brush" />;
       case "aero":
         return <AeroOptions data-test="aero" />;
+      case "pick":
+        return <PickOptions data-test="pick" />;
       default:
         return <Options data-test="default" />;
     }

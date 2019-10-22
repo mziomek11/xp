@@ -12,6 +12,7 @@ import {
 
 type State = {
   selectedTool: Tool;
+  lastSelectedTool: Tool;
   primaryColor: string;
   secondaryColor: string;
   canvasCtx: CanvasRenderingContext2D | null;
@@ -28,6 +29,7 @@ const PaintContext = createContext<Partial<Context>>({});
 export class ContextProvider extends Component<{}, State> {
   readonly state: State = {
     selectedTool: "brush",
+    lastSelectedTool: "brush",
     primaryColor: "#000000",
     secondaryColor: "#ffffff",
     canvasCtx: null,
@@ -36,6 +38,7 @@ export class ContextProvider extends Component<{}, State> {
       rubberSize: RubberSize.ExtraBig,
       aeroSize: AeroSize.Small,
       zoom: ZoomSize.Default,
+      pickColor: "transparent",
       isSelectTransparent: false,
       brush: {
         type: "rect",

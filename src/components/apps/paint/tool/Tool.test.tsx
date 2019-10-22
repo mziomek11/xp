@@ -137,4 +137,17 @@ describe("Paint Tool component", () => {
       expect(result).toEqual({ x: -30, y: 30 });
     });
   });
+
+  describe("handleIconClick", () => {
+    it("should call setContext", () => {
+      const selectedTool = "pencil";
+      const instance = createWrapper(true, selectedTool).instance();
+      instance.handleIconClick();
+
+      expect(mockSetContextFn.mock.calls.length).toBe(1);
+      expect(mockSetContextFn.mock.calls[0]).toEqual([
+        { selectedTool: toolType, lastSelectedTool: selectedTool }
+      ]);
+    });
+  });
 });

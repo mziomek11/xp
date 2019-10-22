@@ -49,8 +49,13 @@ describe("Paint ToolCurrentOptions component", () => {
       testRenderedOptions("aero", tools);
     });
 
+    it("should render pick options", () => {
+      const tools: Tool[] = ["pick"];
+      testRenderedOptions("pick", tools);
+    });
+
     it("should render default options", () => {
-      const tools: Tool[] = ["pencil", "fill", "pick"];
+      const tools: Tool[] = ["pencil", "fill"];
       testRenderedOptions("default", tools);
     });
   });
