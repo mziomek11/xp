@@ -66,16 +66,19 @@ class Resizer extends Component<Props, State> {
   };
 
   handleMouseMove = ({ clientX, clientY }: MouseEvent) => {
+    const { max, floor } = Math;
     const { isHorizontal, isVertical, width, height } = this.props;
     const { startLeft, startTop } = this.state;
 
     let newState: Partial<State> = {};
 
     if (isHorizontal) {
-      newState.rectWidth = Math.max(clientX - startLeft + width, minRectSize);
+      newState.rectWidth = floor(max(clientX - startLeft + width, minRectSize));
     }
     if (isVertical) {
-      newState.rectHeight = Math.max(clientY - startTop + height, minRectSize);
+      newState.rectHeight = floor(
+        max(clientY - startTop + height, minRectSize)
+      );
     }
 
     this.setState(newState as State);

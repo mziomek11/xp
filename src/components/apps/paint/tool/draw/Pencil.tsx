@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import Tool from "../Tool";
 import withContext from "../../../../../hoc/withContext";
 import { PaintContextType } from "ContextType";
-import { drawLine, fillCircle } from "../../../../../utils/paint";
+import { fillRect, fillSpaceBeetwenPoints } from "../../../../../utils/paint";
 
 import pencilIcon from "../../../../../assets/paint/pencil.png";
 
@@ -14,14 +14,14 @@ type CtxProps = {
 type State = {
   lastX: number;
   lastY: number;
+  isMouseButtonLeft: boolean;
 };
-
-export const pencilSize: number = 1;
 
 export class Pencil extends Component<CtxProps, State> {
   readonly state: State = {
     lastX: 0,
-    lastY: 0
+    lastY: 0,
+    isMouseButtonLeft: true
   };
 
   shouldComponentUpdate() {
@@ -29,28 +29,39 @@ export class Pencil extends Component<CtxProps, State> {
   }
 
   handleMouseDown = (x: number, y: number) => {
-    const { canvasCtx } = this.props.paint;
+    this.setState({ isMouseButtonLeft: true });
+    this.initialDraw(x, y);
+  };
 
+  handleContextMenu = (x: number, y: number) => {
+    this.setState({ isMouseButtonLeft: false });
+    this.initialDraw(x, y);
+  };
+
+  initialDraw = (x: number, y: number) => {
     this.setColor();
     this.setState({ lastX: x, lastY: y });
-    fillCircle(x, y, pencilSize, canvasCtx!);
+    this.draw(x, y);
   };
 
   handleMouseMove = (x: number, y: number) => {
-    const { canvasCtx } = this.props.paint;
     const { lastX, lastY } = this.state;
 
     this.setColor();
-    drawLine(lastX, lastY, x, y, pencilSize, canvasCtx!);
-    fillCircle(x, y, pencilSize, canvasCtx!);
+    fillSpaceBeetwenPoints(lastX, lastY, x, y, this.draw);
+    this.draw(x, y);
     this.setState({ lastX: x, lastY: y });
   };
 
-  setColor = () => {
-    const { primaryColor, canvasCtx } = this.props.paint;
+  draw = (x: number, y: number) => {
+    fillRect(x, y, 1, this.props.paint.canvasCtx!);
+  };
 
-    canvasCtx!.strokeStyle = primaryColor;
-    canvasCtx!.fillStyle = primaryColor;
+  setColor = () => {
+    const { primaryColor, secondaryColor, canvasCtx } = this.props.paint;
+    const { isMouseButtonLeft } = this.state;
+
+    canvasCtx!.fillStyle = isMouseButtonLeft ? primaryColor : secondaryColor;
   };
 
   render() {
@@ -59,6 +70,7 @@ export class Pencil extends Component<CtxProps, State> {
         icon={pencilIcon}
         toolType="pencil"
         onMouseDown={this.handleMouseDown}
+        onContextMenu={this.handleContextMenu}
         onMouseMove={this.handleMouseMove}
         data-test="tool"
       />

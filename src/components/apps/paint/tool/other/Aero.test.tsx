@@ -12,7 +12,8 @@ import {
 } from "../../../../../utils/paint";
 
 const paint = {
-  primaryColor: "abc",
+  primaryColor: "p",
+  secondaryColor: "s",
   canvasCtx: {
     fillStyle: "y",
     fillRect: jest.fn()
@@ -37,15 +38,41 @@ describe("Paint Aero Tool component", () => {
     });
   });
 
+  describe("handleMouseDown", () => {
+    it("should update state", () => {
+      instance.setState({ isMouseButtonLeft: false });
+      instance.handleMouseDown(10, 10);
+
+      expect(instance.state.isMouseButtonLeft).toBe(true);
+    });
+  });
+
+  describe("handleContextMenu", () => {
+    it("should update state", () => {
+      instance.setState({ isMouseButtonLeft: true });
+      instance.handleContextMenu(10, 10);
+
+      expect(instance.state.isMouseButtonLeft).toBe(false);
+    });
+  });
+
   describe("setColor", () => {
-    it("should change fill style", () => {
+    it("should change stroke and fill style to primary color", () => {
+      instance.setState({ isMouseButtonLeft: true });
       instance.setColor();
 
       expect(paint.canvasCtx.fillStyle).toBe(paint.primaryColor);
     });
+
+    it("should change stroke and fill style to secondary color", () => {
+      instance.setState({ isMouseButtonLeft: false });
+      instance.setColor();
+
+      expect(paint.canvasCtx.fillStyle).toBe(paint.secondaryColor);
+    });
   });
 
-  describe("handleMouseDown", () => {
+  describe("startInterval", () => {
     it("should updateState", () => {
       const newX = 10;
       const newY = 15;

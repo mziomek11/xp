@@ -112,7 +112,7 @@ describe("Paint ToolBrushOptions component", () => {
 
       expect(instance.getSlashInlineStyles(size)).toEqual({
         width: BrushSize.Big + 1,
-        height: 2
+        height: 1
       });
     });
   });

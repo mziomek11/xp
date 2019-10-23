@@ -180,6 +180,10 @@
   }
 }
 
+.paint__canvas {
+  image-rendering: pixelated;
+}
+
 .paint__canvas-container {
   position: relative;
   padding: $paint-canvas-container-padding;

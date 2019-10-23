@@ -10,7 +10,9 @@ import {
   getAeroRowVector,
   createAeroVectorArrayFromRowsAndDists,
   reverseObjRow,
-  getAeroVectorsFromPositiveAndZeroRowsAndDists
+  getAeroVectorsFromPositiveAndZeroRowsAndDists,
+  hexToRgb,
+  rgbToHex
 } from "./paint";
 
 let mockBeginPathFn: jest.Mock;
@@ -46,6 +48,32 @@ let canvasContext: any = createCanvasContext();
 describe("Paint utils functions", () => {
   beforeEach(() => {
     canvasContext = createCanvasContext();
+  });
+
+  describe("rgbToHex", () => {
+    it("should convert properly", () => {
+      expect(rgbToHex(0, 0, 0)).toBe("#000000");
+      expect(rgbToHex(255, 255, 255)).toBe("#ffffff");
+      expect(rgbToHex(255, 0, 0)).toBe("#ff0000");
+      expect(rgbToHex(0, 255, 0)).toBe("#00ff00");
+      expect(rgbToHex(0, 0, 255)).toBe("#0000ff");
+      expect(rgbToHex(15, 155, 214)).toBe("#0f9bd6");
+    });
+  });
+
+  describe("hexToRgb", () => {
+    it("should convert properly", () => {
+      expect(hexToRgb("#000000")).toEqual({ r: 0, g: 0, b: 0 });
+      expect(hexToRgb("#ffffff")).toEqual({ r: 255, g: 255, b: 255 });
+      expect(hexToRgb("#ff0000")).toEqual({ r: 255, g: 0, b: 0 });
+      expect(hexToRgb("#00ff00")).toEqual({ r: 0, g: 255, b: 0 });
+      expect(hexToRgb("#0000ff")).toEqual({ r: 0, g: 0, b: 255 });
+      expect(hexToRgb("#0f9bd6")).toEqual({ r: 15, g: 155, b: 214 });
+    });
+
+    it("should throw an error", () => {
+      expect(() => hexToRgb("papap")).toThrow();
+    });
   });
 
   describe("fillCircle", () => {

@@ -35,6 +35,16 @@ const createWrapper = (
 
 const wrapper = createWrapper();
 
+const validMouseEvent = {
+  clientX: 10,
+  clientY: 20,
+  which: 1,
+  target: {
+    classList: { contains: () => true },
+    getClientRects: () => [{ left: 1, top: 1 }]
+  }
+};
+
 describe("Paint Tool component", () => {
   describe("render", () => {
     it("should render without throwing an error", () => {
@@ -75,19 +85,31 @@ describe("Paint Tool component", () => {
   });
 
   describe("handleMouseDown", () => {
-    it("should call onMouseDown", () => {
-      const instane = createWrapper(true, "fill").instance();
-      const ev = {
-        clientX: 10,
-        clientY: 20,
-        target: {
-          classList: { contains: () => true },
-          getClientRects: () => [{ left: 1, top: 1 }]
-        }
-      };
+    it("should call onMouseDown when left mouse button is clicked", () => {
+      const instance = createWrapper(true, "fill").instance();
+      const ev = { ...validMouseEvent, which: 1 };
 
-      instane.handleMouseDown(ev as any);
+      instance.handleMouseDown(ev as any);
       expect(mockOnMouseDownFn.mock.calls.length).toBe(1);
+    });
+
+    it("should NOT call onMouseDown when right mouse button is clicked", () => {
+      const instance = createWrapper(true, "fill").instance();
+      const ev = { ...validMouseEvent, which: 3 };
+
+      instance.handleMouseDown(ev as any);
+      expect(mockOnMouseDownFn.mock.calls.length).toBe(0);
+    });
+  });
+
+  describe("handleContextMenu", () => {
+    it("should preventDefault", () => {
+      const mockPreventDefaultFn = jest.fn();
+      const instance = createWrapper(true, "fill").instance();
+      const ev = { ...validMouseEvent, preventDefault: mockPreventDefaultFn };
+      instance.handleContextMenu(ev);
+
+      expect(mockPreventDefaultFn.mock.calls.length).toBe(1);
     });
   });
 

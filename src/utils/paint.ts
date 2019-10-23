@@ -2,32 +2,53 @@ type Ctx = CanvasRenderingContext2D;
 export type Vector = { x: number; y: number };
 type RowAndDist = { row: number; distanceX: number };
 
-export const fillCircle = (x: number, y: number, size: number, ctx: Ctx) => {
-  ctx.beginPath();
-  ctx.arc(x, y, size / 2, 0, 2 * Math.PI);
-  ctx.fill();
-};
+export function rgbToHex(r: number, g: number, b: number): string {
+  const hexR =
+    r.toString(16).length === 1 ? "0" + r.toString(16) : r.toString(16);
+  const hexG =
+    g.toString(16).length === 1 ? "0" + g.toString(16) : g.toString(16);
+  const hexB =
+    b.toString(16).length === 1 ? "0" + b.toString(16) : b.toString(16);
 
-export const drawLine = (
+  return "#" + hexR + hexG + hexB;
+}
+
+export function hexToRgb(hex: string): { r: number; g: number; b: number } {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  if (!result) throw Error("String is not hex color");
+  return {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  };
+}
+
+export function fillCircle(x: number, y: number, size: number, ctx: Ctx) {
+  ctx.beginPath();
+  ctx.arc(x, y, Math.floor(size / 2), 0, 2 * Math.PI);
+  ctx.fill();
+}
+
+export function drawLine(
   startX: number,
   startY: number,
   endX: number,
   endY: number,
   size: number,
   ctx: Ctx
-) => {
+) {
   ctx.lineWidth = size;
   ctx.beginPath();
   ctx.moveTo(startX, startY);
   ctx.lineTo(endX, endY);
   ctx.stroke();
-};
+}
 
-export const fillRect = (x: number, y: number, size: number, ctx: Ctx) => {
-  ctx.fillRect(x - size / 2, y - size / 2, size, size);
-};
+export function fillRect(x: number, y: number, size: number, ctx: Ctx) {
+  ctx.fillRect(Math.floor(x - size / 2), Math.floor(y - size / 2), size, size);
+}
 
-export const fillBrushMediumCircle = (x: number, y: number, ctx: Ctx) => {
+export function fillBrushMediumCircle(x: number, y: number, ctx: Ctx) {
   ctx.beginPath();
   ctx.moveTo(x, y - 1); // One up
   ctx.lineTo(x + 2, y - 1); // Two right
@@ -43,9 +64,9 @@ export const fillBrushMediumCircle = (x: number, y: number, ctx: Ctx) => {
   ctx.lineTo(x, y); // One right
   ctx.lineTo(x, y - 1); // One up
   ctx.fill();
-};
+}
 
-export const fillBrushBigCircle = (x: number, y: number, ctx: Ctx) => {
+export function fillBrushBigCircle(x: number, y: number, ctx: Ctx) {
   ctx.beginPath();
   ctx.moveTo(x - 1, y - 3); // One left, three up
   ctx.lineTo(x + 2, y - 3); // Three right
@@ -69,9 +90,9 @@ export const fillBrushBigCircle = (x: number, y: number, ctx: Ctx) => {
   ctx.lineTo(x - 1, y - 2); // One right
   ctx.lineTo(x - 1, y - 3); // One up
   ctx.fill();
-};
+}
 
-export const getAeroSmallVectors = (): Vector[] => {
+export function getAeroSmallVectors(): Vector[] {
   const zeroRowAndDist: number = 4;
   const posRowsAndDits: RowAndDist[] = [
     { row: 4, distanceX: 1 },
@@ -84,9 +105,9 @@ export const getAeroSmallVectors = (): Vector[] => {
     posRowsAndDits,
     zeroRowAndDist
   );
-};
+}
 
-export const getAeroMediumVectors = (): Vector[] => {
+export function getAeroMediumVectors(): Vector[] {
   const zeroRowAndDist: number = 7;
   const posRowsAndDits: RowAndDist[] = [
     { row: 7, distanceX: 3 },
@@ -102,9 +123,9 @@ export const getAeroMediumVectors = (): Vector[] => {
     posRowsAndDits,
     zeroRowAndDist
   );
-};
+}
 
-export const getAeroBigVectors = (): Vector[] => {
+export function getAeroBigVectors(): Vector[] {
   const zeroRowAndDist: number = 11;
   const posRowsAndDits: RowAndDist[] = [
     { row: 11, distanceX: 4 },
@@ -124,12 +145,12 @@ export const getAeroBigVectors = (): Vector[] => {
     posRowsAndDits,
     zeroRowAndDist
   );
-};
+}
 
-export const getAeroVectorsFromPositiveAndZeroRowsAndDists = (
+export function getAeroVectorsFromPositiveAndZeroRowsAndDists(
   positiveRowAndDists: RowAndDist[],
   rowZeroDistance: number
-) => {
+) {
   const zeroRowsAndDists: RowAndDist = { row: 0, distanceX: rowZeroDistance };
   const negRowsAndDists: RowAndDist[] = positiveRowAndDists.map(reverseObjRow);
   const rowsAndDists: RowAndDist[] = [
@@ -139,15 +160,15 @@ export const getAeroVectorsFromPositiveAndZeroRowsAndDists = (
   ];
 
   return createAeroVectorArrayFromRowsAndDists(rowsAndDists);
-};
+}
 
-export const reverseObjRow = (obj: RowAndDist) => {
+export function reverseObjRow(obj: RowAndDist) {
   return { ...obj, row: -obj.row };
-};
+}
 
-export const createAeroVectorArrayFromRowsAndDists = (
+export function createAeroVectorArrayFromRowsAndDists(
   rowsAndDists: RowAndDist[]
-): Vector[] => {
+): Vector[] {
   const vectors: Vector[] = [];
 
   rowsAndDists.forEach(({ row, distanceX }) =>
@@ -155,9 +176,9 @@ export const createAeroVectorArrayFromRowsAndDists = (
   );
 
   return vectors;
-};
+}
 
-export const getAeroRowVector = (y: number, xDistance: number): Vector[] => {
+export function getAeroRowVector(y: number, xDistance: number): Vector[] {
   const vectors = [];
 
   for (let x = -xDistance; x <= xDistance; x++) {
@@ -165,46 +186,46 @@ export const getAeroRowVector = (y: number, xDistance: number): Vector[] => {
   }
 
   return vectors;
-};
+}
 
-export const fillSpaceBeetwenPoints = (
+export function fillSpaceBeetwenPoints(
   startX: number,
   startY: number,
   endX: number,
   endY: number,
   fillFn: (x: number, y: number) => void
-) => {
+) {
   const [disX, disY, disMax] = calculateDistance(startX, startY, endX, endY);
   const [tickX, tickY] = calculateDistancePerTick(disX, disY, disMax);
 
   for (let i = 1; i < disMax; i++) {
-    const drawX = startX + i * tickX;
-    const drawY = startY + i * tickY;
+    const drawX = Math.round(startX + i * tickX);
+    const drawY = Math.round(startY + i * tickY);
 
     fillFn(drawX, drawY);
   }
-};
+}
 
-export const calculateDistance = (
+export function calculateDistance(
   startX: number,
   startY: number,
   endX: number,
   endY: number
-): [number, number, number] => {
+): [number, number, number] {
   const distanceX = endX - startX;
   const distanceY = endY - startY;
   const biggerDistance = Math.max(Math.abs(distanceX), Math.abs(distanceY));
 
   return [distanceX, distanceY, biggerDistance];
-};
+}
 
-export const calculateDistancePerTick = (
+export function calculateDistancePerTick(
   disX: number,
   disY: number,
   maxDis: number
-): [number, number] => {
+): [number, number] {
   const xPerTick = disX / maxDis;
   const yPerTick = disY / maxDis;
 
   return [xPerTick, yPerTick];
-};
+}

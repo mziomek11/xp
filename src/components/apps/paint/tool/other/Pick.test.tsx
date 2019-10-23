@@ -2,17 +2,18 @@ import React from "react";
 import { shallow } from "enzyme";
 
 import { Pick } from "./Pick";
-import colors from "../../colors";
 import { findByTestAtrr } from "../../../../../../testingUtils";
+import { rgbToHex } from "../../../../../utils/paint";
 
+const initialColor = "#000000";
 let mockSetOptionsFn: jest.Mock;
 let mockSetContextFn: jest.Mock;
 
 const createWrapper = (
-  currentColor: string = colors[0],
-  pixelR: number = 255,
-  pixelG: number = 255,
-  pixelB: number = 255
+  currentColor: string = initialColor,
+  pixelR: number = 0,
+  pixelG: number = 0,
+  pixelB: number = 0
 ) => {
   mockSetOptionsFn = jest.fn();
   mockSetContextFn = jest.fn();
@@ -20,7 +21,10 @@ const createWrapper = (
   const paint = {
     setOptions: mockSetOptionsFn,
     setContext: mockSetContextFn,
-    canvasCtx: { getImageData: () => ({ data: [pixelR, pixelG, pixelB] }) },
+    canvasCtx: {
+      getImageData: () => ({ data: [pixelR, pixelG, pixelB] }),
+      canvas: { width: 200, height: 200 }
+    },
     options: {
       pickColor: currentColor,
       lastSelectedTool: "brush"
@@ -40,42 +44,77 @@ describe("Paint Pick Tool component", () => {
     });
   });
 
-  describe("updatePickColor", () => {
-    it("should NOT call setOptions when color is the same", () => {
-      const instnace = createWrapper(colors[0], 0, 0, 0).instance();
-      instnace.updatePickColor(10, 10);
+  describe("handleMouseDown", () => {
+    it("should update state", () => {
+      instance.setState({ isMouseButtonLeft: false });
+      instance.handleMouseDown(10, 10);
 
-      expect(mockSetOptionsFn.mock.calls.length).toBe(0);
+      expect(instance.state.isMouseButtonLeft).toBe(true);
+    });
+  });
+
+  describe("handleContextMenu", () => {
+    it("should update state", () => {
+      instance.setState({ isMouseButtonLeft: true });
+      instance.handleContextMenu(10, 10);
+
+      expect(instance.state.isMouseButtonLeft).toBe(false);
+    });
+  });
+
+  describe("isMouseOutsideCanvas", () => {
+    it("shoud return true", () => {
+      expect(instance.isMouseOutsideCanvas(-100, -100)).toBe(true);
+      expect(instance.isMouseOutsideCanvas(1000, -100)).toBe(true);
+      expect(instance.isMouseOutsideCanvas(1000, 1000)).toBe(true);
+      expect(instance.isMouseOutsideCanvas(-100, 1000)).toBe(true);
+
+      expect(instance.isMouseOutsideCanvas(10, -1000)).toBe(true);
+      expect(instance.isMouseOutsideCanvas(10, 1000)).toBe(true);
+
+      expect(instance.isMouseOutsideCanvas(-1000, 10)).toBe(true);
+      expect(instance.isMouseOutsideCanvas(1000, 10)).toBe(true);
     });
 
-    it("should NOT call setOptions when color is NOT in colors", () => {
-      const instnace = createWrapper(colors[0], 0, 0, 1).instance();
+    it("should return false", () => {
+      expect(instance.isMouseOutsideCanvas(10, 10)).toBe(false);
+    });
+  });
+
+  describe("updatePickColor", () => {
+    it("should NOT call setOptions when color is the same", () => {
+      const instnace = createWrapper(initialColor, 0, 0, 0).instance();
       instnace.updatePickColor(10, 10);
 
       expect(mockSetOptionsFn.mock.calls.length).toBe(0);
     });
 
     it("should call setOptions", () => {
-      const instnace = createWrapper(colors[1], 0, 0, 0).instance();
+      const instnace = createWrapper("#123123", 0, 0, 0).instance();
       instnace.updatePickColor(10, 10);
 
       expect(mockSetOptionsFn.mock.calls.length).toBe(1);
+      expect(mockSetOptionsFn.mock.calls[0]).toEqual([
+        { pickColor: initialColor }
+      ]);
+    });
+
+    it("should call setOptions with white when is outside canvas", () => {
+      const instnace = createWrapper("#123123", 0, 0, 0).instance();
+      instnace.updatePickColor(-100, -100);
+
+      expect(mockSetOptionsFn.mock.calls.length).toBe(1);
+      expect(mockSetOptionsFn.mock.calls[0]).toEqual([
+        { pickColor: "#ffffff" }
+      ]);
     });
   });
 
   describe("pixelToColor", () => {
-    const rgbToString = (r: number, g: number, b: number) =>
-      `rgb(${r},${g},${b})`;
-
     it("should convert pixel to rgb", () => {
       const { pixelToColor } = instance;
 
-      expect(pixelToColor([0, 0, 0] as any)).toBe(rgbToString(0, 0, 0));
-      expect(pixelToColor([1, 2, 3] as any)).toBe(rgbToString(1, 2, 3));
-      expect(pixelToColor([2, 1, 3] as any)).toBe(rgbToString(2, 1, 3));
-      expect(pixelToColor([255, 255, 255] as any)).toBe(
-        rgbToString(255, 255, 255)
-      );
+      expect(pixelToColor([2, 5, 3] as any)).toBe(rgbToHex(2, 5, 3));
     });
   });
 
@@ -91,7 +130,7 @@ describe("Paint Pick Tool component", () => {
     });
 
     it("should call setContext", () => {
-      const color = colors[3];
+      const color = "red";
       const instance = createWrapper(color).instance();
       instance.handleMouseUp();
 

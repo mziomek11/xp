@@ -41,8 +41,8 @@ export class ContextProvider extends Component<{}, State> {
       pickColor: "transparent",
       isSelectTransparent: false,
       brush: {
-        type: "rect",
-        size: BrushSize.Small
+        type: "slash",
+        size: BrushSize.Big
       },
       shapeDrawMode: {
         circle: "stroke",

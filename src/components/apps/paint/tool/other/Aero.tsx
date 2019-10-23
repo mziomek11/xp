@@ -24,6 +24,7 @@ type State = {
   mouseX: number;
   mouseY: number;
   interval: NodeJS.Timeout | null;
+  isMouseButtonLeft: boolean;
 };
 
 const smallVectors = getAeroSmallVectors();
@@ -37,7 +38,8 @@ export class Aero extends Component<CtxProps, State> {
   readonly state: State = {
     mouseX: 0,
     mouseY: 0,
-    interval: null
+    interval: null,
+    isMouseButtonLeft: true
   };
 
   shouldComponentUpdate() {
@@ -49,6 +51,17 @@ export class Aero extends Component<CtxProps, State> {
   }
 
   handleMouseDown = (x: number, y: number) => {
+    this.setState({ isMouseButtonLeft: true });
+    this.startInterval(x, y);
+  };
+
+  handleContextMenu = (x: number, y: number) => {
+    this.setState({ isMouseButtonLeft: false });
+    this.startInterval(x, y);
+  };
+
+  startInterval = (x: number, y: number) => {
+    this.clearInterval();
     this.setColor();
     const interval = setInterval(this.draw, msBetweenDraws);
     this.setState({ mouseX: x, mouseY: y, interval: interval });
@@ -83,9 +96,10 @@ export class Aero extends Component<CtxProps, State> {
   };
 
   setColor = () => {
-    const { primaryColor, canvasCtx } = this.props.paint;
+    const { primaryColor, secondaryColor, canvasCtx } = this.props.paint;
+    const { isMouseButtonLeft } = this.state;
 
-    canvasCtx!.fillStyle = primaryColor;
+    canvasCtx!.fillStyle = isMouseButtonLeft ? primaryColor : secondaryColor;
   };
 
   render() {
@@ -94,6 +108,7 @@ export class Aero extends Component<CtxProps, State> {
         icon={aeroIcon}
         toolType="aero"
         onMouseDown={this.handleMouseDown}
+        onContextMenu={this.handleContextMenu}
         onMouseMove={this.handleMouseMove}
         onMouseUp={this.clearInterval}
         data-test="tool"

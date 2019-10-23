@@ -9,6 +9,7 @@ type OwnProps = {
   icon: string;
   toolType: ToolType;
   onMouseDown?: (x: number, y: number) => void;
+  onContextMenu?: (x: number, y: number) => void;
   onMouseMove?: (x: number, y: number) => void;
   onMouseUp?: (x: number, y: number) => void;
 };
@@ -37,10 +38,12 @@ export class Tool extends Component<Props, State> {
 
   componentDidMount() {
     window.addEventListener("mousedown", this.handleMouseDown);
+    window.addEventListener("contextmenu", this.handleContextMenu);
   }
 
   componentWillUnmount() {
     window.removeEventListener("mousedown", this.handleMouseDown);
+    window.removeEventListener("contextmenu", this.handleContextMenu);
     this.removeMoveAndUpListeners();
   }
 
@@ -51,11 +54,26 @@ export class Tool extends Component<Props, State> {
 
   handleMouseDown = (e: MouseEvent) => {
     if (!this.clickedOwnCanvas(e)) return;
+    if (e.which !== 1) return;
 
+    this.handleMouseButtonDown(e, this.props.onMouseDown);
+  };
+
+  handleContextMenu = (e: any) => {
+    if (!this.clickedOwnCanvas(e)) return;
+    e.preventDefault();
+
+    this.handleMouseButtonDown(e, this.props.onContextMenu);
+  };
+
+  handleMouseButtonDown = (
+    e: MouseEvent,
+    additonalFn?: (x: number, y: number) => void
+  ) => {
     this.setCanvasData(e);
-    if (this.props.onMouseDown) {
+    if (additonalFn) {
       const { x, y } = this.calculateCanvasPos(e);
-      this.props.onMouseDown(x, y);
+      additonalFn(x, y);
     }
 
     window.addEventListener("mousemove", this.handleMouseMove);
@@ -96,8 +114,8 @@ export class Tool extends Component<Props, State> {
   calculateCanvasPos = (event: MouseEvent): { x: number; y: number } => {
     const { clientX, clientY } = event;
     const { canvasLeft, canvasTop } = this.state;
-    const canvasX = clientX - canvasLeft;
-    const canvasY = clientY - canvasTop;
+    const canvasX = Math.floor(clientX - canvasLeft);
+    const canvasY = Math.floor(clientY - canvasTop);
 
     return { x: canvasX, y: canvasY };
   };

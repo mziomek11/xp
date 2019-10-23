@@ -21,12 +21,16 @@ type CtxProps = {
 type State = {
   lastX: number;
   lastY: number;
+  isMouseMoving: boolean;
+  isMouseButtonLeft: boolean;
 };
 
 export class Brush extends Component<CtxProps, State> {
   readonly state: State = {
     lastX: 0,
-    lastY: 0
+    lastY: 0,
+    isMouseMoving: false,
+    isMouseButtonLeft: true
   };
 
   shouldComponentUpdate() {
@@ -34,9 +38,19 @@ export class Brush extends Component<CtxProps, State> {
   }
 
   handleMouseDown = (x: number, y: number) => {
+    this.setState({ isMouseButtonLeft: true });
+    this.initialDraw(x, y);
+  };
+
+  handleContextMenu = (x: number, y: number) => {
+    this.setState({ isMouseButtonLeft: false });
+    this.initialDraw(x, y);
+  };
+
+  initialDraw = (x: number, y: number) => {
     this.setColor();
     this.draw(x, y);
-    this.setState({ lastX: x, lastY: y });
+    this.setState({ lastX: x, lastY: y, isMouseMoving: true });
   };
 
   handleMouseMove = (x: number, y: number) => {
@@ -45,6 +59,10 @@ export class Brush extends Component<CtxProps, State> {
     fillSpaceBeetwenPoints(lastX, lastY, x, y, this.draw);
     this.draw(x, y);
     this.setState({ lastX: x, lastY: y });
+  };
+
+  handleMouseUp = () => {
+    this.setState({ isMouseMoving: false });
   };
 
   draw = (x: number, y: number) => {
@@ -71,8 +89,9 @@ export class Brush extends Component<CtxProps, State> {
   };
 
   drawSlash = (x: number, y: number, forward: boolean) => {
-    const { canvasCtx, options } = this.props.paint;
-    const lineLength = options.brush.size + 1;
+    const { isMouseMoving } = this.state;
+    const { canvasCtx } = this.props.paint;
+    const lineLength = this.getSlashLineLength();
     const halfLineLength = lineLength / 2;
 
     const startX = Math.floor(x - halfLineLength * (forward ? 1 : -1));
@@ -80,14 +99,29 @@ export class Brush extends Component<CtxProps, State> {
     const endX = Math.ceil(x + halfLineLength * (forward ? 1 : -1));
     const endY = Math.ceil(y - halfLineLength);
 
-    drawLine(startX, startY, endX, endY, 2, canvasCtx!);
+    drawLine(startX, startY, endX, endY, 1, canvasCtx!);
+
+    if (isMouseMoving) {
+      drawLine(startX - 1, startY, endX - 1, endY, 1, canvasCtx!);
+      drawLine(startX + 1, startY, endX + 1, endY, 1, canvasCtx!);
+    }
+  };
+
+  getSlashLineLength = () => {
+    const { size } = this.props.paint.options.brush;
+
+    if (size === BrushSize.Small) return 4;
+    else if (size === BrushSize.Medium) return 6;
+    else return 8;
   };
 
   setColor = () => {
-    const { primaryColor, canvasCtx } = this.props.paint;
+    const { primaryColor, secondaryColor, canvasCtx } = this.props.paint;
+    const { isMouseButtonLeft } = this.state;
+    const newColor = isMouseButtonLeft ? primaryColor : secondaryColor;
 
-    canvasCtx!.strokeStyle = primaryColor;
-    canvasCtx!.fillStyle = primaryColor;
+    canvasCtx!.strokeStyle = newColor;
+    canvasCtx!.fillStyle = newColor;
   };
 
   render() {
@@ -96,7 +130,9 @@ export class Brush extends Component<CtxProps, State> {
         icon={brushIcon}
         toolType="brush"
         onMouseDown={this.handleMouseDown}
+        onContextMenu={this.handleContextMenu}
         onMouseMove={this.handleMouseMove}
+        onMouseUp={this.handleMouseUp}
         data-test="tool"
       />
     );

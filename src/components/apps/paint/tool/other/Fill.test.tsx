@@ -1,10 +1,10 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import Fill from "./Fill";
+import { Fill } from "./Fill";
 import { findByTestAtrr } from "../../../../../../testingUtils";
 
-const wrapper = shallow(<Fill />);
+const wrapper = shallow(<Fill paint={{} as any} />);
 
 describe("Paint Fill Tool component", () => {
   describe("render", () => {
