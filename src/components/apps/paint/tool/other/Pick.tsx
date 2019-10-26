@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import Tool from "../Tool";
 import withContext from "../../../../../hoc/withContext";
 import { PaintContextType } from "ContextType";
-import { rgbToHex } from "../../../../../utils/paint";
+import { rgbToHex, Vector } from "../../../../../utils/paint";
 
 import pickIcon from "../../../../../assets/paint/pick.png";
 
@@ -24,31 +24,30 @@ export class Pick extends Component<CtxProps, State> {
     return false;
   }
 
-  handleMouseDown = (x: number, y: number) => {
+  handleMouseLeftDown = (canvasPos: Vector) => {
     this.setState({ isMouseButtonLeft: true });
-    this.updatePickColor(x, y);
+    this.updatePickColor(canvasPos);
   };
 
-  handleContextMenu = (x: number, y: number) => {
+  handleMouseRightDown = (canvasPos: Vector) => {
     this.setState({ isMouseButtonLeft: false });
-    this.updatePickColor(x, y);
+    this.updatePickColor(canvasPos);
   };
 
-  updatePickColor = (x: number, y: number) => {
+  updatePickColor = (canvasPos: Vector) => {
     const { canvasCtx, setOptions, options } = this.props.paint;
     let color: string;
 
-    if (!this.isMouseOutsideCanvas(x, y)) {
+    if (!this.isMouseOutsideCanvas(canvasPos)) {
+      const { x, y } = canvasPos;
       const canvasPixel = canvasCtx!.getImageData(x, y, 1, 1).data;
       color = this.pixelToColor(canvasPixel);
     } else color = "#ffffff";
 
-    if (options.pickColor !== color) {
-      setOptions({ pickColor: color });
-    }
+    if (options.pickColor !== color) setOptions({ pickColor: color });
   };
 
-  isMouseOutsideCanvas = (x: number, y: number) => {
+  isMouseOutsideCanvas = ({ x, y }: Vector) => {
     const { width, height } = this.props.paint.canvasCtx!.canvas;
 
     return x < 0 || x >= width || y < 0 || y >= height;
@@ -59,7 +58,7 @@ export class Pick extends Component<CtxProps, State> {
     const g = pixel[1];
     const b = pixel[2];
 
-    return rgbToHex(r, g, b);
+    return rgbToHex({ r, g, b });
   };
 
   handleMouseUp = () => {
@@ -89,10 +88,10 @@ export class Pick extends Component<CtxProps, State> {
         icon={pickIcon}
         toolType="pick"
         data-test="tool"
-        onMouseDown={this.handleMouseDown}
+        onMouseLeftDown={this.handleMouseLeftDown}
         onMouseMove={this.updatePickColor}
         onMouseUp={this.handleMouseUp}
-        onContextMenu={this.handleContextMenu}
+        onMouseRightDown={this.handleMouseRightDown}
       />
     );
   }

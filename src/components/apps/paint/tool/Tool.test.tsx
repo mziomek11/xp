@@ -5,7 +5,8 @@ import { Tool } from "./Tool";
 import { findByTestAtrr } from "../../../../../testingUtils";
 
 let mockSetContextFn: jest.Mock = jest.fn();
-let mockOnMouseDownFn: jest.Mock = jest.fn();
+let mockOnMouseLeftDownFn: jest.Mock = jest.fn();
+let mockOnMouseRightDownFn: jest.Mock = jest.fn();
 let mockOnMouseMoveFn: jest.Mock = jest.fn();
 let mockOnMouseUpFn: jest.Mock = jest.fn();
 
@@ -16,7 +17,8 @@ const createWrapper = (
   selectedTool: any = "fill"
 ) => {
   mockSetContextFn = jest.fn();
-  mockOnMouseDownFn = jest.fn();
+  mockOnMouseLeftDownFn = jest.fn();
+  mockOnMouseRightDownFn = jest.fn();
   mockOnMouseMoveFn = jest.fn();
   mockOnMouseUpFn = jest.fn();
 
@@ -24,7 +26,8 @@ const createWrapper = (
     icon: "x",
     toolType,
     paint: { setContext: mockSetContextFn, selectedTool } as any,
-    onMouseDown: mockOnMouseDownFn,
+    onMouseLeftDown: mockOnMouseLeftDownFn,
+    onMouseRightDown: mockOnMouseRightDownFn,
     onMouseMove: mockOnMouseMoveFn,
     onMouseUp: mockOnMouseUpFn,
     window: { focused } as any
@@ -90,7 +93,7 @@ describe("Paint Tool component", () => {
       const ev = { ...validMouseEvent, which: 1 };
 
       instance.handleMouseDown(ev as any);
-      expect(mockOnMouseDownFn.mock.calls.length).toBe(1);
+      expect(mockOnMouseLeftDownFn.mock.calls.length).toBe(1);
     });
 
     it("should NOT call onMouseDown when right mouse button is clicked", () => {
@@ -98,7 +101,7 @@ describe("Paint Tool component", () => {
       const ev = { ...validMouseEvent, which: 3 };
 
       instance.handleMouseDown(ev as any);
-      expect(mockOnMouseDownFn.mock.calls.length).toBe(0);
+      expect(mockOnMouseLeftDownFn.mock.calls.length).toBe(0);
     });
   });
 

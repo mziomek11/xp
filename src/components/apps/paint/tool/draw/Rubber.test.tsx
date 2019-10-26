@@ -13,7 +13,8 @@ const paint = {
   },
   options: {
     rubberSize: 4
-  }
+  },
+  setColor: jest.fn()
 } as any;
 
 const wrapper = shallow<Rubber>(<Rubber paint={paint} />);
@@ -26,36 +27,33 @@ describe("Paint Rubber Tool component", () => {
     });
   });
 
-  describe("setColor", () => {
-    it("should change stroke and fill style", () => {
-      instance.setColor();
-
-      expect(paint.canvasCtx.strokeStyle).toBe(paint.secondaryColor);
-      expect(paint.canvasCtx.fillStyle).toBe(paint.secondaryColor);
-    });
-  });
-
   describe("handleMouseDown", () => {
     it("should updateState", () => {
-      const newX = 10;
-      const newY = 15;
-      instance.setState({ lastX: 0, lastY: 0 });
-      instance.handleMouseDown(newX, newY);
+      const newPoint = { x: 10, y: 15 };
+      instance.setState({ lastPos: { x: 0, y: 0 } });
+      instance.handleMouseDown(newPoint);
 
-      expect(instance.state.lastX).toBe(newX);
-      expect(instance.state.lastY).toBe(newY);
+      expect(instance.state.lastPos).toBe(newPoint);
+    });
+
+    it("should call setColor with true", () => {
+      const mockSetColorFn = jest.fn();
+      const paintProps = { ...paint, setColor: mockSetColorFn };
+      const wrapper = shallow<Rubber>(<Rubber paint={paintProps} />);
+      const instance = wrapper.instance();
+
+      instance.handleMouseDown({ x: 10, y: 10 });
+      expect(mockSetColorFn.mock.calls.length).toBe(1);
     });
   });
 
   describe("handleMouseMove", () => {
     it("should updateState", () => {
-      const newX = 10;
-      const newY = 15;
-      instance.setState({ lastX: 0, lastY: 0 });
-      instance.handleMouseMove(newX, newY);
+      const newPoint = { x: 10, y: 15 };
+      instance.setState({ lastPos: { x: 0, y: 0 } });
+      instance.handleMouseMove(newPoint);
 
-      expect(instance.state.lastX).toBe(newX);
-      expect(instance.state.lastY).toBe(newY);
+      expect(instance.state.lastPos).toBe(newPoint);
     });
   });
 });

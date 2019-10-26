@@ -44,19 +44,19 @@ describe("Paint Pick Tool component", () => {
     });
   });
 
-  describe("handleMouseDown", () => {
+  describe("handleMouseLeftDown", () => {
     it("should update state", () => {
       instance.setState({ isMouseButtonLeft: false });
-      instance.handleMouseDown(10, 10);
+      instance.handleMouseLeftDown({ x: 10, y: 10 });
 
       expect(instance.state.isMouseButtonLeft).toBe(true);
     });
   });
 
-  describe("handleContextMenu", () => {
+  describe("handleMouseRightDown", () => {
     it("should update state", () => {
       instance.setState({ isMouseButtonLeft: true });
-      instance.handleContextMenu(10, 10);
+      instance.handleMouseRightDown({ x: 10, y: 10 });
 
       expect(instance.state.isMouseButtonLeft).toBe(false);
     });
@@ -64,34 +64,34 @@ describe("Paint Pick Tool component", () => {
 
   describe("isMouseOutsideCanvas", () => {
     it("shoud return true", () => {
-      expect(instance.isMouseOutsideCanvas(-100, -100)).toBe(true);
-      expect(instance.isMouseOutsideCanvas(1000, -100)).toBe(true);
-      expect(instance.isMouseOutsideCanvas(1000, 1000)).toBe(true);
-      expect(instance.isMouseOutsideCanvas(-100, 1000)).toBe(true);
+      expect(instance.isMouseOutsideCanvas({ x: -100, y: -100 })).toBe(true);
+      expect(instance.isMouseOutsideCanvas({ x: 1000, y: -100 })).toBe(true);
+      expect(instance.isMouseOutsideCanvas({ x: 1000, y: 1000 })).toBe(true);
+      expect(instance.isMouseOutsideCanvas({ x: -100, y: 1000 })).toBe(true);
 
-      expect(instance.isMouseOutsideCanvas(10, -1000)).toBe(true);
-      expect(instance.isMouseOutsideCanvas(10, 1000)).toBe(true);
+      expect(instance.isMouseOutsideCanvas({ x: 10, y: -1000 })).toBe(true);
+      expect(instance.isMouseOutsideCanvas({ x: 10, y: 1000 })).toBe(true);
 
-      expect(instance.isMouseOutsideCanvas(-1000, 10)).toBe(true);
-      expect(instance.isMouseOutsideCanvas(1000, 10)).toBe(true);
+      expect(instance.isMouseOutsideCanvas({ x: -1000, y: 10 })).toBe(true);
+      expect(instance.isMouseOutsideCanvas({ x: 1000, y: 10 })).toBe(true);
     });
 
     it("should return false", () => {
-      expect(instance.isMouseOutsideCanvas(10, 10)).toBe(false);
+      expect(instance.isMouseOutsideCanvas({ x: 10, y: 10 })).toBe(false);
     });
   });
 
   describe("updatePickColor", () => {
     it("should NOT call setOptions when color is the same", () => {
       const instnace = createWrapper(initialColor, 0, 0, 0).instance();
-      instnace.updatePickColor(10, 10);
+      instnace.updatePickColor({ x: 10, y: 10 });
 
       expect(mockSetOptionsFn.mock.calls.length).toBe(0);
     });
 
     it("should call setOptions", () => {
       const instnace = createWrapper("#123123", 0, 0, 0).instance();
-      instnace.updatePickColor(10, 10);
+      instnace.updatePickColor({ x: 10, y: 10 });
 
       expect(mockSetOptionsFn.mock.calls.length).toBe(1);
       expect(mockSetOptionsFn.mock.calls[0]).toEqual([
@@ -101,7 +101,7 @@ describe("Paint Pick Tool component", () => {
 
     it("should call setOptions with white when is outside canvas", () => {
       const instnace = createWrapper("#123123", 0, 0, 0).instance();
-      instnace.updatePickColor(-100, -100);
+      instnace.updatePickColor({ x: -100, y: -100 });
 
       expect(mockSetOptionsFn.mock.calls.length).toBe(1);
       expect(mockSetOptionsFn.mock.calls[0]).toEqual([
@@ -114,7 +114,9 @@ describe("Paint Pick Tool component", () => {
     it("should convert pixel to rgb", () => {
       const { pixelToColor } = instance;
 
-      expect(pixelToColor([2, 5, 3] as any)).toBe(rgbToHex(2, 5, 3));
+      expect(pixelToColor([2, 5, 3] as any)).toBe(
+        rgbToHex({ r: 2, g: 5, b: 3 })
+      );
     });
   });
 

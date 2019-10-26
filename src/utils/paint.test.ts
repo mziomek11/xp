@@ -2,7 +2,7 @@ import {
   fillCircle,
   drawLine,
   fillRect,
-  fillSpaceBeetwenPoints,
+  fillSpaceBetweenPoints,
   calculateDistance,
   calculateDistancePerTick,
   fillBrushMediumCircle,
@@ -52,12 +52,12 @@ describe("Paint utils functions", () => {
 
   describe("rgbToHex", () => {
     it("should convert properly", () => {
-      expect(rgbToHex(0, 0, 0)).toBe("#000000");
-      expect(rgbToHex(255, 255, 255)).toBe("#ffffff");
-      expect(rgbToHex(255, 0, 0)).toBe("#ff0000");
-      expect(rgbToHex(0, 255, 0)).toBe("#00ff00");
-      expect(rgbToHex(0, 0, 255)).toBe("#0000ff");
-      expect(rgbToHex(15, 155, 214)).toBe("#0f9bd6");
+      expect(rgbToHex({ r: 0, g: 0, b: 0 })).toBe("#000000");
+      expect(rgbToHex({ r: 255, g: 255, b: 255 })).toBe("#ffffff");
+      expect(rgbToHex({ r: 255, g: 0, b: 0 })).toBe("#ff0000");
+      expect(rgbToHex({ r: 0, g: 255, b: 0 })).toBe("#00ff00");
+      expect(rgbToHex({ r: 0, g: 0, b: 255 })).toBe("#0000ff");
+      expect(rgbToHex({ r: 15, g: 155, b: 214 })).toBe("#0f9bd6");
     });
   });
 
@@ -78,7 +78,7 @@ describe("Paint utils functions", () => {
 
   describe("fillCircle", () => {
     it("should call beginPath, and fill once", () => {
-      fillCircle(1, 1, 1, canvasContext);
+      fillCircle({ x: 1, y: 1 }, 1, canvasContext);
 
       expect(mockBeginPathFn.mock.calls.length).toBe(1);
       expect(mockFillFn.mock.calls.length).toBe(1);
@@ -88,7 +88,7 @@ describe("Paint utils functions", () => {
       const x = 10;
       const y = 20;
       const size = 10;
-      fillCircle(x, y, size, canvasContext);
+      fillCircle({ x, y }, size, canvasContext);
 
       expect(mockArcFn.mock.calls.length).toBe(1);
       expect(mockArcFn.mock.calls[0]).toEqual([x, y, 5, 0, 2 * Math.PI]);
@@ -97,7 +97,7 @@ describe("Paint utils functions", () => {
 
   describe("drawLine", () => {
     it("should call begin path and stroke once", () => {
-      drawLine(1, 1, 2, 2, 4, canvasContext);
+      drawLine({ x: 1, y: 1 }, { x: 2, y: 2 }, 4, canvasContext);
 
       expect(mockBeginPathFn.mock.calls.length).toBe(1);
       expect(mockStrokeFn.mock.calls.length).toBe(1);
@@ -106,7 +106,7 @@ describe("Paint utils functions", () => {
     it("should call moveTo with startX and startY", () => {
       const startX = 10;
       const startY = 20;
-      drawLine(startX, startY, 2, 2, 4, canvasContext);
+      drawLine({ x: startX, y: startY }, { x: 2, y: 2 }, 4, canvasContext);
 
       expect(mockMoveToFn.mock.calls.length).toBe(1);
       expect(mockMoveToFn.mock.calls[0]).toEqual([startX, startY]);
@@ -115,7 +115,7 @@ describe("Paint utils functions", () => {
     it("should call lineTo with endX and endY", () => {
       const endX = 40;
       const endY = 50;
-      drawLine(1, 2, endX, endY, 4, canvasContext);
+      drawLine({ x: 1, y: 2 }, { x: endX, y: endY }, 4, canvasContext);
 
       expect(mockLineToFn.mock.calls.length).toBe(1);
       expect(mockLineToFn.mock.calls[0]).toEqual([endX, endY]);
@@ -128,7 +128,7 @@ describe("Paint utils functions", () => {
       const y = 10;
       const size = 10;
 
-      fillRect(x, y, size, canvasContext);
+      fillRect({ x, y }, size, canvasContext);
 
       expect(mockFillRectFn.mock.calls.length).toBe(1);
       expect(mockFillRectFn.mock.calls[0]).toEqual([5, 5, 10, 10]);
@@ -136,24 +136,23 @@ describe("Paint utils functions", () => {
   });
 
   describe("fillBrushMediumCircle", () => {
-    const clickX = 50;
-    const clickY = 100;
+    const clickPos = { x: 50, y: 100 };
 
     it("shold call beginPath", () => {
-      fillBrushMediumCircle(clickX, clickY, canvasContext);
+      fillBrushMediumCircle(clickPos, canvasContext);
 
       expect(mockBeginPathFn.mock.calls.length).toBe(1);
     });
 
     it("should call moveTo", () => {
-      fillBrushMediumCircle(clickX, clickY, canvasContext);
+      fillBrushMediumCircle(clickPos, canvasContext);
 
       expect(mockMoveToFn.mock.calls.length).toBe(1);
       expect(mockMoveToFn.mock.calls[0]).toEqual([50, 99]);
     });
 
     it("should call lineTo correctly", () => {
-      fillBrushMediumCircle(clickX, clickY, canvasContext);
+      fillBrushMediumCircle(clickPos, canvasContext);
 
       expect(mockLineToFn.mock.calls.length).toBe(12);
 
@@ -175,31 +174,30 @@ describe("Paint utils functions", () => {
     });
 
     it("should call fill", () => {
-      fillBrushMediumCircle(clickX, clickY, canvasContext);
+      fillBrushMediumCircle(clickPos, canvasContext);
 
       expect(mockFillFn.mock.calls.length).toBe(1);
     });
   });
 
   describe("fillBrushBigCircle", () => {
-    const clickX = 50;
-    const clickY = 100;
+    const clickPos = { x: 50, y: 100 };
 
     it("shold call beginPath", () => {
-      fillBrushBigCircle(clickX, clickY, canvasContext);
+      fillBrushBigCircle(clickPos, canvasContext);
 
       expect(mockBeginPathFn.mock.calls.length).toBe(1);
     });
 
     it("should call moveTo", () => {
-      fillBrushBigCircle(clickX, clickY, canvasContext);
+      fillBrushBigCircle(clickPos, canvasContext);
 
       expect(mockMoveToFn.mock.calls.length).toBe(1);
       expect(mockMoveToFn.mock.calls[0]).toEqual([49, 97]);
     });
 
     it("should call lineTo correctly", () => {
-      fillBrushBigCircle(clickX, clickY, canvasContext);
+      fillBrushBigCircle(clickPos, canvasContext);
 
       expect(mockLineToFn.mock.calls.length).toBe(20);
 
@@ -228,7 +226,7 @@ describe("Paint utils functions", () => {
     });
 
     it("should call fill", () => {
-      fillBrushBigCircle(clickX, clickY, canvasContext);
+      fillBrushBigCircle(clickPos, canvasContext);
 
       expect(mockFillFn.mock.calls.length).toBe(1);
     });
@@ -236,22 +234,34 @@ describe("Paint utils functions", () => {
 
   describe("calculateDistance", () => {
     it("should return proper distances", () => {
-      const [dX1, dY1, dM1] = calculateDistance(1, 1, 10, 20);
+      const [dX1, dY1, dM1] = calculateDistance(
+        { x: 1, y: 1 },
+        { x: 10, y: 20 }
+      );
       expect(dX1).toBe(9);
       expect(dY1).toBe(19);
       expect(dM1).toBe(19);
 
-      const [dX2, dY2, dM2] = calculateDistance(-1, -1, -10, -15);
+      const [dX2, dY2, dM2] = calculateDistance(
+        { x: -1, y: -1 },
+        { x: -10, y: -15 }
+      );
       expect(dX2).toBe(-9);
       expect(dY2).toBe(-14);
       expect(dM2).toBe(14);
 
-      const [dX3, dY3, dM3] = calculateDistance(-1, -1, 10, 20);
+      const [dX3, dY3, dM3] = calculateDistance(
+        { x: -1, y: -1 },
+        { x: 10, y: 20 }
+      );
       expect(dX3).toBe(11);
       expect(dY3).toBe(21);
       expect(dM3).toBe(21);
 
-      const [dX4, dY4, dM4] = calculateDistance(1, 1, -20, -10);
+      const [dX4, dY4, dM4] = calculateDistance(
+        { x: 1, y: 1 },
+        { x: -20, y: -10 }
+      );
       expect(dX4).toBe(-21);
       expect(dY4).toBe(-11);
       expect(dM4).toBe(21);
@@ -267,21 +277,34 @@ describe("Paint utils functions", () => {
     });
   });
 
-  describe("fillSpaceBeetwenPoints", () => {
+  describe("fillSpaceBetweenPoints", () => {
+    const startPos = { x: -1, y: -2 };
+    const endPos = { x: 3, y: 2 };
+
     it("should call mock three times with proper args", () => {
       const mockFillFn = jest.fn();
-      const startX = -1;
-      const startY = -2;
-      const endX = 3;
-      const endY = 2;
 
-      fillSpaceBeetwenPoints(startX, startY, endX, endY, mockFillFn);
+      fillSpaceBetweenPoints(startPos, endPos, mockFillFn);
       expect(mockFillFn.mock.calls.length).toBe(3);
 
       const [call1, call2, call3] = mockFillFn.mock.calls;
-      expect(call1).toEqual([0, -1]);
-      expect(call2).toEqual([1, 0]);
-      expect(call3).toEqual([2, 1]);
+      expect(call1).toEqual([{ x: 0, y: -1 }]);
+      expect(call2).toEqual([{ x: 1, y: 0 }]);
+      expect(call3).toEqual([{ x: 2, y: 1 }]);
+    });
+
+    it("should call mock five times when withEgdes is true", () => {
+      const mockFillFn = jest.fn();
+
+      fillSpaceBetweenPoints(startPos, endPos, mockFillFn, true);
+      expect(mockFillFn.mock.calls.length).toBe(5);
+
+      const [call1, call2, call3, call4, call5] = mockFillFn.mock.calls;
+      expect(call1).toEqual([startPos]);
+      expect(call2).toEqual([{ x: 0, y: -1 }]);
+      expect(call3).toEqual([{ x: 1, y: 0 }]);
+      expect(call4).toEqual([{ x: 2, y: 1 }]);
+      expect(call5).toEqual([endPos]);
     });
   });
 

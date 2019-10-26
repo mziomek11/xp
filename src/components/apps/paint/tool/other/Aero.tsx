@@ -21,8 +21,7 @@ type CtxProps = {
 };
 
 type State = {
-  mouseX: number;
-  mouseY: number;
+  mousePos: Vector;
   interval: NodeJS.Timeout | null;
   isMouseButtonLeft: boolean;
 };
@@ -36,8 +35,7 @@ const msBetweenDraws: number = 50;
 
 export class Aero extends Component<CtxProps, State> {
   readonly state: State = {
-    mouseX: 0,
-    mouseY: 0,
+    mousePos: { x: 0, y: 0 },
     interval: null,
     isMouseButtonLeft: true
   };
@@ -50,25 +48,28 @@ export class Aero extends Component<CtxProps, State> {
     this.clearInterval();
   }
 
-  handleMouseDown = (x: number, y: number) => {
+  handleMouseLeftDown = (canvasPos: Vector) => {
     this.setState({ isMouseButtonLeft: true });
-    this.startInterval(x, y);
+    this.handleMouseDown(canvasPos);
   };
 
-  handleContextMenu = (x: number, y: number) => {
+  handleMouseRightDown = (canvasPos: Vector) => {
     this.setState({ isMouseButtonLeft: false });
-    this.startInterval(x, y);
+    this.handleMouseDown(canvasPos);
   };
 
-  startInterval = (x: number, y: number) => {
+  handleMouseDown = (mousePos: Vector) => {
+    const { setColor } = this.props.paint;
+
     this.clearInterval();
-    this.setColor();
+    setColor(this.state.isMouseButtonLeft);
+
     const interval = setInterval(this.draw, msBetweenDraws);
-    this.setState({ mouseX: x, mouseY: y, interval: interval });
+    this.setState({ mousePos, interval });
   };
 
-  handleMouseMove = (x: number, y: number) => {
-    this.setState({ mouseX: x, mouseY: y });
+  handleMouseMove = (mousePos: Vector) => {
+    this.setState({ mousePos });
   };
 
   clearInterval = () => {
@@ -77,13 +78,13 @@ export class Aero extends Component<CtxProps, State> {
   };
 
   draw = () => {
-    const { mouseX, mouseY } = this.state;
+    const { mousePos } = this.state;
     const { canvasCtx } = this.props.paint;
     const vectors = this.getVectorArray();
     const pickedVects = pickRandomItemsFromArray(vectors, vectorPercentToPick);
 
     pickedVects.forEach(({ x, y }) => {
-      fillRect(mouseX + x, mouseY + y, 1, canvasCtx!);
+      fillRect({ x: mousePos.x + x, y: mousePos.y + y }, 1, canvasCtx!);
     });
   };
 
@@ -95,20 +96,13 @@ export class Aero extends Component<CtxProps, State> {
     else return deepCopy(bigVectors);
   };
 
-  setColor = () => {
-    const { primaryColor, secondaryColor, canvasCtx } = this.props.paint;
-    const { isMouseButtonLeft } = this.state;
-
-    canvasCtx!.fillStyle = isMouseButtonLeft ? primaryColor : secondaryColor;
-  };
-
   render() {
     return (
       <Tool
         icon={aeroIcon}
         toolType="aero"
-        onMouseDown={this.handleMouseDown}
-        onContextMenu={this.handleContextMenu}
+        onMouseLeftDown={this.handleMouseLeftDown}
+        onMouseRightDown={this.handleMouseRightDown}
         onMouseMove={this.handleMouseMove}
         onMouseUp={this.clearInterval}
         data-test="tool"

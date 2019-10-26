@@ -16,23 +16,29 @@ type State = {
   primaryColor: string;
   secondaryColor: string;
   canvasCtx: CanvasRenderingContext2D | null;
+  tempCanvasCtx: CanvasRenderingContext2D | null;
+  showTempCanvas: boolean;
   options: Options;
 };
 
 type SetStateData = Partial<State>;
 type SetState = { setContext: (data: SetStateData) => void };
 type SetOptions = { setOptions: (options: Partial<Options>) => void };
-export type Context = State & SetState & SetOptions;
+type ClearCtx = { clearTempCanvas: VoidFunction };
+type SetColor = { setColor: (primary: boolean) => void };
+export type Context = State & SetState & SetOptions & ClearCtx & SetColor;
 
 const PaintContext = createContext<Partial<Context>>({});
 
 export class ContextProvider extends Component<{}, State> {
   readonly state: State = {
-    selectedTool: "brush",
+    selectedTool: "curve",
     lastSelectedTool: "brush",
     primaryColor: "#000000",
     secondaryColor: "#ffffff",
     canvasCtx: null,
+    tempCanvasCtx: null,
+    showTempCanvas: false,
     options: {
       lineWidth: LineWidth.ExtraSmall,
       rubberSize: RubberSize.ExtraBig,
@@ -56,11 +62,32 @@ export class ContextProvider extends Component<{}, State> {
   getContextValue = (): Context => ({
     ...this.state,
     setContext: (data: SetStateData) => this.setState(data as any),
-    setOptions: this.setOptions
+    setOptions: this.setOptions,
+    clearTempCanvas: this.clearTempCanvas,
+    setColor: this.setColor
   });
 
   setOptions = (newOptions: Partial<Options>) => {
     this.setState({ options: { ...this.state.options, ...newOptions } });
+  };
+
+  setColor = (primary: boolean) => {
+    const { state } = this;
+    const { primaryColor, secondaryColor, canvasCtx, tempCanvasCtx } = state;
+    const newColor: string = primary ? primaryColor : secondaryColor;
+
+    canvasCtx!.fillStyle = newColor;
+    canvasCtx!.strokeStyle = newColor;
+
+    tempCanvasCtx!.fillStyle = newColor;
+    tempCanvasCtx!.strokeStyle = newColor;
+  };
+
+  clearTempCanvas = () => {
+    const { tempCanvasCtx, canvasCtx } = this.state;
+    const { width, height } = canvasCtx!.canvas;
+
+    tempCanvasCtx!.clearRect(0, 0, width, height);
   };
 
   render() {

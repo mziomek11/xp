@@ -1,19 +1,18 @@
 type Ctx = CanvasRenderingContext2D;
 export type Vector = { x: number; y: number };
 type RowAndDist = { row: number; distanceX: number };
+type RGB = { r: number; g: number; b: number };
 
-export function rgbToHex(r: number, g: number, b: number): string {
-  const hexR =
-    r.toString(16).length === 1 ? "0" + r.toString(16) : r.toString(16);
-  const hexG =
-    g.toString(16).length === 1 ? "0" + g.toString(16) : g.toString(16);
-  const hexB =
-    b.toString(16).length === 1 ? "0" + b.toString(16) : b.toString(16);
+export function rgbToHex({ r, g, b }: RGB): string {
+  const isLengthEqualOne = (n: number) => n.toString(16).length === 1;
+  const hexR = isLengthEqualOne(r) ? "0" + r.toString(16) : r.toString(16);
+  const hexG = isLengthEqualOne(g) ? "0" + g.toString(16) : g.toString(16);
+  const hexB = isLengthEqualOne(b) ? "0" + b.toString(16) : b.toString(16);
 
   return "#" + hexR + hexG + hexB;
 }
 
-export function hexToRgb(hex: string): { r: number; g: number; b: number } {
+export function hexToRgb(hex: string): RGB {
   var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   if (!result) throw Error("String is not hex color");
   return {
@@ -23,32 +22,25 @@ export function hexToRgb(hex: string): { r: number; g: number; b: number } {
   };
 }
 
-export function fillCircle(x: number, y: number, size: number, ctx: Ctx) {
+export function fillCircle({ x, y }: Vector, size: number, ctx: Ctx) {
   ctx.beginPath();
   ctx.arc(x, y, Math.floor(size / 2), 0, 2 * Math.PI);
   ctx.fill();
 }
 
-export function drawLine(
-  startX: number,
-  startY: number,
-  endX: number,
-  endY: number,
-  size: number,
-  ctx: Ctx
-) {
+export function drawLine(start: Vector, end: Vector, size: number, ctx: Ctx) {
   ctx.lineWidth = size;
   ctx.beginPath();
-  ctx.moveTo(startX, startY);
-  ctx.lineTo(endX, endY);
+  ctx.moveTo(start.x, start.y);
+  ctx.lineTo(end.x, end.y);
   ctx.stroke();
 }
 
-export function fillRect(x: number, y: number, size: number, ctx: Ctx) {
+export function fillRect({ x, y }: Vector, size: number, ctx: Ctx) {
   ctx.fillRect(Math.floor(x - size / 2), Math.floor(y - size / 2), size, size);
 }
 
-export function fillBrushMediumCircle(x: number, y: number, ctx: Ctx) {
+export function fillBrushMediumCircle({ x, y }: Vector, ctx: Ctx) {
   ctx.beginPath();
   ctx.moveTo(x, y - 1); // One up
   ctx.lineTo(x + 2, y - 1); // Two right
@@ -66,7 +58,7 @@ export function fillBrushMediumCircle(x: number, y: number, ctx: Ctx) {
   ctx.fill();
 }
 
-export function fillBrushBigCircle(x: number, y: number, ctx: Ctx) {
+export function fillBrushBigCircle({ x, y }: Vector, ctx: Ctx) {
   ctx.beginPath();
   ctx.moveTo(x - 1, y - 3); // One left, three up
   ctx.lineTo(x + 2, y - 3); // Three right
@@ -188,32 +180,30 @@ export function getAeroRowVector(y: number, xDistance: number): Vector[] {
   return vectors;
 }
 
-export function fillSpaceBeetwenPoints(
-  startX: number,
-  startY: number,
-  endX: number,
-  endY: number,
-  fillFn: (x: number, y: number) => void
+export function fillSpaceBetweenPoints(
+  startPoint: Vector,
+  endPoint: Vector,
+  fillFn: (point: Vector) => void,
+  fillEgdes: boolean = false
 ) {
-  const [disX, disY, disMax] = calculateDistance(startX, startY, endX, endY);
+  const [disX, disY, disMax] = calculateDistance(startPoint, endPoint);
   const [tickX, tickY] = calculateDistancePerTick(disX, disY, disMax);
 
-  for (let i = 1; i < disMax; i++) {
-    const drawX = Math.round(startX + i * tickX);
-    const drawY = Math.round(startY + i * tickY);
+  for (let i = fillEgdes ? 0 : 1; i < disMax + (fillEgdes ? 1 : 0); i++) {
+    const drawX: number = Math.round(startPoint.x + i * tickX);
+    const drawY: number = Math.round(startPoint.y + i * tickY);
+    const drawVector: Vector = { x: drawX, y: drawY };
 
-    fillFn(drawX, drawY);
+    fillFn(drawVector);
   }
 }
 
 export function calculateDistance(
-  startX: number,
-  startY: number,
-  endX: number,
-  endY: number
+  startPoint: Vector,
+  endPoint: Vector
 ): [number, number, number] {
-  const distanceX = endX - startX;
-  const distanceY = endY - startY;
+  const distanceX = endPoint.x - startPoint.x;
+  const distanceY = endPoint.y - startPoint.y;
   const biggerDistance = Math.max(Math.abs(distanceX), Math.abs(distanceY));
 
   return [distanceX, distanceY, biggerDistance];
@@ -228,4 +218,46 @@ export function calculateDistancePerTick(
   const yPerTick = disY / maxDis;
 
   return [xPerTick, yPerTick];
+}
+
+//source https://pl.wikibooks.org/wiki/Kody_źródłowe/Krzywa_Béziera
+export function bezier2D(controlPoints: Array<Vector>, k: number) {
+  const n = controlPoints.length - 1;
+
+  const p = (t: number): Vector => {
+    let x = 0;
+    let y = 0;
+    for (let i = 0; i < n + 1; i++) {
+      x += controlPoints[i].x * base(n, i, t);
+      y += controlPoints[i].y * base(n, i, t);
+    }
+
+    return { x: Math.round(x), y: Math.round(y) };
+  };
+
+  const dt = 1 / k;
+  const points = [];
+  for (let i = 0; i < k + 1; i++) {
+    points.push(p(i * dt));
+  }
+
+  return points;
+}
+
+function newton(n: number, k: number): number {
+  let numerator = 1;
+  for (let i = n - k + 1; i < n + 1; i++) {
+    numerator *= i;
+  }
+
+  let denominator = 1;
+  for (let i = 1; i < k + 1; i++) {
+    denominator *= i;
+  }
+
+  return numerator / denominator;
+}
+
+function base(n: number, i: number, t: number): number {
+  return newton(n, i) * Math.pow(t, i) * Math.pow(1 - t, n - i);
 }

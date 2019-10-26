@@ -14,6 +14,7 @@ import {
 const paint = {
   primaryColor: "p",
   secondaryColor: "s",
+  setColor: jest.fn(),
   canvasCtx: {
     fillStyle: "y",
     fillRect: jest.fn()
@@ -38,62 +39,66 @@ describe("Paint Aero Tool component", () => {
     });
   });
 
-  describe("handleMouseDown", () => {
+  describe("handleMouseLeftDown", () => {
     it("should update state", () => {
       instance.setState({ isMouseButtonLeft: false });
-      instance.handleMouseDown(10, 10);
+      instance.handleMouseLeftDown({ x: 10, y: 10 });
 
       expect(instance.state.isMouseButtonLeft).toBe(true);
     });
   });
 
-  describe("handleContextMenu", () => {
+  describe("handleMouseRightDown", () => {
     it("should update state", () => {
       instance.setState({ isMouseButtonLeft: true });
-      instance.handleContextMenu(10, 10);
+      instance.handleMouseRightDown({ x: 10, y: 10 });
 
       expect(instance.state.isMouseButtonLeft).toBe(false);
     });
   });
 
-  describe("setColor", () => {
-    it("should change stroke and fill style to primary color", () => {
-      instance.setState({ isMouseButtonLeft: true });
-      instance.setColor();
-
-      expect(paint.canvasCtx.fillStyle).toBe(paint.primaryColor);
-    });
-
-    it("should change stroke and fill style to secondary color", () => {
-      instance.setState({ isMouseButtonLeft: false });
-      instance.setColor();
-
-      expect(paint.canvasCtx.fillStyle).toBe(paint.secondaryColor);
-    });
-  });
-
-  describe("startInterval", () => {
+  describe("handleMouseDown", () => {
     it("should updateState", () => {
-      const newX = 10;
-      const newY = 15;
-      instance.setState({ mouseX: 0, mouseY: 0 });
-      instance.handleMouseDown(newX, newY);
+      const newPoint = { x: 10, y: 15 };
+      instance.setState({ mousePos: { x: 0, y: 0 } });
+      instance.handleMouseDown(newPoint);
 
-      expect(instance.state.mouseX).toBe(newX);
-      expect(instance.state.mouseY).toBe(newY);
+      expect(instance.state.mousePos).toBe(newPoint);
       expect(instance.state.interval).not.toBe(null);
+    });
+
+    it("should call setColor with true", () => {
+      const mockSetColorFn = jest.fn();
+      const paintProps = { ...paint, setColor: mockSetColorFn } as any;
+      const wrapper = shallow<Aero>(<Aero paint={paintProps} />);
+      const instance = wrapper.instance();
+
+      instance.setState({ isMouseButtonLeft: true });
+      instance.handleMouseDown({ x: 10, y: 10 });
+      expect(mockSetColorFn.mock.calls.length).toBe(1);
+      expect(mockSetColorFn.mock.calls[0]).toEqual([true]);
+    });
+
+    it("should call setColor with false", () => {
+      const mockSetColorFn = jest.fn();
+      const paintProps = { ...paint, setColor: mockSetColorFn } as any;
+      const wrapper = shallow<Aero>(<Aero paint={paintProps} />);
+      const instance = wrapper.instance();
+
+      instance.setState({ isMouseButtonLeft: false });
+      instance.handleMouseDown({ x: 10, y: 10 });
+      expect(mockSetColorFn.mock.calls.length).toBe(1);
+      expect(mockSetColorFn.mock.calls[0]).toEqual([false]);
     });
   });
 
   describe("handleMouseMove", () => {
     it("should updateState", () => {
-      const newX = 10;
-      const newY = 15;
-      instance.setState({ mouseX: 0, mouseY: 0 });
-      instance.handleMouseMove(newX, newY);
+      const newPoint = { x: 10, y: 15 };
+      instance.setState({ mousePos: { x: 0, y: 0 } });
+      instance.handleMouseMove(newPoint);
 
-      expect(instance.state.mouseX).toBe(newX);
-      expect(instance.state.mouseY).toBe(newY);
+      expect(instance.state.mousePos).toBe(newPoint);
     });
   });
 

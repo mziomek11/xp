@@ -13,8 +13,7 @@ import Aero from "./other/Aero";
 import Text from "./other/Text";
 import Zoom from "./other/Zoom";
 
-import StraightLine from "./line/Straight";
-import Curve from "./line/Curve";
+import Line from "./line/Line";
 
 import Rectangle from "./shape/Rectangle";
 import Polygon from "./shape/Polygon";
@@ -42,8 +41,8 @@ const Bar = () => {
         <Aero data-test="tool" />
         <Text data-test="tool" />
 
-        <StraightLine data-test="tool" />
-        <Curve data-test="tool" />
+        <Line type="straight" data-test="tool" />
+        <Line type="curve" data-test="tool" />
 
         <Rectangle data-test="tool" />
         <Polygon data-test="tool" />

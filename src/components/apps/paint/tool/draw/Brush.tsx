@@ -8,10 +8,11 @@ import brushIcon from "../../../../../assets/paint/brush.png";
 import { BrushSize } from "../../models";
 import {
   fillRect,
-  fillSpaceBeetwenPoints,
+  fillSpaceBetweenPoints,
   fillBrushMediumCircle,
   fillBrushBigCircle,
-  drawLine
+  drawLine,
+  Vector
 } from "../../../../../utils/paint";
 
 type CtxProps = {
@@ -19,16 +20,14 @@ type CtxProps = {
 };
 
 type State = {
-  lastX: number;
-  lastY: number;
+  lastPoint: Vector;
   isMouseMoving: boolean;
   isMouseButtonLeft: boolean;
 };
 
 export class Brush extends Component<CtxProps, State> {
   readonly state: State = {
-    lastX: 0,
-    lastY: 0,
+    lastPoint: { x: 0, y: 0 },
     isMouseMoving: false,
     isMouseButtonLeft: true
   };
@@ -37,60 +36,80 @@ export class Brush extends Component<CtxProps, State> {
     return false;
   }
 
-  handleMouseDown = (x: number, y: number) => {
+  handleMouseLeftDown = (canvasPos: Vector) => {
     this.setState({ isMouseButtonLeft: true });
-    this.initialDraw(x, y);
+    this.handleMouseDown(canvasPos);
   };
 
-  handleContextMenu = (x: number, y: number) => {
+  handleMouseRightDown = (canvasPos: Vector) => {
     this.setState({ isMouseButtonLeft: false });
-    this.initialDraw(x, y);
+    this.handleMouseDown(canvasPos);
   };
 
-  initialDraw = (x: number, y: number) => {
-    this.setColor();
-    this.draw(x, y);
-    this.setState({ lastX: x, lastY: y, isMouseMoving: true });
+  handleMouseDown = (canvasPos: Vector) => {
+    const { setColor } = this.props.paint;
+
+    setColor(this.state.isMouseButtonLeft);
+    this.draw(canvasPos);
+    this.setState({ lastPoint: canvasPos, isMouseMoving: true });
   };
 
-  handleMouseMove = (x: number, y: number) => {
-    const { lastX, lastY } = this.state;
+  handleMouseMove = (canvasPos: Vector) => {
+    const { lastPoint } = this.state;
 
-    fillSpaceBeetwenPoints(lastX, lastY, x, y, this.draw);
-    this.draw(x, y);
-    this.setState({ lastX: x, lastY: y });
+    fillSpaceBetweenPoints(lastPoint, canvasPos, this.draw);
+    this.draw(canvasPos);
+    this.setState({ lastPoint: canvasPos });
   };
 
   handleMouseUp = () => {
     this.setState({ isMouseMoving: false });
   };
 
-  draw = (x: number, y: number) => {
+  draw = (canvasPos: Vector) => {
     const { type } = this.props.paint.options.brush;
 
-    if (type === "circle") this.drawCircle(x, y);
-    else if (type === "rect") this.drawRect(x, y);
-    else if (type === "slash") this.drawSlash(x, y, true);
-    else this.drawSlash(x, y, false);
+    if (type === "circle") this.drawCircle(canvasPos);
+    else if (type === "rect") this.drawRect(canvasPos);
+    else if (type === "slash") this.drawSlash(canvasPos, true);
+    else this.drawSlash(canvasPos, false);
   };
 
-  drawCircle = (x: number, y: number) => {
+  drawCircle = (canvasPos: Vector) => {
+    const { Small, Medium } = BrushSize;
     const { canvasCtx, options } = this.props.paint;
     const { size } = options.brush;
 
-    if (size === BrushSize.Small) fillRect(x, y, 1, canvasCtx!);
-    else if (size === BrushSize.Medium) fillBrushMediumCircle(x, y, canvasCtx!);
-    else fillBrushBigCircle(x, y, canvasCtx!);
+    if (size === Small) fillRect(canvasPos, 1, canvasCtx!);
+    else if (size === Medium) fillBrushMediumCircle(canvasPos, canvasCtx!);
+    else fillBrushBigCircle(canvasPos, canvasCtx!);
   };
 
-  drawRect = (x: number, y: number) => {
+  drawRect = (canvasPos: Vector) => {
     const { canvasCtx, options } = this.props.paint;
-    fillRect(x, y, options.brush.size, canvasCtx!);
+    fillRect(canvasPos, options.brush.size, canvasCtx!);
   };
 
-  drawSlash = (x: number, y: number, forward: boolean) => {
+  drawSlash = (cvsPos: Vector, forward: boolean) => {
     const { isMouseMoving } = this.state;
     const { canvasCtx } = this.props.paint;
+
+    const [sPoint, ePoint] = this.getSlashStartAndEndPoint(cvsPos, forward);
+    drawLine(sPoint, ePoint, 1, canvasCtx!);
+
+    if (!isMouseMoving) return;
+
+    [-1, 1].forEach(n => {
+      const movedStartPoint: Vector = { ...sPoint, x: sPoint.x + n };
+      const movedEndPoint: Vector = { ...ePoint, x: ePoint.x + n };
+      drawLine(movedStartPoint, movedEndPoint, 1, canvasCtx!);
+    });
+  };
+
+  getSlashStartAndEndPoint = (
+    { x, y }: Vector,
+    forward: boolean
+  ): [Vector, Vector] => {
     const lineLength = this.getSlashLineLength();
     const halfLineLength = lineLength / 2;
 
@@ -99,12 +118,10 @@ export class Brush extends Component<CtxProps, State> {
     const endX = Math.ceil(x + halfLineLength * (forward ? 1 : -1));
     const endY = Math.ceil(y - halfLineLength);
 
-    drawLine(startX, startY, endX, endY, 1, canvasCtx!);
+    const startVector: Vector = { x: startX, y: startY };
+    const endVector: Vector = { x: endX, y: endY };
 
-    if (isMouseMoving) {
-      drawLine(startX - 1, startY, endX - 1, endY, 1, canvasCtx!);
-      drawLine(startX + 1, startY, endX + 1, endY, 1, canvasCtx!);
-    }
+    return [startVector, endVector];
   };
 
   getSlashLineLength = () => {
@@ -115,22 +132,13 @@ export class Brush extends Component<CtxProps, State> {
     else return 8;
   };
 
-  setColor = () => {
-    const { primaryColor, secondaryColor, canvasCtx } = this.props.paint;
-    const { isMouseButtonLeft } = this.state;
-    const newColor = isMouseButtonLeft ? primaryColor : secondaryColor;
-
-    canvasCtx!.strokeStyle = newColor;
-    canvasCtx!.fillStyle = newColor;
-  };
-
   render() {
     return (
       <Tool
         icon={brushIcon}
         toolType="brush"
-        onMouseDown={this.handleMouseDown}
-        onContextMenu={this.handleContextMenu}
+        onMouseLeftDown={this.handleMouseLeftDown}
+        onMouseRightDown={this.handleMouseRightDown}
         onMouseMove={this.handleMouseMove}
         onMouseUp={this.handleMouseUp}
         data-test="tool"

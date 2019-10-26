@@ -182,6 +182,12 @@
 
 .paint__canvas {
   image-rendering: pixelated;
+
+  &--temp {
+    position: absolute;
+    left: $paint-canvas-container-padding;
+    top: $paint-canvas-container-padding;
+  }
 }
 
 .paint__canvas-container {

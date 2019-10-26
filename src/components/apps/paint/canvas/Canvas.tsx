@@ -4,6 +4,7 @@ import withContext from "../../../../hoc/withContext";
 import Resizer from "./Resizer";
 import { PaintContextType } from "ContextType";
 import { canvasClass } from "../classes";
+import { getClassName } from "../../../../utils";
 
 type CtxProps = {
   paint: PaintContextType;
@@ -15,30 +16,40 @@ type State = {
 };
 
 export class Canvas extends Component<CtxProps, State> {
-  private canvasRef = createRef<HTMLCanvasElement>();
+  private cvsRef = createRef<HTMLCanvasElement>();
+  private tempCvsRef = createRef<HTMLCanvasElement>();
 
   readonly state: State = {
     width: 200,
     height: 200
   };
 
-  shouldComponentUpdate(_: CtxProps, nextState: State) {
+  shouldComponentUpdate(nextProps: CtxProps, nextState: State) {
     const { width, height } = this.state;
 
-    return width !== nextState.width || height !== nextState.height;
+    return (
+      width !== nextState.width ||
+      height !== nextState.height ||
+      this.props.paint.showTempCanvas !== nextProps.paint.showTempCanvas
+    );
   }
 
   componentDidMount() {
-    if (!this.canvasRef.current) return;
+    const { cvsRef, tempCvsRef } = this;
+    if (!cvsRef.current || !tempCvsRef.current) return;
 
     type CanvasContext = CanvasRenderingContext2D;
     const { width, height } = this.state;
 
-    const canvasCtx = this.canvasRef.current.getContext("2d") as CanvasContext;
-    canvasCtx.fillStyle = "#ffffff";
-    canvasCtx.fillRect(0, 0, width, height);
+    const tempCvsCtx = tempCvsRef.current.getContext("2d") as CanvasContext;
+    const cvsCtx = cvsRef.current.getContext("2d") as CanvasContext;
+    cvsCtx.fillStyle = "#ffffff";
+    cvsCtx.fillRect(0, 0, width, height);
 
-    this.props.paint.setContext({ canvasCtx });
+    this.props.paint.setContext({
+      canvasCtx: cvsCtx,
+      tempCanvasCtx: tempCvsCtx
+    });
   }
 
   resize = (newWidth: number, newHeight: number) => {
@@ -59,17 +70,32 @@ export class Canvas extends Component<CtxProps, State> {
     canvasCtx!.putImageData(oldImageData, 0, 0);
   };
 
+  getTempCanvasInlineStyle = (): React.CSSProperties => {
+    const { showTempCanvas } = this.props.paint;
+    return {
+      display: showTempCanvas ? "block" : "none"
+    };
+  };
+
   render() {
     const { width, height } = this.state;
     const size = { width, height, resize: this.resize };
+    const tempInlineStyle = this.getTempCanvasInlineStyle();
 
     return (
       <div className="paint__canvas-container" data-test="canvas">
         <canvas
-          className={canvasClass}
+          className={getClassName(canvasClass, {}, ["main"])}
           width={width}
           height={height}
-          ref={this.canvasRef}
+          ref={this.cvsRef}
+        />
+        <canvas
+          className={getClassName(canvasClass, {}, ["temp"])}
+          style={tempInlineStyle}
+          width={width}
+          height={height}
+          ref={this.tempCvsRef}
         />
 
         <Resizer isVertical={false} isHorizontal {...size} data-test="E" />

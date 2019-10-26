@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import Tool from "../Tool";
 import withContext from "../../../../../hoc/withContext";
 import { PaintContextType } from "ContextType";
-import { hexToRgb, rgbToHex } from "../../../../../utils/paint";
+import { hexToRgb, rgbToHex, Vector } from "../../../../../utils/paint";
 
 import fillIcon from "../../../../../assets/paint/fill.png";
 
@@ -16,20 +16,20 @@ export class Fill extends Component<CtxProps> {
     return false;
   }
 
-  handleMouseDown = (x: number, y: number) => {
-    this.fill(x, y, this.props.paint.primaryColor);
+  handleMouseLeftDown = (canvasPos: Vector) => {
+    this.fill(canvasPos, this.props.paint.primaryColor);
   };
 
-  handleContextMenu = (x: number, y: number) => {
-    this.fill(x, y, this.props.paint.secondaryColor);
+  handleMouseRightDown = (canvasPos: Vector) => {
+    this.fill(canvasPos, this.props.paint.secondaryColor);
   };
 
-  fill = (x: number, y: number, color: string) => {
+  fill = (canvasPos: Vector, color: string) => {
     const { canvasCtx } = this.props.paint;
     const { width, height } = canvasCtx!.canvas;
     const image = canvasCtx!.getImageData(0, 0, width, height);
     const pixels = image.data;
-    const clickPixel = 4 * (width * y + x);
+    const clickPixel = 4 * (width * canvasPos.y + canvasPos.x);
 
     const targetRGB = {
       r: pixels[clickPixel],
@@ -37,7 +37,7 @@ export class Fill extends Component<CtxProps> {
       b: pixels[clickPixel + 2]
     };
 
-    const targetHex = rgbToHex(targetRGB.r, targetRGB.g, targetRGB.b);
+    const targetHex = rgbToHex(targetRGB);
     const primaryRGB = hexToRgb(color);
 
     const equalsTargetColor = (pixel: number, addStart: number) => {
@@ -107,8 +107,8 @@ export class Fill extends Component<CtxProps> {
         icon={fillIcon}
         toolType="fill"
         data-test="tool"
-        onMouseDown={this.handleMouseDown}
-        onContextMenu={this.handleContextMenu}
+        onMouseLeftDown={this.handleMouseLeftDown}
+        onMouseRightDown={this.handleMouseRightDown}
       />
     );
   }

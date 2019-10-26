@@ -5,13 +5,17 @@ import { getClassName } from "../../../../utils";
 import { Tool as ToolType } from "../models";
 import { PaintContextType, WindowContextType } from "ContextType";
 import { canvasClass } from "../classes";
+import { Vector } from "../../../../utils/paint";
+
+type VectorVoid = (v: Vector) => void;
 type OwnProps = {
   icon: string;
   toolType: ToolType;
-  onMouseDown?: (x: number, y: number) => void;
-  onContextMenu?: (x: number, y: number) => void;
-  onMouseMove?: (x: number, y: number) => void;
-  onMouseUp?: (x: number, y: number) => void;
+  onMouseLeftDown?: VectorVoid;
+  onMouseRightDown?: VectorVoid;
+  onMouseMove?: VectorVoid;
+  onMouseUp?: VectorVoid;
+  onToolChange?: VoidFunction;
 };
 
 type CtxProps = {
@@ -36,6 +40,10 @@ export class Tool extends Component<Props, State> {
     return this.props.paint.selectedTool !== nextProps.paint.selectedTool;
   }
 
+  componentDidUpdate() {
+    this.props.onToolChange && this.props.onToolChange();
+  }
+
   componentDidMount() {
     window.addEventListener("mousedown", this.handleMouseDown);
     window.addEventListener("contextmenu", this.handleContextMenu);
@@ -56,24 +64,24 @@ export class Tool extends Component<Props, State> {
     if (!this.clickedOwnCanvas(e)) return;
     if (e.which !== 1) return;
 
-    this.handleMouseButtonDown(e, this.props.onMouseDown);
+    this.handleMouseButtonDown(e, this.props.onMouseLeftDown);
   };
 
   handleContextMenu = (e: any) => {
     if (!this.clickedOwnCanvas(e)) return;
     e.preventDefault();
 
-    this.handleMouseButtonDown(e, this.props.onContextMenu);
+    this.handleMouseButtonDown(e, this.props.onMouseRightDown);
   };
 
   handleMouseButtonDown = (
     e: MouseEvent,
-    additonalFn?: (x: number, y: number) => void
+    additonalFn?: (canvasPos: Vector) => void
   ) => {
     this.setCanvasData(e);
     if (additonalFn) {
-      const { x, y } = this.calculateCanvasPos(e);
-      additonalFn(x, y);
+      const canvasPos: Vector = this.calculateCanvasPos(e);
+      additonalFn(canvasPos);
     }
 
     window.addEventListener("mousemove", this.handleMouseMove);
@@ -85,7 +93,10 @@ export class Tool extends Component<Props, State> {
     if (!window.focused) return false;
 
     const isToolSelected = paint.selectedTool === toolType;
-    const clickedCanvas = (target as Element).classList.contains(canvasClass);
+    const targetClassName = `${canvasClass}--main`;
+    const clickedCanvas = (target as Element).classList.contains(
+      targetClassName
+    );
 
     return isToolSelected && clickedCanvas;
   };
@@ -97,21 +108,21 @@ export class Tool extends Component<Props, State> {
 
   handleMouseMove = (e: MouseEvent) => {
     if (this.props.onMouseMove) {
-      const { x, y } = this.calculateCanvasPos(e);
-      this.props.onMouseMove(x, y);
+      const canvasPos: Vector = this.calculateCanvasPos(e);
+      this.props.onMouseMove(canvasPos);
     }
   };
 
   handleMouseUp = (e: MouseEvent) => {
     if (this.props.onMouseUp) {
-      const { x, y } = this.calculateCanvasPos(e);
-      this.props.onMouseUp(x, y);
+      const canvasPos: Vector = this.calculateCanvasPos(e);
+      this.props.onMouseUp(canvasPos);
     }
 
     this.removeMoveAndUpListeners();
   };
 
-  calculateCanvasPos = (event: MouseEvent): { x: number; y: number } => {
+  calculateCanvasPos = (event: MouseEvent): Vector => {
     const { clientX, clientY } = event;
     const { canvasLeft, canvasTop } = this.state;
     const canvasX = Math.floor(clientX - canvasLeft);
