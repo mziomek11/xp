@@ -1,6 +1,6 @@
+import Vector from "../classes/Vector";
+
 type Ctx = CanvasRenderingContext2D;
-export type Vector = { x: number; y: number };
-type RowAndDist = { row: number; distanceX: number };
 type RGB = { r: number; g: number; b: number };
 
 export function rgbToHex({ r, g, b }: RGB): string {
@@ -22,10 +22,110 @@ export function hexToRgb(hex: string): RGB {
   };
 }
 
-export function fillCircle({ x, y }: Vector, size: number, ctx: Ctx) {
-  ctx.beginPath();
-  ctx.arc(x, y, Math.floor(size / 2), 0, 2 * Math.PI);
-  ctx.fill();
+export function strokeEllipse(
+  center: Vector,
+  rx: number,
+  ry: number,
+  width: number,
+  ctx: Ctx
+) {
+  const ellipsePoint = getStrokeEllipsePoints(rx, ry);
+
+  for (let i = 0; i < ellipsePoint.length; i++) {
+    const fillPoint: Vector = Vector.add(center, ellipsePoint[i]);
+
+    fillRect(fillPoint, width, ctx);
+  }
+}
+
+export function fillEllipse(center: Vector, rx: number, ry: number, ctx: Ctx) {
+  const ellipsePoint = getOneSideEllipsePoints(rx, ry);
+
+  for (let i = 0; i < ellipsePoint.length; i++) {
+    const { x, y } = ellipsePoint[i];
+    const startY = Math.round(center.y - y);
+    const endY = Math.round(center.y + y);
+
+    for (let j = -1; j <= 1; j += 2) {
+      const drawX = Math.round(center.x - x * j) - 0.5;
+
+      drawLine(new Vector(drawX, startY), new Vector(drawX, endY), 1, ctx);
+    }
+  }
+}
+
+export function getStrokeEllipsePoints(rx: number, ry: number): Vector[] {
+  const oneSidePoints = getOneSideEllipsePoints(rx, ry);
+  const allPoints: Vector[] = [];
+
+  for (let i = 0; i < oneSidePoints.length; i++) {
+    const { x, y } = oneSidePoints[i];
+
+    allPoints.push(new Vector(x, -y));
+    allPoints.push(new Vector(-x, y));
+    allPoints.push(new Vector(x, y));
+    allPoints.push(new Vector(-x, -y));
+  }
+
+  return allPoints;
+}
+
+export function getFillEllipsePoints(rx: number, ry: number): Vector[] {
+  const oneSidePoints = getOneSideEllipsePoints(rx, ry);
+  const allPoints: Vector[] = [];
+
+  for (let point = 0; point < oneSidePoints.length; point++) {
+    const { x, y } = oneSidePoints[point];
+    const startY = Math.round(-y);
+    const endY = Math.round(y);
+
+    for (let pointY = startY; pointY <= endY; pointY++) {
+      allPoints.push(new Vector(x, pointY));
+      allPoints.push(new Vector(-x, pointY));
+    }
+  }
+
+  return allPoints;
+}
+
+//source http://cfetch.blogspot.com/2014/01/wap-to-draw-ellipse-using-midpoint.html
+function getOneSideEllipsePoints(rx: number, ry: number): Vector[] {
+  const points: Vector[] = [];
+  let x = 0;
+  let y = ry;
+  let p = ry * ry - rx * rx * ry + (rx * rx) / 4;
+
+  while (2 * x * ry * ry < 2 * y * rx * rx) {
+    points.push(new Vector(x, y));
+
+    if (p < 0) {
+      x = x + 1;
+      p = p + 2 * ry * ry * x + ry * ry;
+    } else {
+      x = x + 1;
+      y = y - 1;
+      p = p + (2 * ry * ry * x + ry * ry) - 2 * rx * rx * y;
+    }
+  }
+  p =
+    (x + 0.5) * (x + 0.5) * ry * ry +
+    (y - 1) * (y - 1) * rx * rx -
+    rx * rx * ry * ry;
+
+  while (y >= 0) {
+    points.push(new Vector(x, y));
+
+    if (p > 0) {
+      y = y - 1;
+      p = p - 2 * rx * rx * y + rx * rx;
+    } else {
+      y = y - 1;
+      x = x + 1;
+      p = p + 2 * ry * ry * x - 2 * rx * rx * y - rx * rx;
+    }
+  }
+
+  return points;
 }
 
 export function drawLine(start: Vector, end: Vector, size: number, ctx: Ctx) {
@@ -38,146 +138,6 @@ export function drawLine(start: Vector, end: Vector, size: number, ctx: Ctx) {
 
 export function fillRect({ x, y }: Vector, size: number, ctx: Ctx) {
   ctx.fillRect(Math.floor(x - size / 2), Math.floor(y - size / 2), size, size);
-}
-
-export function fillBrushMediumCircle({ x, y }: Vector, ctx: Ctx) {
-  ctx.beginPath();
-  ctx.moveTo(x, y - 1); // One up
-  ctx.lineTo(x + 2, y - 1); // Two right
-  ctx.lineTo(x + 2, y); // One down
-  ctx.lineTo(x + 3, y); // One right
-  ctx.lineTo(x + 3, y + 2); // Two down
-  ctx.lineTo(x + 2, y + 2); // One left
-  ctx.lineTo(x + 2, y + 3); // One down
-  ctx.lineTo(x, y + 3); // Two left
-  ctx.lineTo(x, y + 2); // One up
-  ctx.lineTo(x - 1, y + 2); // One left
-  ctx.lineTo(x - 1, y); // Two up
-  ctx.lineTo(x, y); // One right
-  ctx.lineTo(x, y - 1); // One up
-  ctx.fill();
-}
-
-export function fillBrushBigCircle({ x, y }: Vector, ctx: Ctx) {
-  ctx.beginPath();
-  ctx.moveTo(x - 1, y - 3); // One left, three up
-  ctx.lineTo(x + 2, y - 3); // Three right
-  ctx.lineTo(x + 2, y - 2); // One down
-  ctx.lineTo(x + 3, y - 2); // One right
-  ctx.lineTo(x + 3, y - 1); // One down
-  ctx.lineTo(x + 4, y - 1); // One right
-  ctx.lineTo(x + 4, y + 2); // Three down
-  ctx.lineTo(x + 3, y + 2); // One left
-  ctx.lineTo(x + 3, y + 3); // One down
-  ctx.lineTo(x + 2, y + 3); // One left
-  ctx.lineTo(x + 2, y + 4); // One down
-  ctx.lineTo(x - 1, y + 4); // Three left
-  ctx.lineTo(x - 1, y + 3); // One up
-  ctx.lineTo(x - 2, y + 3); // One left
-  ctx.lineTo(x - 2, y + 2); // One up
-  ctx.lineTo(x - 3, y + 2); // One left
-  ctx.lineTo(x - 3, y - 1); // Three up
-  ctx.lineTo(x - 2, y - 1); // One right
-  ctx.lineTo(x - 2, y - 2); // One up
-  ctx.lineTo(x - 1, y - 2); // One right
-  ctx.lineTo(x - 1, y - 3); // One up
-  ctx.fill();
-}
-
-export function getAeroSmallVectors(): Vector[] {
-  const zeroRowAndDist: number = 4;
-  const posRowsAndDits: RowAndDist[] = [
-    { row: 4, distanceX: 1 },
-    { row: 3, distanceX: 3 },
-    { row: 2, distanceX: 3 },
-    { row: 1, distanceX: 4 }
-  ];
-
-  return getAeroVectorsFromPositiveAndZeroRowsAndDists(
-    posRowsAndDits,
-    zeroRowAndDist
-  );
-}
-
-export function getAeroMediumVectors(): Vector[] {
-  const zeroRowAndDist: number = 7;
-  const posRowsAndDits: RowAndDist[] = [
-    { row: 7, distanceX: 3 },
-    { row: 6, distanceX: 5 },
-    { row: 5, distanceX: 6 },
-    { row: 4, distanceX: 6 },
-    { row: 3, distanceX: 7 },
-    { row: 2, distanceX: 7 },
-    { row: 1, distanceX: 7 }
-  ];
-
-  return getAeroVectorsFromPositiveAndZeroRowsAndDists(
-    posRowsAndDits,
-    zeroRowAndDist
-  );
-}
-
-export function getAeroBigVectors(): Vector[] {
-  const zeroRowAndDist: number = 11;
-  const posRowsAndDits: RowAndDist[] = [
-    { row: 11, distanceX: 4 },
-    { row: 10, distanceX: 6 },
-    { row: 9, distanceX: 7 },
-    { row: 8, distanceX: 8 },
-    { row: 7, distanceX: 9 },
-    { row: 6, distanceX: 10 },
-    { row: 5, distanceX: 10 },
-    { row: 4, distanceX: 11 },
-    { row: 3, distanceX: 11 },
-    { row: 2, distanceX: 11 },
-    { row: 1, distanceX: 11 }
-  ];
-
-  return getAeroVectorsFromPositiveAndZeroRowsAndDists(
-    posRowsAndDits,
-    zeroRowAndDist
-  );
-}
-
-export function getAeroVectorsFromPositiveAndZeroRowsAndDists(
-  positiveRowAndDists: RowAndDist[],
-  rowZeroDistance: number
-) {
-  const zeroRowsAndDists: RowAndDist = { row: 0, distanceX: rowZeroDistance };
-  const negRowsAndDists: RowAndDist[] = positiveRowAndDists.map(reverseObjRow);
-  const rowsAndDists: RowAndDist[] = [
-    ...positiveRowAndDists,
-    zeroRowsAndDists,
-    ...negRowsAndDists
-  ];
-
-  return createAeroVectorArrayFromRowsAndDists(rowsAndDists);
-}
-
-export function reverseObjRow(obj: RowAndDist) {
-  return { ...obj, row: -obj.row };
-}
-
-export function createAeroVectorArrayFromRowsAndDists(
-  rowsAndDists: RowAndDist[]
-): Vector[] {
-  const vectors: Vector[] = [];
-
-  rowsAndDists.forEach(({ row, distanceX }) =>
-    vectors.push(...getAeroRowVector(row, distanceX))
-  );
-
-  return vectors;
-}
-
-export function getAeroRowVector(y: number, xDistance: number): Vector[] {
-  const vectors = [];
-
-  for (let x = -xDistance; x <= xDistance; x++) {
-    vectors.push({ y, x });
-  }
-
-  return vectors;
 }
 
 export function fillSpaceBetweenPoints(

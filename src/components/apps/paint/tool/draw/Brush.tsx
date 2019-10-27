@@ -1,19 +1,18 @@
 import React, { Component } from "react";
 
 import Tool from "../Tool";
+import Vector from "../../../../../classes/Vector";
 import withContext from "../../../../../hoc/withContext";
 import { PaintContextType } from "ContextType";
-
-import brushIcon from "../../../../../assets/paint/brush.png";
 import { BrushSize } from "../../models";
 import {
   fillRect,
   fillSpaceBetweenPoints,
-  fillBrushMediumCircle,
-  fillBrushBigCircle,
   drawLine,
-  Vector
+  fillEllipse
 } from "../../../../../utils/paint";
+
+import brushIcon from "../../../../../assets/paint/brush.png";
 
 type CtxProps = {
   paint: PaintContextType;
@@ -22,34 +21,22 @@ type CtxProps = {
 type State = {
   lastPoint: Vector;
   isMouseMoving: boolean;
-  isMouseButtonLeft: boolean;
 };
 
 export class Brush extends Component<CtxProps, State> {
   readonly state: State = {
-    lastPoint: { x: 0, y: 0 },
-    isMouseMoving: false,
-    isMouseButtonLeft: true
+    lastPoint: Vector.Zero,
+    isMouseMoving: false
   };
 
   shouldComponentUpdate() {
     return false;
   }
 
-  handleMouseLeftDown = (canvasPos: Vector) => {
-    this.setState({ isMouseButtonLeft: true });
-    this.handleMouseDown(canvasPos);
-  };
-
-  handleMouseRightDown = (canvasPos: Vector) => {
-    this.setState({ isMouseButtonLeft: false });
-    this.handleMouseDown(canvasPos);
-  };
-
-  handleMouseDown = (canvasPos: Vector) => {
+  handleMouseDown = (canvasPos: Vector, isLeft: boolean) => {
     const { setColor } = this.props.paint;
 
-    setColor(this.state.isMouseButtonLeft);
+    setColor(isLeft);
     this.draw(canvasPos);
     this.setState({ lastPoint: canvasPos, isMouseMoving: true });
   };
@@ -76,13 +63,11 @@ export class Brush extends Component<CtxProps, State> {
   };
 
   drawCircle = (canvasPos: Vector) => {
-    const { Small, Medium } = BrushSize;
     const { canvasCtx, options } = this.props.paint;
     const { size } = options.brush;
 
-    if (size === Small) fillRect(canvasPos, 1, canvasCtx!);
-    else if (size === Medium) fillBrushMediumCircle(canvasPos, canvasCtx!);
-    else fillBrushBigCircle(canvasPos, canvasCtx!);
+    if (size === BrushSize.Small) fillRect(canvasPos, 1, canvasCtx!);
+    else fillEllipse(canvasPos, size / 2, size / 2, canvasCtx!);
   };
 
   drawRect = (canvasPos: Vector) => {
@@ -137,8 +122,7 @@ export class Brush extends Component<CtxProps, State> {
       <Tool
         icon={brushIcon}
         toolType="brush"
-        onMouseLeftDown={this.handleMouseLeftDown}
-        onMouseRightDown={this.handleMouseRightDown}
+        onMouseDown={this.handleMouseDown}
         onMouseMove={this.handleMouseMove}
         onMouseUp={this.handleMouseUp}
         data-test="tool"

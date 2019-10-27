@@ -3,6 +3,7 @@ import { shallow } from "enzyme";
 
 import { Curve } from "./Curve";
 import { findByTestAtrr } from "../../../../../../testingUtils";
+import Vector from "../../../../../classes/Vector";
 
 const canvasWidth = 200;
 const canvasHeight = 300;
@@ -37,7 +38,7 @@ const createWrapper = () => {
   return shallow<Curve>(<Curve {...props} />);
 };
 
-const testVector = { x: 10, y: 15 };
+const testVector = new Vector(10, 15);
 const wrapper = createWrapper();
 const instance = wrapper.instance();
 
@@ -58,28 +59,10 @@ describe("Paint Curve Tool component", () => {
     });
   });
 
-  describe("handleMouseLeftDown", () => {
-    it("should update state", () => {
-      instance.setState({ isMouseButtonLeft: false });
-      instance.handleMouseLeftDown(testVector);
-
-      expect(instance.state.isMouseButtonLeft).toBe(true);
-    });
-  });
-
-  describe("handleMouseRightDown", () => {
-    it("should update state", () => {
-      instance.setState({ isMouseButtonLeft: true });
-      instance.handleMouseRightDown(testVector);
-
-      expect(instance.state.isMouseButtonLeft).toBe(false);
-    });
-  });
-
   describe("handleMouseDown", () => {
     it("should call setContext with proper args", () => {
       const instance = createWrapper().instance();
-      instance.handleMouseDown(testVector);
+      instance.handleMouseDown(testVector, true);
 
       expect(mockSetContextFn.mock.calls.length).toBe(1);
       expect(mockSetContextFn.mock.calls[0]).toEqual([
@@ -89,7 +72,7 @@ describe("Paint Curve Tool component", () => {
 
     it("should update state", () => {
       instance.setState({ drawPhase: 1 });
-      instance.handleMouseDown(testVector);
+      instance.handleMouseDown(testVector, true);
 
       expect(instance.state.drawPhase).toBe(2);
     });

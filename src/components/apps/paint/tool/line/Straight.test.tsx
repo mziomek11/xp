@@ -3,6 +3,7 @@ import { shallow } from "enzyme";
 
 import { Straight } from "./Straight";
 import { findByTestAtrr } from "../../../../../../testingUtils";
+import Vector from "../../../../../classes/Vector";
 
 let mockSetContextFn: jest.Mock;
 let mockSetColorFn: jest.Mock;
@@ -26,7 +27,7 @@ const createWrapper = () => {
   return shallow<Straight>(<Straight {...props} />);
 };
 
-const testVector = { x: 10, y: 15 };
+const testVector: Vector = new Vector(10, 15);
 const wrapper = createWrapper();
 const instance = wrapper.instance();
 
@@ -37,35 +38,17 @@ describe("Paint Straight Tool component", () => {
     });
   });
 
-  describe("handleMouseLeftDown", () => {
-    it("should update state", () => {
-      instance.setState({ isMouseButtonLeft: false });
-      instance.handleMouseLeftDown(testVector);
-
-      expect(instance.state.isMouseButtonLeft).toBe(true);
-    });
-  });
-
-  describe("handleMouseRightDown", () => {
-    it("should update state", () => {
-      instance.setState({ isMouseButtonLeft: true });
-      instance.handleMouseRightDown(testVector);
-
-      expect(instance.state.isMouseButtonLeft).toBe(false);
-    });
-  });
-
   describe("handleMouseDown", () => {
     it("should update state", () => {
-      instance.setState({ startPos: { x: 0, y: 0 } });
-      instance.handleMouseDown(testVector);
+      instance.setState({ startPos: Vector.Zero });
+      instance.handleMouseDown(testVector, true);
 
       expect(instance.state.startPos).toEqual(testVector);
     });
 
     it("should call setContext with proper args", () => {
       const instance = createWrapper().instance();
-      instance.handleMouseDown(testVector);
+      instance.handleMouseDown(testVector, true);
 
       expect(mockSetContextFn.mock.calls.length).toBe(1);
       expect(mockSetContextFn.mock.calls[0]).toEqual([
@@ -76,20 +59,18 @@ describe("Paint Straight Tool component", () => {
     describe("it should call setColor", () => {
       it("with false argument", () => {
         const instance = createWrapper().instance();
-        instance.setState({ isMouseButtonLeft: true });
-        instance.handleMouseDown(testVector);
+        instance.handleMouseDown(testVector, false);
 
         expect(mockSetColorFn.mock.calls.length).toBe(1);
-        expect(mockSetColorFn.mock.calls[0]).toEqual([true]);
+        expect(mockSetColorFn.mock.calls[0]).toEqual([false]);
       });
 
       it("with true argument", () => {
         const instance = createWrapper().instance();
-        instance.setState({ isMouseButtonLeft: false });
-        instance.handleMouseDown(testVector);
+        instance.handleMouseDown(testVector, true);
 
         expect(mockSetColorFn.mock.calls.length).toBe(1);
-        expect(mockSetColorFn.mock.calls[0]).toEqual([false]);
+        expect(mockSetColorFn.mock.calls[0]).toEqual([true]);
       });
     });
   });

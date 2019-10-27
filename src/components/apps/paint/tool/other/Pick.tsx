@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 
 import Tool from "../Tool";
+import Vector from "../../../../../classes/Vector";
 import withContext from "../../../../../hoc/withContext";
 import { PaintContextType } from "ContextType";
-import { rgbToHex, Vector } from "../../../../../utils/paint";
+import { rgbToHex } from "../../../../../utils/paint";
 
 import pickIcon from "../../../../../assets/paint/pick.png";
 
@@ -24,13 +25,8 @@ export class Pick extends Component<CtxProps, State> {
     return false;
   }
 
-  handleMouseLeftDown = (canvasPos: Vector) => {
-    this.setState({ isMouseButtonLeft: true });
-    this.updatePickColor(canvasPos);
-  };
-
-  handleMouseRightDown = (canvasPos: Vector) => {
-    this.setState({ isMouseButtonLeft: false });
+  handleMouseDown = (canvasPos: Vector, isLeft: boolean) => {
+    this.setState({ isMouseButtonLeft: isLeft });
     this.updatePickColor(canvasPos);
   };
 
@@ -88,10 +84,9 @@ export class Pick extends Component<CtxProps, State> {
         icon={pickIcon}
         toolType="pick"
         data-test="tool"
-        onMouseLeftDown={this.handleMouseLeftDown}
+        onMouseDown={this.handleMouseDown}
         onMouseMove={this.updatePickColor}
         onMouseUp={this.handleMouseUp}
-        onMouseRightDown={this.handleMouseRightDown}
       />
     );
   }

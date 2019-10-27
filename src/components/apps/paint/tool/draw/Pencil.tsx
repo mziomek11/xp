@@ -1,13 +1,10 @@
 import React, { Component } from "react";
 
 import Tool from "../Tool";
+import Vector from "../../../../../classes/Vector";
 import withContext from "../../../../../hoc/withContext";
 import { PaintContextType } from "ContextType";
-import {
-  fillRect,
-  fillSpaceBetweenPoints,
-  Vector
-} from "../../../../../utils/paint";
+import { fillRect, fillSpaceBetweenPoints } from "../../../../../utils/paint";
 
 import pencilIcon from "../../../../../assets/paint/pencil.png";
 
@@ -17,42 +14,28 @@ type CtxProps = {
 
 type State = {
   lastPoint: Vector;
-  isMouseButtonLeft: boolean;
 };
 
 export class Pencil extends Component<CtxProps, State> {
   readonly state: State = {
-    lastPoint: { x: 0, y: 0 },
-    isMouseButtonLeft: true
+    lastPoint: Vector.Zero
   };
 
   shouldComponentUpdate() {
     return false;
   }
 
-  handleMouseLeftDown = (canvasPos: Vector) => {
-    this.setState({ isMouseButtonLeft: true });
-    this.handleMouseDown(canvasPos);
-  };
-
-  handleMouseRightDown = (canvasPos: Vector) => {
-    this.setState({ isMouseButtonLeft: false });
-    this.handleMouseDown(canvasPos);
-  };
-
-  handleMouseDown = (canvasPos: Vector) => {
+  handleMouseDown = (canvasPos: Vector, isLeft: boolean) => {
     const { setColor } = this.props.paint;
 
-    setColor(this.state.isMouseButtonLeft);
+    setColor(isLeft);
     this.setState({ lastPoint: canvasPos });
     this.draw(canvasPos);
   };
 
   handleMouseMove = (canvasPos: Vector) => {
-    const { setColor } = this.props.paint;
-    const { lastPoint, isMouseButtonLeft } = this.state;
+    const { lastPoint } = this.state;
 
-    setColor(isMouseButtonLeft);
     fillSpaceBetweenPoints(lastPoint, canvasPos, this.draw);
     this.draw(canvasPos);
     this.setState({ lastPoint: canvasPos });
@@ -67,8 +50,7 @@ export class Pencil extends Component<CtxProps, State> {
       <Tool
         icon={pencilIcon}
         toolType="pencil"
-        onMouseLeftDown={this.handleMouseLeftDown}
-        onMouseRightDown={this.handleMouseRightDown}
+        onMouseDown={this.handleMouseDown}
         onMouseMove={this.handleMouseMove}
         data-test="tool"
       />

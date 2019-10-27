@@ -1,16 +1,9 @@
 import {
-  fillCircle,
   drawLine,
   fillRect,
   fillSpaceBetweenPoints,
   calculateDistance,
   calculateDistancePerTick,
-  fillBrushMediumCircle,
-  fillBrushBigCircle,
-  getAeroRowVector,
-  createAeroVectorArrayFromRowsAndDists,
-  reverseObjRow,
-  getAeroVectorsFromPositiveAndZeroRowsAndDists,
   hexToRgb,
   rgbToHex
 } from "./paint";
@@ -76,25 +69,6 @@ describe("Paint utils functions", () => {
     });
   });
 
-  describe("fillCircle", () => {
-    it("should call beginPath, and fill once", () => {
-      fillCircle({ x: 1, y: 1 }, 1, canvasContext);
-
-      expect(mockBeginPathFn.mock.calls.length).toBe(1);
-      expect(mockFillFn.mock.calls.length).toBe(1);
-    });
-
-    it("should call arc with proper args", () => {
-      const x = 10;
-      const y = 20;
-      const size = 10;
-      fillCircle({ x, y }, size, canvasContext);
-
-      expect(mockArcFn.mock.calls.length).toBe(1);
-      expect(mockArcFn.mock.calls[0]).toEqual([x, y, 5, 0, 2 * Math.PI]);
-    });
-  });
-
   describe("drawLine", () => {
     it("should call begin path and stroke once", () => {
       drawLine({ x: 1, y: 1 }, { x: 2, y: 2 }, 4, canvasContext);
@@ -132,103 +106,6 @@ describe("Paint utils functions", () => {
 
       expect(mockFillRectFn.mock.calls.length).toBe(1);
       expect(mockFillRectFn.mock.calls[0]).toEqual([5, 5, 10, 10]);
-    });
-  });
-
-  describe("fillBrushMediumCircle", () => {
-    const clickPos = { x: 50, y: 100 };
-
-    it("shold call beginPath", () => {
-      fillBrushMediumCircle(clickPos, canvasContext);
-
-      expect(mockBeginPathFn.mock.calls.length).toBe(1);
-    });
-
-    it("should call moveTo", () => {
-      fillBrushMediumCircle(clickPos, canvasContext);
-
-      expect(mockMoveToFn.mock.calls.length).toBe(1);
-      expect(mockMoveToFn.mock.calls[0]).toEqual([50, 99]);
-    });
-
-    it("should call lineTo correctly", () => {
-      fillBrushMediumCircle(clickPos, canvasContext);
-
-      expect(mockLineToFn.mock.calls.length).toBe(12);
-
-      const { calls } = mockLineToFn.mock;
-      const [c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12] = calls;
-
-      expect(c1).toEqual([52, 99]);
-      expect(c2).toEqual([52, 100]);
-      expect(c3).toEqual([53, 100]);
-      expect(c4).toEqual([53, 102]);
-      expect(c5).toEqual([52, 102]);
-      expect(c6).toEqual([52, 103]);
-      expect(c7).toEqual([50, 103]);
-      expect(c8).toEqual([50, 102]);
-      expect(c9).toEqual([49, 102]);
-      expect(c10).toEqual([49, 100]);
-      expect(c11).toEqual([50, 100]);
-      expect(c12).toEqual([50, 99]);
-    });
-
-    it("should call fill", () => {
-      fillBrushMediumCircle(clickPos, canvasContext);
-
-      expect(mockFillFn.mock.calls.length).toBe(1);
-    });
-  });
-
-  describe("fillBrushBigCircle", () => {
-    const clickPos = { x: 50, y: 100 };
-
-    it("shold call beginPath", () => {
-      fillBrushBigCircle(clickPos, canvasContext);
-
-      expect(mockBeginPathFn.mock.calls.length).toBe(1);
-    });
-
-    it("should call moveTo", () => {
-      fillBrushBigCircle(clickPos, canvasContext);
-
-      expect(mockMoveToFn.mock.calls.length).toBe(1);
-      expect(mockMoveToFn.mock.calls[0]).toEqual([49, 97]);
-    });
-
-    it("should call lineTo correctly", () => {
-      fillBrushBigCircle(clickPos, canvasContext);
-
-      expect(mockLineToFn.mock.calls.length).toBe(20);
-
-      const { calls } = mockLineToFn.mock;
-
-      expect(calls[0]).toEqual([52, 97]);
-      expect(calls[1]).toEqual([52, 98]);
-      expect(calls[2]).toEqual([53, 98]);
-      expect(calls[3]).toEqual([53, 99]);
-      expect(calls[4]).toEqual([54, 99]);
-      expect(calls[5]).toEqual([54, 102]);
-      expect(calls[6]).toEqual([53, 102]);
-      expect(calls[7]).toEqual([53, 103]);
-      expect(calls[8]).toEqual([52, 103]);
-      expect(calls[9]).toEqual([52, 104]);
-      expect(calls[10]).toEqual([49, 104]);
-      expect(calls[11]).toEqual([49, 103]);
-      expect(calls[12]).toEqual([48, 103]);
-      expect(calls[13]).toEqual([48, 102]);
-      expect(calls[14]).toEqual([47, 102]);
-      expect(calls[15]).toEqual([47, 99]);
-      expect(calls[16]).toEqual([48, 99]);
-      expect(calls[17]).toEqual([48, 98]);
-      expect(calls[18]).toEqual([49, 98]);
-      expect(calls[19]).toEqual([49, 97]);
-    });
-
-    it("should call fill", () => {
-      fillBrushBigCircle(clickPos, canvasContext);
-
-      expect(mockFillFn.mock.calls.length).toBe(1);
     });
   });
 
@@ -305,62 +182,6 @@ describe("Paint utils functions", () => {
       expect(call3).toEqual([{ x: 1, y: 0 }]);
       expect(call4).toEqual([{ x: 2, y: 1 }]);
       expect(call5).toEqual([endPos]);
-    });
-  });
-
-  describe("getAeroRowVector", () => {
-    it("should retun proper value", () => {
-      const result = getAeroRowVector(4, 2);
-
-      expect(result).toEqual([
-        { y: 4, x: -2 },
-        { y: 4, x: -1 },
-        { y: 4, x: 0 },
-        { y: 4, x: 1 },
-        { y: 4, x: 2 }
-      ]);
-    });
-  });
-
-  describe("createAeroVectorArrayFromRowsAndDists", () => {
-    it("should return proper value", () => {
-      const rowsAndDist = [{ row: 1, distanceX: 1 }, { row: 1, distanceX: 2 }];
-      const result = createAeroVectorArrayFromRowsAndDists(rowsAndDist);
-
-      expect(result).toEqual([
-        ...getAeroRowVector(rowsAndDist[0].row, rowsAndDist[0].distanceX),
-        ...getAeroRowVector(rowsAndDist[1].row, rowsAndDist[1].distanceX)
-      ]);
-    });
-  });
-
-  describe("reverseObjRow", () => {
-    it("should work when row is positive", () => {
-      const row = 10;
-      const obj = { row, distanceX: 1 };
-
-      expect(reverseObjRow(obj).row).toBe(-10);
-    });
-
-    it("should work when row is negative", () => {
-      const row = -10;
-      const obj = { row, distanceX: 1 };
-
-      expect(reverseObjRow(obj).row).toBe(10);
-    });
-  });
-
-  describe("getAeroVectorsFromPositiveAndZeroRowsAndDists", () => {
-    it("should return proper value", () => {
-      const rowsAndDists = [
-        { row: 1, distanceX: 1 },
-        { row: 0, distanceX: 2 },
-        { row: -1, distanceX: 1 }
-      ];
-
-      const [posRows] = rowsAndDists;
-      const res = getAeroVectorsFromPositiveAndZeroRowsAndDists([posRows], 2);
-      expect(res).toEqual(createAeroVectorArrayFromRowsAndDists(rowsAndDists));
     });
   });
 });

@@ -2,9 +2,10 @@ import React, { Component } from "react";
 
 import Straight from "./Straight";
 import Curve from "./Curve";
+import Vector from "../../../../../classes/Vector";
 import withContext from "../../../../../hoc/withContext";
 import { PaintContextType } from "ContextType";
-import { fillRect, Vector } from "../../../../../utils/paint";
+import { fillRect } from "../../../../../utils/paint";
 
 export type LineProps = {
   drawOnTempCanvas: (v: Vector) => void;

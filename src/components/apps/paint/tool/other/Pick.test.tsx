@@ -4,6 +4,7 @@ import { shallow } from "enzyme";
 import { Pick } from "./Pick";
 import { findByTestAtrr } from "../../../../../../testingUtils";
 import { rgbToHex } from "../../../../../utils/paint";
+import Vector from "../../../../../classes/Vector";
 
 const initialColor = "#000000";
 let mockSetOptionsFn: jest.Mock;
@@ -34,6 +35,7 @@ const createWrapper = (
   return shallow<Pick>(<Pick paint={paint} />);
 };
 
+const testVector: Vector = new Vector(10, 15);
 const wrapper = createWrapper();
 const instance = wrapper.instance();
 
@@ -41,24 +43,6 @@ describe("Paint Pick Tool component", () => {
   describe("render", () => {
     it("should render without throwing an error", () => {
       expect(findByTestAtrr(wrapper, "tool").length).toBe(1);
-    });
-  });
-
-  describe("handleMouseLeftDown", () => {
-    it("should update state", () => {
-      instance.setState({ isMouseButtonLeft: false });
-      instance.handleMouseLeftDown({ x: 10, y: 10 });
-
-      expect(instance.state.isMouseButtonLeft).toBe(true);
-    });
-  });
-
-  describe("handleMouseRightDown", () => {
-    it("should update state", () => {
-      instance.setState({ isMouseButtonLeft: true });
-      instance.handleMouseRightDown({ x: 10, y: 10 });
-
-      expect(instance.state.isMouseButtonLeft).toBe(false);
     });
   });
 
@@ -77,21 +61,21 @@ describe("Paint Pick Tool component", () => {
     });
 
     it("should return false", () => {
-      expect(instance.isMouseOutsideCanvas({ x: 10, y: 10 })).toBe(false);
+      expect(instance.isMouseOutsideCanvas(testVector)).toBe(false);
     });
   });
 
   describe("updatePickColor", () => {
     it("should NOT call setOptions when color is the same", () => {
       const instnace = createWrapper(initialColor, 0, 0, 0).instance();
-      instnace.updatePickColor({ x: 10, y: 10 });
+      instnace.updatePickColor(testVector);
 
       expect(mockSetOptionsFn.mock.calls.length).toBe(0);
     });
 
     it("should call setOptions", () => {
       const instnace = createWrapper("#123123", 0, 0, 0).instance();
-      instnace.updatePickColor({ x: 10, y: 10 });
+      instnace.updatePickColor(testVector);
 
       expect(mockSetOptionsFn.mock.calls.length).toBe(1);
       expect(mockSetOptionsFn.mock.calls[0]).toEqual([

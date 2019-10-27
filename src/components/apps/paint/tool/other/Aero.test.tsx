@@ -1,15 +1,11 @@
 import React from "react";
 import { shallow } from "enzyme";
 
+import Vector from "../../../../../classes/Vector";
 import { Aero } from "./Aero";
 import { findByTestAtrr } from "../../../../../../testingUtils";
 import { AeroSize } from "../../models";
-import { deepCopy } from "../../../../../utils";
-import {
-  getAeroSmallVectors,
-  getAeroMediumVectors,
-  getAeroBigVectors
-} from "../../../../../utils/paint";
+import { getFillEllipsePoints } from "../../../../../utils/paint";
 
 const paint = {
   primaryColor: "p",
@@ -29,6 +25,7 @@ const createWrapper = (size: AeroSize) => {
   return shallow<Aero>(<Aero paint={ownPaint} />);
 };
 
+const testVector = new Vector(10, 15);
 const wrapper = createWrapper(AeroSize.Small);
 const instance = wrapper.instance();
 
@@ -39,31 +36,12 @@ describe("Paint Aero Tool component", () => {
     });
   });
 
-  describe("handleMouseLeftDown", () => {
-    it("should update state", () => {
-      instance.setState({ isMouseButtonLeft: false });
-      instance.handleMouseLeftDown({ x: 10, y: 10 });
-
-      expect(instance.state.isMouseButtonLeft).toBe(true);
-    });
-  });
-
-  describe("handleMouseRightDown", () => {
-    it("should update state", () => {
-      instance.setState({ isMouseButtonLeft: true });
-      instance.handleMouseRightDown({ x: 10, y: 10 });
-
-      expect(instance.state.isMouseButtonLeft).toBe(false);
-    });
-  });
-
   describe("handleMouseDown", () => {
     it("should updateState", () => {
-      const newPoint = { x: 10, y: 15 };
-      instance.setState({ mousePos: { x: 0, y: 0 } });
-      instance.handleMouseDown(newPoint);
+      instance.setState({ mousePos: Vector.Zero });
+      instance.handleMouseDown(testVector, true);
 
-      expect(instance.state.mousePos).toBe(newPoint);
+      expect(instance.state.mousePos).toBe(testVector);
       expect(instance.state.interval).not.toBe(null);
     });
 
@@ -73,8 +51,7 @@ describe("Paint Aero Tool component", () => {
       const wrapper = shallow<Aero>(<Aero paint={paintProps} />);
       const instance = wrapper.instance();
 
-      instance.setState({ isMouseButtonLeft: true });
-      instance.handleMouseDown({ x: 10, y: 10 });
+      instance.handleMouseDown(testVector, true);
       expect(mockSetColorFn.mock.calls.length).toBe(1);
       expect(mockSetColorFn.mock.calls[0]).toEqual([true]);
     });
@@ -85,8 +62,7 @@ describe("Paint Aero Tool component", () => {
       const wrapper = shallow<Aero>(<Aero paint={paintProps} />);
       const instance = wrapper.instance();
 
-      instance.setState({ isMouseButtonLeft: false });
-      instance.handleMouseDown({ x: 10, y: 10 });
+      instance.handleMouseDown(testVector, false);
       expect(mockSetColorFn.mock.calls.length).toBe(1);
       expect(mockSetColorFn.mock.calls[0]).toEqual([false]);
     });
@@ -94,11 +70,10 @@ describe("Paint Aero Tool component", () => {
 
   describe("handleMouseMove", () => {
     it("should updateState", () => {
-      const newPoint = { x: 10, y: 15 };
-      instance.setState({ mousePos: { x: 0, y: 0 } });
-      instance.handleMouseMove(newPoint);
+      instance.setState({ mousePos: Vector.Zero });
+      instance.handleMouseMove(testVector);
 
-      expect(instance.state.mousePos).toBe(newPoint);
+      expect(instance.state.mousePos).toBe(testVector);
     });
   });
 
@@ -114,21 +89,21 @@ describe("Paint Aero Tool component", () => {
   describe("getVectorArray", () => {
     it("should return small aero vector array", () => {
       const instance = createWrapper(AeroSize.Small).instance();
-      const expectedArr = deepCopy(getAeroSmallVectors());
+      const expectedArr = getFillEllipsePoints(2, 2);
 
       expect(instance.getVectorArray()).toEqual(expectedArr);
     });
 
     it("should return medium aero vector array", () => {
       const instance = createWrapper(AeroSize.Medium).instance();
-      const expectedArr = deepCopy(getAeroMediumVectors());
+      const expectedArr = getFillEllipsePoints(7, 7);
 
       expect(instance.getVectorArray()).toEqual(expectedArr);
     });
 
     it("should return big aero vector array", () => {
       const instance = createWrapper(AeroSize.Big).instance();
-      const expectedArr = deepCopy(getAeroBigVectors());
+      const expectedArr = getFillEllipsePoints(11, 11);
 
       expect(instance.getVectorArray()).toEqual(expectedArr);
     });

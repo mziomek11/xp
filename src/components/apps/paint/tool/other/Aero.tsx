@@ -1,18 +1,12 @@
 import React, { Component } from "react";
 
 import Tool from "../Tool";
+import Vector from "../../../../../classes/Vector";
 import withContext from "../../../../../hoc/withContext";
 import { PaintContextType } from "ContextType";
-import { deepCopy } from "../../../../../utils";
 import { AeroSize } from "../../models";
 import { pickRandomItemsFromArray } from "../../../../../utils";
-import {
-  getAeroSmallVectors,
-  getAeroMediumVectors,
-  getAeroBigVectors,
-  Vector,
-  fillRect
-} from "../../../../../utils/paint";
+import { fillRect, getFillEllipsePoints } from "../../../../../utils/paint";
 
 import aeroIcon from "../../../../../assets/paint/aero.png";
 
@@ -23,21 +17,19 @@ type CtxProps = {
 type State = {
   mousePos: Vector;
   interval: NodeJS.Timeout | null;
-  isMouseButtonLeft: boolean;
 };
 
-const smallVectors = getAeroSmallVectors();
-const mediumVector = getAeroMediumVectors();
-const bigVectors = getAeroBigVectors();
+const smallVectors = getFillEllipsePoints(2, 2);
+const mediumVector = getFillEllipsePoints(7, 7);
+const bigVectors = getFillEllipsePoints(11, 11);
 
-const vectorPercentToPick: number = 15;
+const vectorPercentToPick: number = 10;
 const msBetweenDraws: number = 50;
 
 export class Aero extends Component<CtxProps, State> {
   readonly state: State = {
-    mousePos: { x: 0, y: 0 },
-    interval: null,
-    isMouseButtonLeft: true
+    mousePos: Vector.Zero,
+    interval: null
   };
 
   shouldComponentUpdate() {
@@ -48,21 +40,11 @@ export class Aero extends Component<CtxProps, State> {
     this.clearInterval();
   }
 
-  handleMouseLeftDown = (canvasPos: Vector) => {
-    this.setState({ isMouseButtonLeft: true });
-    this.handleMouseDown(canvasPos);
-  };
-
-  handleMouseRightDown = (canvasPos: Vector) => {
-    this.setState({ isMouseButtonLeft: false });
-    this.handleMouseDown(canvasPos);
-  };
-
-  handleMouseDown = (mousePos: Vector) => {
+  handleMouseDown = (mousePos: Vector, isLeft: boolean) => {
     const { setColor } = this.props.paint;
 
     this.clearInterval();
-    setColor(this.state.isMouseButtonLeft);
+    setColor(isLeft);
 
     const interval = setInterval(this.draw, msBetweenDraws);
     this.setState({ mousePos, interval });
@@ -91,9 +73,9 @@ export class Aero extends Component<CtxProps, State> {
   getVectorArray = (): Vector[] => {
     const { aeroSize } = this.props.paint.options;
 
-    if (aeroSize === AeroSize.Small) return deepCopy(smallVectors);
-    else if (aeroSize === AeroSize.Medium) return deepCopy(mediumVector);
-    else return deepCopy(bigVectors);
+    if (aeroSize === AeroSize.Small) return smallVectors;
+    else if (aeroSize === AeroSize.Medium) return mediumVector;
+    else return bigVectors;
   };
 
   render() {
@@ -101,8 +83,7 @@ export class Aero extends Component<CtxProps, State> {
       <Tool
         icon={aeroIcon}
         toolType="aero"
-        onMouseLeftDown={this.handleMouseLeftDown}
-        onMouseRightDown={this.handleMouseRightDown}
+        onMouseDown={this.handleMouseDown}
         onMouseMove={this.handleMouseMove}
         onMouseUp={this.clearInterval}
         data-test="tool"

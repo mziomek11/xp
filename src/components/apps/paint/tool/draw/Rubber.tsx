@@ -1,13 +1,10 @@
 import React, { Component } from "react";
 
 import Tool from "../Tool";
+import Vector from "../../../../../classes/Vector";
 import withContext from "../../../../../hoc/withContext";
 import { PaintContextType } from "ContextType";
-import {
-  fillRect,
-  fillSpaceBetweenPoints,
-  Vector
-} from "../../../../../utils/paint";
+import { fillRect, fillSpaceBetweenPoints } from "../../../../../utils/paint";
 
 import rubberIcon from "../../../../../assets/paint/rubber.png";
 
@@ -21,7 +18,7 @@ type State = {
 
 export class Rubber extends Component<CtxProps, State> {
   readonly state: State = {
-    lastPos: { x: 0, y: 0 }
+    lastPos: Vector.Zero
   };
 
   shouldComponentUpdate() {
@@ -54,7 +51,7 @@ export class Rubber extends Component<CtxProps, State> {
         icon={rubberIcon}
         toolType="rubber"
         data-test="tool"
-        onMouseLeftDown={this.handleMouseDown}
+        onMouseDown={this.handleMouseDown}
         onMouseMove={this.handleMouseMove}
       />
     );

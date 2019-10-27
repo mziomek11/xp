@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 
 import Tool from "../Tool";
+import Vector from "../../../../../classes/Vector";
 import withContext from "../../../../../hoc/withContext";
 import { PaintContextType } from "ContextType";
 import { LineProps } from "./Line";
-import { fillSpaceBetweenPoints, Vector } from "../../../../../utils/paint";
+import { fillSpaceBetweenPoints } from "../../../../../utils/paint";
 
 import straightIcon from "../../../../../assets/paint/straight.png";
 
@@ -16,34 +17,22 @@ type Props = CtxProps & LineProps;
 
 type State = {
   startPos: Vector;
-  isMouseButtonLeft: boolean;
 };
 
 export class Straight extends Component<Props, State> {
   readonly state: State = {
-    startPos: { x: 0, y: 0 },
-    isMouseButtonLeft: true
+    startPos: Vector.Zero
   };
 
   shouldComponentUpdate() {
     return false;
   }
 
-  handleMouseLeftDown = (canvasPos: Vector) => {
-    this.setState({ isMouseButtonLeft: true });
-    this.handleMouseDown(canvasPos);
-  };
-
-  handleMouseRightDown = (canvasPos: Vector) => {
-    this.setState({ isMouseButtonLeft: false });
-    this.handleMouseDown(canvasPos);
-  };
-
-  handleMouseDown = (canvasPos: Vector) => {
+  handleMouseDown = (canvasPos: Vector, isLeft: boolean) => {
     const { setContext, setColor } = this.props.paint;
 
     setContext({ showTempCanvas: true });
-    setColor(this.state.isMouseButtonLeft);
+    setColor(isLeft);
     this.setState({ startPos: canvasPos });
   };
 
@@ -71,8 +60,7 @@ export class Straight extends Component<Props, State> {
       <Tool
         icon={straightIcon}
         toolType="line"
-        onMouseLeftDown={this.handleMouseLeftDown}
-        onMouseRightDown={this.handleMouseRightDown}
+        onMouseDown={this.handleMouseDown}
         onMouseMove={this.handleMouseMove}
         onMouseUp={this.handleMouseUp}
         data-test="tool"

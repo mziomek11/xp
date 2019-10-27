@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 
 import Tool from "../Tool";
+import Vector from "../../../../../classes/Vector";
 import withContext from "../../../../../hoc/withContext";
 import { PaintContextType } from "ContextType";
-import { hexToRgb, rgbToHex, Vector } from "../../../../../utils/paint";
+import { hexToRgb, rgbToHex } from "../../../../../utils/paint";
 
 import fillIcon from "../../../../../assets/paint/fill.png";
 
@@ -16,12 +17,11 @@ export class Fill extends Component<CtxProps> {
     return false;
   }
 
-  handleMouseLeftDown = (canvasPos: Vector) => {
-    this.fill(canvasPos, this.props.paint.primaryColor);
-  };
+  handleMouseDown = (canvasPos: Vector, isLeft: boolean) => {
+    const { primaryColor, secondaryColor } = this.props.paint;
+    const color = isLeft ? primaryColor : secondaryColor;
 
-  handleMouseRightDown = (canvasPos: Vector) => {
-    this.fill(canvasPos, this.props.paint.secondaryColor);
+    this.fill(canvasPos, color);
   };
 
   fill = (canvasPos: Vector, color: string) => {
@@ -107,8 +107,7 @@ export class Fill extends Component<CtxProps> {
         icon={fillIcon}
         toolType="fill"
         data-test="tool"
-        onMouseLeftDown={this.handleMouseLeftDown}
-        onMouseRightDown={this.handleMouseRightDown}
+        onMouseDown={this.handleMouseDown}
       />
     );
   }

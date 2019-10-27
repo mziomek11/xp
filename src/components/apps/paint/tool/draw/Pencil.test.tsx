@@ -3,6 +3,7 @@ import { shallow } from "enzyme";
 
 import { Pencil } from "./Pencil";
 import { findByTestAtrr } from "../../../../../../testingUtils";
+import Vector from "../../../../../classes/Vector";
 
 const paint = {
   canvasCtx: {
@@ -23,29 +24,11 @@ describe("Paint Pencil Tool component", () => {
     });
   });
 
-  describe("handleMouseLeftDown", () => {
-    it("should update state", () => {
-      instance.setState({ isMouseButtonLeft: false });
-      instance.handleMouseLeftDown({ x: 10, y: 10 });
-
-      expect(instance.state.isMouseButtonLeft).toBe(true);
-    });
-  });
-
-  describe("handleMouseRightDown", () => {
-    it("should update state", () => {
-      instance.setState({ isMouseButtonLeft: true });
-      instance.handleMouseRightDown({ x: 10, y: 10 });
-
-      expect(instance.state.isMouseButtonLeft).toBe(false);
-    });
-  });
-
   describe("handleMouseDown", () => {
     it("should updateState", () => {
-      const newPoint = { x: 10, y: 15 };
-      instance.setState({ lastPoint: { x: 0, y: 0 } });
-      instance.handleMouseDown(newPoint);
+      const newPoint = new Vector(10, 15);
+      instance.setState({ lastPoint: Vector.Zero });
+      instance.handleMouseDown(newPoint, true);
 
       expect(instance.state.lastPoint).toEqual(newPoint);
     });
@@ -56,20 +39,18 @@ describe("Paint Pencil Tool component", () => {
       const wrapper = shallow<Pencil>(<Pencil paint={paintProps} />);
       const instance = wrapper.instance();
 
-      instance.setState({ isMouseButtonLeft: true });
-      instance.handleMouseDown({ x: 10, y: 10 });
+      instance.handleMouseDown(Vector.Zero, true);
       expect(mockSetColorFn.mock.calls.length).toBe(1);
       expect(mockSetColorFn.mock.calls[0]).toEqual([true]);
     });
 
-    it("should call setColor with true", () => {
+    it("should call setColor with false", () => {
       const mockSetColorFn = jest.fn();
       const paintProps = { ...paint, setColor: mockSetColorFn };
       const wrapper = shallow<Pencil>(<Pencil paint={paintProps} />);
       const instance = wrapper.instance();
 
-      instance.setState({ isMouseButtonLeft: false });
-      instance.handleMouseDown({ x: 10, y: 10 });
+      instance.handleMouseDown(Vector.Zero, false);
       expect(mockSetColorFn.mock.calls.length).toBe(1);
       expect(mockSetColorFn.mock.calls[0]).toEqual([false]);
     });
@@ -77,8 +58,8 @@ describe("Paint Pencil Tool component", () => {
 
   describe("handleMouseMove", () => {
     it("should updateState", () => {
-      const newPoint = { x: 10, y: 15 };
-      instance.setState({ lastPoint: { x: 0, y: 0 } });
+      const newPoint = new Vector(10, 15);
+      instance.setState({ lastPoint: Vector.Zero });
       instance.handleMouseMove(newPoint);
 
       expect(instance.state.lastPoint).toEqual(newPoint);

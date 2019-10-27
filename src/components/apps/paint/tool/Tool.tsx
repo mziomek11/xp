@@ -1,20 +1,18 @@
 import React, { Component } from "react";
 
 import withContext from "../../../../hoc/withContext";
+import Vector from "../../../../classes/Vector";
 import { getClassName } from "../../../../utils";
 import { Tool as ToolType } from "../models";
 import { PaintContextType, WindowContextType } from "ContextType";
 import { canvasClass } from "../classes";
-import { Vector } from "../../../../utils/paint";
 
-type VectorVoid = (v: Vector) => void;
 type OwnProps = {
   icon: string;
   toolType: ToolType;
-  onMouseLeftDown?: VectorVoid;
-  onMouseRightDown?: VectorVoid;
-  onMouseMove?: VectorVoid;
-  onMouseUp?: VectorVoid;
+  onMouseDown?: (v: Vector, isLeft: boolean) => void;
+  onMouseMove?: (v: Vector) => void;
+  onMouseUp?: (v: Vector) => void;
   onToolChange?: VoidFunction;
 };
 
@@ -64,24 +62,21 @@ export class Tool extends Component<Props, State> {
     if (!this.clickedOwnCanvas(e)) return;
     if (e.which !== 1) return;
 
-    this.handleMouseButtonDown(e, this.props.onMouseLeftDown);
+    this.handleMouseButtonDown(e, true);
   };
 
   handleContextMenu = (e: any) => {
     if (!this.clickedOwnCanvas(e)) return;
     e.preventDefault();
 
-    this.handleMouseButtonDown(e, this.props.onMouseRightDown);
+    this.handleMouseButtonDown(e, false);
   };
 
-  handleMouseButtonDown = (
-    e: MouseEvent,
-    additonalFn?: (canvasPos: Vector) => void
-  ) => {
+  handleMouseButtonDown = (e: MouseEvent, isLeft?: boolean) => {
     this.setCanvasData(e);
-    if (additonalFn) {
+    if (this.props.onMouseDown) {
       const canvasPos: Vector = this.calculateCanvasPos(e);
-      additonalFn(canvasPos);
+      this.props.onMouseDown(canvasPos, isLeft!);
     }
 
     window.addEventListener("mousemove", this.handleMouseMove);

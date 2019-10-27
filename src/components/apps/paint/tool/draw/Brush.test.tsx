@@ -4,6 +4,7 @@ import { shallow } from "enzyme";
 import { Brush } from "./Brush";
 import { findByTestAtrr } from "../../../../../../testingUtils";
 import { BrushSize } from "../../models";
+import Vector from "../../../../../classes/Vector";
 
 const paint = {
   primaryColor: "p",
@@ -28,6 +29,7 @@ const paint = {
   }
 } as any;
 
+const testVector: Vector = new Vector(10, 15);
 const wrapper = shallow<Brush>(<Brush paint={paint} />);
 const instance = wrapper.instance();
 
@@ -35,24 +37,6 @@ describe("Paint Brush Tool component", () => {
   describe("render", () => {
     it("should render without throwing an error", () => {
       expect(findByTestAtrr(wrapper, "tool").length).toBe(1);
-    });
-  });
-
-  describe("handleMouseLeftDown", () => {
-    it("should update state", () => {
-      instance.setState({ isMouseButtonLeft: false });
-      instance.handleMouseLeftDown({ x: 10, y: 10 });
-
-      expect(instance.state.isMouseButtonLeft).toBe(true);
-    });
-  });
-
-  describe("handleMouseRightDown", () => {
-    it("should update state", () => {
-      instance.setState({ isMouseButtonLeft: true });
-      instance.handleMouseRightDown({ x: 10, y: 10 });
-
-      expect(instance.state.isMouseButtonLeft).toBe(false);
     });
   });
 
@@ -67,11 +51,10 @@ describe("Paint Brush Tool component", () => {
 
   describe("handleMouseDown", () => {
     it("should updateState", () => {
-      const canvasPos = { x: 10, y: 15 };
-      instance.setState({ lastPoint: { x: 0, y: 0 }, isMouseMoving: false });
-      instance.handleMouseDown(canvasPos);
+      instance.setState({ lastPoint: Vector.Zero, isMouseMoving: false });
+      instance.handleMouseDown(testVector, true);
 
-      expect(instance.state.lastPoint).toEqual(canvasPos);
+      expect(instance.state.lastPoint).toEqual(testVector);
       expect(instance.state.isMouseMoving).toBe(true);
     });
 
@@ -81,8 +64,7 @@ describe("Paint Brush Tool component", () => {
       const wrapper = shallow<Brush>(<Brush paint={paintProps} />);
       const instance = wrapper.instance();
 
-      instance.setState({ isMouseButtonLeft: true });
-      instance.handleMouseDown({ x: 10, y: 10 });
+      instance.handleMouseDown(testVector, true);
       expect(mockSetColorFn.mock.calls.length).toBe(1);
       expect(mockSetColorFn.mock.calls[0]).toEqual([true]);
     });
@@ -93,8 +75,7 @@ describe("Paint Brush Tool component", () => {
       const wrapper = shallow<Brush>(<Brush paint={paintProps} />);
       const instance = wrapper.instance();
 
-      instance.setState({ isMouseButtonLeft: false });
-      instance.handleMouseDown({ x: 10, y: 10 });
+      instance.handleMouseDown(testVector, false);
       expect(mockSetColorFn.mock.calls.length).toBe(1);
       expect(mockSetColorFn.mock.calls[0]).toEqual([false]);
     });
@@ -102,11 +83,10 @@ describe("Paint Brush Tool component", () => {
 
   describe("handleMouseMove", () => {
     it("should updateState", () => {
-      const canvasPos = { x: 10, y: 15 };
-      instance.setState({ lastPoint: { x: 0, y: 0 } });
-      instance.handleMouseMove(canvasPos);
+      instance.setState({ lastPoint: Vector.Zero });
+      instance.handleMouseMove(testVector);
 
-      expect(instance.state.lastPoint).toBe(canvasPos);
+      expect(instance.state.lastPoint).toBe(testVector);
     });
   });
 

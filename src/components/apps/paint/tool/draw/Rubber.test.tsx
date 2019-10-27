@@ -3,6 +3,7 @@ import { shallow } from "enzyme";
 
 import { Rubber } from "./Rubber";
 import { findByTestAtrr } from "../../../../../../testingUtils";
+import Vector from "../../../../../classes/Vector";
 
 const paint = {
   secondaryColor: "abc",
@@ -17,6 +18,7 @@ const paint = {
   setColor: jest.fn()
 } as any;
 
+const testVector: Vector = new Vector(10, 15);
 const wrapper = shallow<Rubber>(<Rubber paint={paint} />);
 const instance = wrapper.instance();
 
@@ -29,11 +31,10 @@ describe("Paint Rubber Tool component", () => {
 
   describe("handleMouseDown", () => {
     it("should updateState", () => {
-      const newPoint = { x: 10, y: 15 };
-      instance.setState({ lastPos: { x: 0, y: 0 } });
-      instance.handleMouseDown(newPoint);
+      instance.setState({ lastPos: Vector.Zero });
+      instance.handleMouseDown(testVector);
 
-      expect(instance.state.lastPos).toBe(newPoint);
+      expect(instance.state.lastPos).toBe(testVector);
     });
 
     it("should call setColor with true", () => {
@@ -42,18 +43,17 @@ describe("Paint Rubber Tool component", () => {
       const wrapper = shallow<Rubber>(<Rubber paint={paintProps} />);
       const instance = wrapper.instance();
 
-      instance.handleMouseDown({ x: 10, y: 10 });
+      instance.handleMouseDown(testVector);
       expect(mockSetColorFn.mock.calls.length).toBe(1);
     });
   });
 
   describe("handleMouseMove", () => {
     it("should updateState", () => {
-      const newPoint = { x: 10, y: 15 };
-      instance.setState({ lastPos: { x: 0, y: 0 } });
-      instance.handleMouseMove(newPoint);
+      instance.setState({ lastPos: Vector.Zero });
+      instance.handleMouseMove(testVector);
 
-      expect(instance.state.lastPos).toBe(newPoint);
+      expect(instance.state.lastPos).toBe(testVector);
     });
   });
 });

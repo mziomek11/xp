@@ -1,14 +1,11 @@
 import React, { Component } from "react";
 
 import Tool from "../Tool";
+import Vector from "../../../../../classes/Vector";
 import withContext from "../../../../../hoc/withContext";
 import { PaintContextType } from "ContextType";
 import { LineProps } from "./Line";
-import {
-  fillSpaceBetweenPoints,
-  Vector,
-  bezier2D
-} from "../../../../../utils/paint";
+import { fillSpaceBetweenPoints, bezier2D } from "../../../../../utils/paint";
 
 import curveIcon from "../../../../../assets/paint/curve.png";
 
@@ -29,9 +26,9 @@ type State = {
 
 export class Curve extends Component<Props, State> {
   readonly state: State = {
-    startPoint: { x: 0, y: 0 },
-    firstControlPoint: { x: 0, y: 0 },
-    endPoint: { x: 0, y: 0 },
+    startPoint: Vector.Zero,
+    firstControlPoint: Vector.Zero,
+    endPoint: Vector.Zero,
     imageCopy: null,
     isMouseButtonLeft: true,
     drawPhase: 0
@@ -45,22 +42,12 @@ export class Curve extends Component<Props, State> {
     this.setState({ drawPhase: 0, imageCopy: null });
   };
 
-  handleMouseLeftDown = (canvasPos: Vector) => {
-    this.setState({ isMouseButtonLeft: true });
-    this.handleMouseDown(canvasPos);
-  };
-
-  handleMouseRightDown = (canvasPos: Vector) => {
-    this.setState({ isMouseButtonLeft: false });
-    this.handleMouseDown(canvasPos);
-  };
-
-  handleMouseDown = (canvasPos: Vector) => {
+  handleMouseDown = (canvasPos: Vector, isLeft: boolean) => {
     const { setContext } = this.props.paint;
     setContext({ showTempCanvas: true });
 
     const drawPhase = this.state.drawPhase + 1;
-    this.setState({ drawPhase });
+    this.setState({ drawPhase, isMouseButtonLeft: isLeft });
 
     if (drawPhase === 1) this.handleFirstMouseDown(canvasPos);
     else if (drawPhase === 2) this.handleSecondMouseDown(canvasPos);
@@ -194,8 +181,7 @@ export class Curve extends Component<Props, State> {
       <Tool
         icon={curveIcon}
         toolType="curve"
-        onMouseLeftDown={this.handleMouseLeftDown}
-        onMouseRightDown={this.handleMouseRightDown}
+        onMouseDown={this.handleMouseDown}
         onMouseMove={this.handleMouseMove}
         onMouseUp={this.handleMouseUp}
         onToolChange={this.handleToolChange}
