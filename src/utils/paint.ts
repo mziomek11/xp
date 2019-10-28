@@ -49,12 +49,12 @@ export function fillEllipse(center: Vector, rx: number, ry: number, ctx: Ctx) {
     for (let j = -1; j <= 1; j += 2) {
       const drawX = Math.round(center.x - x * j) - 0.5;
 
-      drawLine(new Vector(drawX, startY), new Vector(drawX, endY), 1, ctx);
+      line(new Vector(drawX, startY), new Vector(drawX, endY), 1, ctx);
     }
   }
 }
 
-export function getStrokeEllipsePoints(rx: number, ry: number): Vector[] {
+function getStrokeEllipsePoints(rx: number, ry: number): Vector[] {
   const oneSidePoints = getOneSideEllipsePoints(rx, ry);
   const allPoints: Vector[] = [];
 
@@ -86,6 +86,27 @@ export function getFillEllipsePoints(rx: number, ry: number): Vector[] {
   }
 
   return allPoints;
+}
+
+export function strokeEllpiseQuarter(
+  center: Vector,
+  rx: number,
+  ry: number,
+  width: number,
+  rotateX: boolean,
+  rotateY: boolean,
+  ctx: Ctx
+) {
+  const cornerPoints = getOneSideEllipsePoints(rx, ry);
+
+  cornerPoints.forEach(point => {
+    let { x, y } = point;
+    if (rotateX) x = -x;
+    if (rotateY) y = -y;
+    const rotatedPoint = new Vector(x, y);
+
+    fillRect(Vector.add(center, rotatedPoint), width, ctx);
+  });
 }
 
 //source http://cfetch.blogspot.com/2014/01/wap-to-draw-ellipse-using-midpoint.html
@@ -128,7 +149,7 @@ function getOneSideEllipsePoints(rx: number, ry: number): Vector[] {
   return points;
 }
 
-export function drawLine(start: Vector, end: Vector, size: number, ctx: Ctx) {
+export function line(start: Vector, end: Vector, size: number, ctx: Ctx) {
   ctx.lineWidth = size;
   ctx.beginPath();
   ctx.moveTo(start.x, start.y);

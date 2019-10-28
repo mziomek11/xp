@@ -1,5 +1,5 @@
 import {
-  drawLine,
+  line,
   fillRect,
   fillSpaceBetweenPoints,
   calculateDistance,
@@ -69,9 +69,9 @@ describe("Paint utils functions", () => {
     });
   });
 
-  describe("drawLine", () => {
+  describe("line", () => {
     it("should call begin path and stroke once", () => {
-      drawLine({ x: 1, y: 1 }, { x: 2, y: 2 }, 4, canvasContext);
+      line({ x: 1, y: 1 }, { x: 2, y: 2 }, 4, canvasContext);
 
       expect(mockBeginPathFn.mock.calls.length).toBe(1);
       expect(mockStrokeFn.mock.calls.length).toBe(1);
@@ -80,7 +80,7 @@ describe("Paint utils functions", () => {
     it("should call moveTo with startX and startY", () => {
       const startX = 10;
       const startY = 20;
-      drawLine({ x: startX, y: startY }, { x: 2, y: 2 }, 4, canvasContext);
+      line({ x: startX, y: startY }, { x: 2, y: 2 }, 4, canvasContext);
 
       expect(mockMoveToFn.mock.calls.length).toBe(1);
       expect(mockMoveToFn.mock.calls[0]).toEqual([startX, startY]);
@@ -89,7 +89,7 @@ describe("Paint utils functions", () => {
     it("should call lineTo with endX and endY", () => {
       const endX = 40;
       const endY = 50;
-      drawLine({ x: 1, y: 2 }, { x: endX, y: endY }, 4, canvasContext);
+      line({ x: 1, y: 2 }, { x: endX, y: endY }, 4, canvasContext);
 
       expect(mockLineToFn.mock.calls.length).toBe(1);
       expect(mockLineToFn.mock.calls[0]).toEqual([endX, endY]);

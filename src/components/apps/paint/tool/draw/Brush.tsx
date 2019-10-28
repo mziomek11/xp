@@ -8,7 +8,7 @@ import { BrushSize } from "../../models";
 import {
   fillRect,
   fillSpaceBetweenPoints,
-  drawLine,
+  line,
   fillEllipse
 } from "../../../../../utils/paint";
 
@@ -80,14 +80,14 @@ export class Brush extends Component<CtxProps, State> {
     const { canvasCtx } = this.props.paint;
 
     const [sPoint, ePoint] = this.getSlashStartAndEndPoint(cvsPos, forward);
-    drawLine(sPoint, ePoint, 1, canvasCtx!);
+    line(sPoint, ePoint, 1, canvasCtx!);
 
     if (!isMouseMoving) return;
 
     [-1, 1].forEach(n => {
       const movedStartPoint: Vector = { ...sPoint, x: sPoint.x + n };
       const movedEndPoint: Vector = { ...ePoint, x: ePoint.x + n };
-      drawLine(movedStartPoint, movedEndPoint, 1, canvasCtx!);
+      line(movedStartPoint, movedEndPoint, 1, canvasCtx!);
     });
   };
 

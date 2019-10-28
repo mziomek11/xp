@@ -32,7 +32,7 @@ const PaintContext = createContext<Partial<Context>>({});
 
 export class ContextProvider extends Component<{}, State> {
   readonly state: State = {
-    selectedTool: "circle",
+    selectedTool: "rounded",
     lastSelectedTool: "brush",
     primaryColor: "#000000",
     secondaryColor: "#ffffff",
@@ -53,7 +53,7 @@ export class ContextProvider extends Component<{}, State> {
       shapeDrawMode: {
         circle: "stroke",
         rect: "stroke",
-        rounded: "stroke",
+        rounded: "fill",
         poly: "stroke"
       }
     }
