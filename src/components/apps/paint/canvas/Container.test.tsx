@@ -1,7 +1,7 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import { Canvas } from "./Canvas";
+import { Container } from "./Container";
 import { findByTestAtrr } from "../../../../../testingUtils";
 
 let mockSetContextFn: jest.Mock;
@@ -26,20 +26,20 @@ const createWrapper = () => {
       putImageData: mockPutImageFn,
       getContext: (x: any) => {}
     } as any
-  };
+  } as any;
 
-  return shallow<Canvas>(<Canvas paint={paint} />);
+  return shallow<Container>(<Container paint={paint} />);
 };
 
 const wrapper = createWrapper();
 
-describe("Paint Canvas component", () => {
+describe("Paint CanvasContainer component", () => {
   describe("render", () => {
     it("should render without throwing an error", () => {
       expect(findByTestAtrr(wrapper, "canvas").length).toBe(1);
     });
 
-    it("should render right CanvasResizer", () => {
+    it("should render right ContainerResizer", () => {
       const resizer = findByTestAtrr(wrapper, "E");
 
       expect(resizer.length).toBe(1);
@@ -47,7 +47,7 @@ describe("Paint Canvas component", () => {
       expect(resizer.prop("isVertical")).toBe(false);
     });
 
-    it("should render bottom CanvasResizer", () => {
+    it("should render bottom ContainerResizer", () => {
       const resizer = findByTestAtrr(wrapper, "S");
 
       expect(resizer.length).toBe(1);
@@ -55,7 +55,7 @@ describe("Paint Canvas component", () => {
       expect(resizer.prop("isVertical")).toBe(true);
     });
 
-    it("should render bottom right CanvasResizer", () => {
+    it("should render bottom right ContainerResizer", () => {
       const resizer = findByTestAtrr(wrapper, "SE");
 
       expect(resizer.length).toBe(1);

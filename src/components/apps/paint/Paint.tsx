@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 import Menu from "./menu/Menu";
 import ToolBar from "./tool/Bar";
-import Canvas from "./canvas/Canvas";
+import CanvasContainer from "./canvas/Container";
 import ColorBar from "./color/Bar";
 import ErrorPopUp from "./subwindows/Error";
 
@@ -25,7 +25,7 @@ export class Paint extends Component<Props, {}> {
         <Menu data-test="menu" />
         <div className="paint__middle">
           <ToolBar data-test="toolbar" />
-          <Canvas data-test="canvas" />
+          <CanvasContainer data-test="canvas" />
         </div>
         <ColorBar data-test="colorbar" />
         {showError && <ErrorPopUp data-test="error" />}

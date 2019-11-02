@@ -2,7 +2,7 @@ import React from "react";
 import { shallow } from "enzyme";
 
 import Resizer, { minRectSize } from "./Resizer";
-import { findByTestAtrr } from "../../../../../testingUtils";
+import { findByTestAtrr } from "../../../../../../testingUtils";
 
 const defualtWidth: number = 100;
 const defualtHeight: number = 150;

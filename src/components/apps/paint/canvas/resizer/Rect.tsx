@@ -5,7 +5,7 @@ type Props = {
   height: number;
 };
 
-const ResizerLine: React.FC<Props> = ({ width, height }) => {
+const ResizerRect: React.FC<Props> = ({ width, height }) => {
   return (
     <div
       className="paint__canvas__resizer__rect"
@@ -15,4 +15,4 @@ const ResizerLine: React.FC<Props> = ({ width, height }) => {
   );
 };
 
-export default ResizerLine;
+export default ResizerRect;

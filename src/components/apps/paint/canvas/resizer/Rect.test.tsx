@@ -1,8 +1,8 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import ResizerRect from "./ResizerRect";
-import { findByTestAtrr } from "../../../../../testingUtils";
+import ResizerRect from "./Rect";
+import { findByTestAtrr } from "../../../../../../testingUtils";
 
 const wrapper = shallow(<ResizerRect width={10} height={10} />);
 

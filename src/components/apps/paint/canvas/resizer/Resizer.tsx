@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
-import ResizerRect from "./ResizerRect";
-import { changeCursor } from "../../../../utils/dom";
+import ResizerRect from "./Rect";
+import { changeCursor } from "../../../../../utils/dom";
 
 type Props = {
   width: number;
