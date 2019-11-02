@@ -7,6 +7,7 @@ import { findByTestAtrr } from "../../../../testingUtils";
 const wrapper = shallow(
   <SubWindow {...({} as any)}>
     <p data-test="child" />
+    <p data-test="child" />
   </SubWindow>
 );
 
@@ -21,7 +22,7 @@ describe("SubWindow Component", () => {
     });
 
     it("should render children", () => {
-      expect(findByTestAtrr(wrapper, "child").length).toBe(1);
+      expect(findByTestAtrr(wrapper, "child").length).toBe(2);
     });
   });
 });

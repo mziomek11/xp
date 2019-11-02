@@ -4,6 +4,7 @@ import withContext from "../../../hoc/withContext";
 import { WindowContextType } from "ContextType";
 import { windowConfig, toolbarConfig } from "../../../config";
 import { changeCursor } from "../../../utils/dom";
+import { getClassName } from "../../../utils";
 
 export type OwnProps = {
   window: WindowContextType;
@@ -56,7 +57,7 @@ export class WindowResizer extends Component<OwnProps, State> {
   removeListeners = () => {
     window.removeEventListener("mousemove", this.handleMouseMove);
     window.removeEventListener("mouseup", this.removeListeners);
-    changeCursor();
+    if (this.props.window.resizable) changeCursor();
     this.props.window.setContext({ resizing: false });
   };
 
@@ -81,11 +82,12 @@ export class WindowResizer extends Component<OwnProps, State> {
   };
 
   handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!this.props.window.resizable) return;
     const newState = this.calculateNewState(e.clientX, e.clientY);
 
     this.setState(newState);
     this.props.window.setContext({ resizing: true });
-    changeCursor(this.getOwnCursor());
+    if (this.props.window.resizable) changeCursor(this.getOwnCursor());
     this.addListeners();
   };
 
@@ -176,7 +178,6 @@ export class WindowResizer extends Component<OwnProps, State> {
     const { isTop, resizesHeight, window } = this.props;
     const { edgeDistanceY, endY } = this.state;
     const { top, height, minHeight, maxHeight } = window;
-
     let newHeight: number = height;
 
     if (resizesHeight) {
@@ -190,7 +191,6 @@ export class WindowResizer extends Component<OwnProps, State> {
     }
 
     newHeight = Math.max(newHeight, minHeight);
-
     return newHeight;
   };
 
@@ -220,17 +220,19 @@ export class WindowResizer extends Component<OwnProps, State> {
   };
 
   getClassModifier() {
-    const { isTop, resizesWidth, resizesHeight, isLeft } = this.props;
+    const { isTop, resizesWidth, resizesHeight, isLeft, window } = this.props;
+    const { resizable } = window;
     const defaultClass: string = "window__resizer";
-    let newClass: string = defaultClass;
 
-    if (resizesHeight)
-      newClass += ` ${defaultClass}--${isTop ? "top" : "bottom"}`;
+    const modifiers = {
+      disabled: !resizable,
+      top: (resizesHeight && isTop) as boolean,
+      bottom: (resizesHeight && !isTop) as boolean,
+      left: (resizesWidth && isLeft) as boolean,
+      right: (resizesWidth && !isLeft) as boolean
+    };
 
-    if (resizesWidth)
-      newClass += ` ${defaultClass}--${isLeft ? "left" : "right"}`;
-
-    return newClass;
+    return getClassName(defaultClass, modifiers);
   }
 
   render() {

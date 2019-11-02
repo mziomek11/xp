@@ -1,0 +1,32 @@
+.popup {
+  background: map-get($menu, "main");
+  height: 100%;
+  padding: $popup-padding;
+}
+
+.popup__divider {
+  display: flex;
+}
+
+.popup__left {
+  @include all-widths($popup-image-width);
+}
+
+.popup__image {
+  width: 100%;
+  height: auto;
+}
+
+.popup__right {
+  margin-left: $popup-padding * 1.5;
+}
+
+.popup__text {
+  line-height: 2.1rem;
+  font-size: 1.18rem;
+}
+
+.popup__accept {
+  @include flex-centered;
+  margin: $popup-accept-margin;
+}

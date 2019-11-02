@@ -4,30 +4,37 @@ import { shallow } from "enzyme";
 import { Tool } from "./Tool";
 import { findByTestAtrr } from "../../../../../testingUtils";
 
-let mockSetContextFn: jest.Mock = jest.fn();
+let mockSetPaintContextFn: jest.Mock = jest.fn();
+let mockSetWindowContextFn: jest.Mock = jest.fn();
 let mockOnMouseDownFn: jest.Mock = jest.fn();
 let mockOnMouseMoveFn: jest.Mock = jest.fn();
 let mockOnMouseUpFn: jest.Mock = jest.fn();
+let mockOnToolChangeFn: jest.Mock = jest.fn();
 
 const toolType: any = "fill";
 
 const createWrapper = (
   focused: boolean = false,
-  selectedTool: any = "fill"
+  selectedTool: any = "fill",
+  notImplemented: boolean = false
 ) => {
-  mockSetContextFn = jest.fn();
+  mockSetPaintContextFn = jest.fn();
+  mockSetWindowContextFn = jest.fn();
   mockOnMouseDownFn = jest.fn();
   mockOnMouseMoveFn = jest.fn();
   mockOnMouseUpFn = jest.fn();
+  mockOnToolChangeFn = jest.fn();
 
   const props = {
     icon: "x",
     toolType,
-    paint: { setContext: mockSetContextFn, selectedTool } as any,
+    notImplemented,
+    paint: { setContext: mockSetPaintContextFn, selectedTool } as any,
+    window: { focused, setContext: mockSetWindowContextFn } as any,
     onMouseDown: mockOnMouseDownFn,
     onMouseMove: mockOnMouseMoveFn,
     onMouseUp: mockOnMouseUpFn,
-    window: { focused } as any
+    onToolChange: mockOnToolChangeFn
   };
 
   return shallow<Tool>(<Tool {...props} />);
@@ -49,6 +56,15 @@ describe("Paint Tool component", () => {
   describe("render", () => {
     it("should render without throwing an error", () => {
       expect(findByTestAtrr(wrapper, "tool").length).toBe(1);
+    });
+  });
+
+  describe("componentDidUpdate", () => {
+    it("should call onToolChange", () => {
+      const instance = createWrapper().instance();
+      instance.componentDidUpdate();
+
+      expect(mockOnToolChangeFn.mock.calls.length).toBe(1);
     });
   });
 
@@ -161,15 +177,40 @@ describe("Paint Tool component", () => {
   });
 
   describe("handleIconClick", () => {
-    it("should call setContext", () => {
-      const selectedTool = "pencil";
-      const instance = createWrapper(true, selectedTool).instance();
-      instance.handleIconClick();
+    describe("implemented", () => {
+      let instance: Tool;
 
-      expect(mockSetContextFn.mock.calls.length).toBe(1);
-      expect(mockSetContextFn.mock.calls[0]).toEqual([
-        { selectedTool: toolType, lastSelectedTool: selectedTool }
-      ]);
+      beforeEach(() => {
+        instance = createWrapper(true, "a", true).instance();
+        instance.handleIconClick();
+      });
+      
+      it("should call window.setContext with proper args", () => {
+        expect(mockSetWindowContextFn.mock.calls.length).toBe(1);
+        expect(mockSetWindowContextFn.mock.calls[0]).toEqual([
+          { disabled: true }
+        ]);
+      });
+
+      it("should call paint.setContext with proper args", () => {
+        expect(mockSetPaintContextFn.mock.calls.length).toBe(1);
+        expect(mockSetPaintContextFn.mock.calls[0]).toEqual([
+          { showError: true }
+        ]);
+      });
+    });
+
+    describe("not implemented", () => {
+      it("should call paint.setContext with proper args", () => {
+        const selectedTool = "pencil";
+        const instance = createWrapper(true, selectedTool).instance();
+        instance.handleIconClick();
+
+        expect(mockSetPaintContextFn.mock.calls.length).toBe(1);
+        expect(mockSetPaintContextFn.mock.calls[0]).toEqual([
+          { selectedTool: toolType, lastSelectedTool: selectedTool }
+        ]);
+      });
     });
   });
 });

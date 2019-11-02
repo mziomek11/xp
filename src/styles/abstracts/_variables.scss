@@ -185,6 +185,16 @@ $dropdown-size-arrow: 3px;
 $dropdown-size-check: 2px;
 $dropdown-size-circle: 6px;
 
+//Button
+
+$button-font-size: 1.1rem;
+$button-width: 70px;
+$button-height: 20px;
+$button-border-color: #00498d;
+$button-border-color-hover: #c99630;
+$button-background: #f4f4f0;
+$button-background-active: #deddd5;
+
 //Location
 
 $location-padding: 1px 2px;
@@ -219,13 +229,11 @@ $picker-navigation-actions-margin: 10px;
 $picker-form-margin: 35px;
 $picker-form-label-margin: 10px;
 
-$picker-form-button-font-size: 0.9em;
-$picker-form-button-width: 70px;
-$picker-form-button-height: 20px;
-$picker-form-button-border-color: #00498d;
-$picker-form-button-border-color-hover: #c99630;
-$picker-form-button-background: #f4f4f0;
-$picker-form-button-background-active: #deddd5;
+//Subwindow popup
+
+$popup-padding: 10px;
+$popup-image-width: 32px;
+$popup-accept-margin: 12px;
 
 //Filesystem tree
 

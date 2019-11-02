@@ -1,0 +1,22 @@
+.button {
+  width: $button-width;
+  height: $button-height;
+  background: $button-background;
+  font-size: $button-font-size;
+  border-radius: 2px;
+  border: 1px solid $button-border-color;
+  outline: none;
+
+  &:hover {
+    border-color: $button-border-color-hover;
+  }
+
+  &:active {
+    border: 1px solid $button-border-color;
+    background: $button-background-active;
+  }
+
+  &:first-child {
+    margin-bottom: $picker-padding;
+  }
+}

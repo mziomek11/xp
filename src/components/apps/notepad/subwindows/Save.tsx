@@ -10,10 +10,6 @@ type Props = {
 };
 
 export class NotepadSave extends Component<Props, {}> {
-  shouldComponentUpdate() {
-    return false;
-  }
-
   closeSaveAs = () => {
     this.props.window.setContext({ disabled: false });
     this.props.notepad.setContext({ isSaving: false });
@@ -23,10 +19,8 @@ export class NotepadSave extends Component<Props, {}> {
 
   render() {
     const { window, notepad } = this.props;
-
     return (
       <SavePicker
-        parent={window.getSubWindowProps()}
         onClose={this.closeSaveAs}
         filePath={notepad.path}
         id={window.id}

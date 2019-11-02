@@ -1,10 +1,41 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 
-import { Props } from "./SubWindow";
-import { ContextProvider, Props as CtxProps } from "../Context";
-import { clickedWindow } from "../../../utils/window";
+import withContext from "../../../hoc/withContext";
+import { WindowContextType } from "ContextType";
+import { RootState } from "MyTypes";
+import { Props as SubWindowProps } from "./SubWindow";
+import { ContextProvider, Props as CtxProps, MinMaxProps } from "../Context";
+import {
+  clickedWindow,
+  getWindowCustomMinMaxProps,
+  getWindowNoResizableMinMaxProps,
+  getSubWindowStartLeftAndTop
+} from "../../../utils/window";
 
-class Context extends Component<Props, {}> {
+export type ParentProps = {
+  width: number;
+  height: number;
+  left: number;
+  top: number;
+  fullScr: boolean;
+  focused: boolean;
+  changePriority: () => void;
+  removeFocus: (e: MouseEvent) => void;
+};
+
+type WindowProps = {
+  window: WindowContextType;
+};
+
+type StateProps = {
+  screenWidth: number;
+  screenHeight: number;
+};
+
+type Props = SubWindowProps & StateProps & WindowProps;
+
+export class Context extends Component<Props, {}> {
   handleRemoveFocus = (e: MouseEvent) => {
     const {
       left,
@@ -13,7 +44,7 @@ class Context extends Component<Props, {}> {
       height,
       fullScr,
       removeFocus
-    } = this.props.parent;
+    } = this.props.window.getSubWindowProps();
 
     const clickedParent = clickedWindow(e, left, top, width, height, fullScr);
 
@@ -25,8 +56,9 @@ class Context extends Component<Props, {}> {
   };
 
   getContextData = (): Partial<CtxProps> => {
-    const { parent, children, onClose, ...ctxProps } = this.props;
-    const { focused, changePriority } = parent;
+    const { children, onClose, ...ctxProps } = this.props;
+    const { focused, changePriority } = this.props.window.getSubWindowProps();
+    const adjustedSizeData = this.getAdjustedSizeData();
 
     const ctxData: Partial<CtxProps> = {
       minimalized: false,
@@ -37,19 +69,72 @@ class Context extends Component<Props, {}> {
       hideFullscreen: true,
       hideIcon: true,
       close: onClose,
-      ...ctxProps
+      ...ctxProps,
+      ...adjustedSizeData
     };
 
     return ctxData;
+  };
+
+  getAdjustedSizeData = (): Omit<MinMaxProps, "startFullscreened"> => {
+    const minMaxProps = this.getMinMaxProps();
+    const startPosition = this.getStartPosition();
+
+    return { ...minMaxProps, ...startPosition };
+  };
+
+  getMinMaxProps = () => {
+    const {
+      startWidth,
+      startHeight,
+      resizable,
+      screenWidth,
+      screenHeight
+    } = this.props;
+
+    if (!resizable) {
+      return getWindowNoResizableMinMaxProps(startWidth, startHeight);
+    }
+
+    return getWindowCustomMinMaxProps(
+      startWidth,
+      startHeight,
+      screenWidth,
+      screenHeight
+    );
+  };
+
+  getStartPosition = () => {
+    const { props } = this;
+    let { startWidth, startHeight, screenWidth, screenHeight, window } = props;
+    const { width, height, left, top } = window.getSubWindowProps();
+
+    return getSubWindowStartLeftAndTop(
+      startWidth,
+      startHeight,
+      width,
+      height,
+      left,
+      top,
+      screenWidth,
+      screenHeight
+    );
   };
 
   render() {
     const { children } = this.props;
     const contextProps = this.getContextData() as any;
     return (
-      <ContextProvider {...(contextProps as any)}>{children}</ContextProvider>
+      <ContextProvider {...(contextProps as any)} data-test="provider">
+        {children}
+      </ContextProvider>
     );
   }
 }
 
-export default Context;
+const mapStateToProps = (state: RootState): StateProps => ({
+  screenWidth: state.screen.width,
+  screenHeight: state.screen.height
+});
+
+export default connect(mapStateToProps)(withContext(Context, "window"));

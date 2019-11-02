@@ -18,6 +18,7 @@ type State = {
   canvasCtx: CanvasRenderingContext2D | null;
   tempCanvasCtx: CanvasRenderingContext2D | null;
   showTempCanvas: boolean;
+  showError: boolean;
   options: Options;
 };
 
@@ -32,13 +33,14 @@ const PaintContext = createContext<Partial<Context>>({});
 
 export class ContextProvider extends Component<{}, State> {
   readonly state: State = {
-    selectedTool: "rounded",
+    selectedTool: "poly",
     lastSelectedTool: "brush",
     primaryColor: "#000000",
     secondaryColor: "#ffffff",
     canvasCtx: null,
     tempCanvasCtx: null,
     showTempCanvas: false,
+    showError: false,
     options: {
       lineWidth: LineWidth.ExtraSmall,
       rubberSize: RubberSize.ExtraBig,

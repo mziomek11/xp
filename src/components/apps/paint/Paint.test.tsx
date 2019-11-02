@@ -1,10 +1,12 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import Paint from "./Paint";
+import { Paint } from "./Paint";
 import { findByTestAtrr } from "../../../../testingUtils";
 
-const wrapper = shallow(<Paint />);
+const craeteWrapper = (showError: boolean) =>
+  shallow(<Paint paint={{ showError } as any} />);
+const wrapper = craeteWrapper(false);
 
 describe("Paint component", () => {
   describe("render", () => {
@@ -26,6 +28,16 @@ describe("Paint component", () => {
 
     it("should render ColorBar component", () => {
       expect(findByTestAtrr(wrapper, "colorbar").length).toBe(1);
+    });
+
+    it("should render ErrorPopUp component", () => {
+      const wrapper = craeteWrapper(true);
+      expect(findByTestAtrr(wrapper, "error").length).toBe(1);
+    });
+
+    it("should NOT render ErrorPopUp component", () => {
+      const wrapper = craeteWrapper(false);
+      expect(findByTestAtrr(wrapper, "error").length).toBe(0);
     });
   });
 });

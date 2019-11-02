@@ -25,7 +25,9 @@ describe("Picker Button Component", () => {
   });
 
   describe("onClick", () => {
-    button.simulate("click");
-    expect(mockOnClickFn.mock.calls.length).toBe(1);
+    it("should call onClick fn", () => {
+      button.simulate("click");
+      expect(mockOnClickFn.mock.calls.length).toBe(1);
+    });
   });
 });

@@ -6,7 +6,6 @@ import Notepad from "./notepad/Notepad";
 import Paint from "./paint/Paint";
 import WindowContainer from "../window/WindowContainer";
 import windowConfig from "../../config/window";
-import toolbarConfig from "../../config/toolbar";
 import { Provider as FilesystemContextProvider } from "./filesystem/context/Context";
 import { Provider as NotepadContextProvider } from "./notepad/context/Context";
 import { Provider as PaintContextProvider } from "./paint/context/Context";
@@ -14,11 +13,14 @@ import { RootState } from "MyTypes";
 import { Window } from "../../store/window/models";
 import {
   Provider as WindowContextProvider,
-  OwnProps as WindowOwnProps,
-  StartProps as WindowStartProps
+  MinMaxProps,
+  StartProps
 } from "../window/Context";
-
-type WindowSizeProps = Omit<WindowOwnProps, "id">;
+import {
+  getWindowDefaultMinMaxProps,
+  getWindowStartWidthAndHeight,
+  getWindowStartLeftAndTop
+} from "../../utils/window";
 
 type OwnProps = {
   id: string;
@@ -74,61 +76,47 @@ export class Application extends Component<Props, {}> {
   };
 
   getWindowCtxProps = () => {
-    const windowSizes = this.getWindowSizes();
-    const startProps = this.getWindowStartProps(windowSizes);
+    const windowMinMaxProps = this.getMinMaxProps();
+    const startSize = this.getStartSize(windowMinMaxProps);
+    const startPosition = this.getStartPosition(startSize);
 
     return {
       id: this.props.id,
-      ...windowSizes,
-      ...startProps
+      startFullscreened: false,
+      ...windowMinMaxProps,
+      ...startSize,
+      ...startPosition
     };
   };
 
-  getWindowSizes = (): WindowSizeProps => {
-    switch (this.props.window.application) {
-      default:
-        return this.getDefaultWindowSizes();
-    }
+  getMinMaxProps = () => {
+    const { screenWidth, screenHeight } = this.props;
+
+    return getWindowDefaultMinMaxProps(screenWidth, screenHeight);
   };
 
-  getDefaultWindowSizes = (): WindowSizeProps => ({
-    minWidth: windowConfig.MINIMAL_WIDTH,
-    maxWidth: this.props.screenWidth,
-    minHeight: windowConfig.MINIMAL_HEIGHT,
-    maxHeight: this.props.screenHeight - toolbarConfig.HEIGHT
-  });
-
-  getWindowStartProps = (sizeProps: WindowSizeProps): WindowStartProps => {
-    switch (this.props.window.application) {
-      default:
-        return this.getDefaultStartProps(sizeProps);
-    }
-  };
-
-  getDefaultStartProps = (sizeProps: WindowSizeProps): WindowStartProps => {
-    const { maxWidth, maxHeight } = sizeProps;
+  getStartSize = (minMaxProps: MinMaxProps) => {
     const { INITIAL_WIDTH, INITIAL_HEIGHT } = windowConfig;
 
-    const startWidth: number = Math.min(maxWidth, INITIAL_WIDTH);
-    const startHeight: number = Math.min(maxHeight, INITIAL_HEIGHT);
-
-    return {
-      startFullscreened: false,
-      startWidth,
-      startHeight,
-      ...this.getStartPosition(startWidth, maxWidth, startHeight, maxHeight)
-    };
+    return getWindowStartWidthAndHeight(
+      INITIAL_WIDTH,
+      INITIAL_HEIGHT,
+      minMaxProps
+    );
   };
 
   getStartPosition = (
-    width: number,
-    maxWidth: number,
-    height: number,
-    maxHeight: number
-  ) => ({
-    startLeft: maxWidth / 2 - width / 2,
-    startTop: maxHeight / 2 - height / 2
-  });
+    startSize: Pick<StartProps, "startWidth" | "startHeight">
+  ) => {
+    const { screenWidth, screenHeight } = this.props;
+
+    return getWindowStartLeftAndTop(
+      startSize.startWidth,
+      startSize.startHeight,
+      screenWidth,
+      screenHeight
+    );
+  };
 
   render() {
     const windowCtxProps = this.getWindowCtxProps();

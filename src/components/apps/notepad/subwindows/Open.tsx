@@ -10,10 +10,6 @@ type Props = {
 };
 
 export class NotepadOpen extends Component<Props, {}> {
-  shouldComponentUpdate() {
-    return false;
-  }
-
   closeOpening = () => {
     this.props.window.setContext({ disabled: false });
     this.props.notepad.setContext({ isOpening: false });
@@ -24,7 +20,6 @@ export class NotepadOpen extends Component<Props, {}> {
 
     return (
       <OpenPicker
-        parent={window.getSubWindowProps()}
         onClose={this.closeOpening}
         filePath={notepad.path}
         id={window.id}

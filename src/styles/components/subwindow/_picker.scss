@@ -55,26 +55,3 @@
   font-size: $location-input-font-size;
   width: 100%;
 }
-
-.picker__form__button {
-  width: $picker-form-button-width;
-  height: $picker-form-button-height;
-  background: $picker-form-button-background;
-  font-size: $picker-form-button-font-size;
-  border-radius: 2px;
-  border: 1px solid $picker-form-button-border-color;
-  outline: none;
-
-  &:hover {
-    border-color: $picker-form-button-border-color-hover;
-  }
-
-  &:active {
-    border: 1px solid $picker-form-button-border-color;
-    background: $picker-form-button-background-active;
-  }
-
-  &:first-child {
-    margin-bottom: $picker-padding;
-  }
-}

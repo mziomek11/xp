@@ -8,8 +8,7 @@ const mockSetWindowContextFn = jest.fn();
 const mockSetNotepadContextFn = jest.fn();
 const props = {
   window: {
-    setContext: mockSetWindowContextFn,
-    getSubWindowProps: jest.fn()
+    setContext: mockSetWindowContextFn
   } as any,
   notepad: { setContext: mockSetNotepadContextFn } as any
 };

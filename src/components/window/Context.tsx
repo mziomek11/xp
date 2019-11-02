@@ -3,7 +3,7 @@ import { Dispatch } from "redux";
 import { connect } from "react-redux";
 
 import { RootState } from "MyTypes";
-import { ParentProps } from "./subwindow/SubWindow";
+import { ParentProps } from "./subwindow/Context";
 import {
   changePriority,
   toggleMinimalize,
@@ -13,6 +13,9 @@ import {
 
 export type OwnProps = {
   id: string;
+};
+
+export type MinMaxProps = {
   minWidth: number;
   maxWidth: number;
   minHeight: number;
@@ -27,12 +30,13 @@ export type StartProps = {
   startFullscreened: boolean;
 };
 
-type OptionalProps = {
+export type OptionalProps = {
   hideMinimalize: boolean;
   hideFullscreen: boolean;
   hideExit: boolean;
   hideIcon: boolean;
   staticWindowName: string | null;
+  resizable: boolean;
 };
 
 type DispatchProps = {
@@ -50,6 +54,7 @@ type StateProps = {
 };
 
 export type Props = OwnProps &
+  MinMaxProps &
   StartProps &
   DispatchProps &
   StateProps &
@@ -68,13 +73,10 @@ type State = {
 type SetStateData = Partial<State>;
 type SetState = { setContext: (data: SetStateData) => void };
 type GetSWProps = { getSubWindowProps: () => ParentProps };
-export type Context = OwnProps &
-  DispatchProps &
-  StateProps &
+export type Context = Omit<Props, keyof StartProps> &
   State &
   SetState &
-  GetSWProps &
-  OptionalProps;
+  GetSWProps;
 
 const WindowContext = createContext<Partial<Context>>({});
 
@@ -84,7 +86,8 @@ export class ContextProvider extends Component<Props, State> {
     hideFullscreen: false,
     hideExit: false,
     hideIcon: false,
-    staticWindowName: null
+    staticWindowName: null,
+    resizable: true
   };
 
   readonly state: State = {

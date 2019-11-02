@@ -2,37 +2,22 @@ import React from "react";
 
 import WindowContainer from "../WindowContainer";
 import Context from "./Context";
-import { StartProps, OwnProps as WindowCtxOwnProps } from "../Context";
-
-export type ParentProps = {
-  width: number;
-  height: number;
-  left: number;
-  top: number;
-  fullScr: boolean;
-  focused: boolean;
-  changePriority: () => void;
-  removeFocus: (e: MouseEvent) => void;
-};
+import { StartProps, OptionalProps } from "../Context";
 
 type OwnProps = {
   name: string;
   onClose: () => void;
 };
 
-export type MinMaxProps = Omit<WindowCtxOwnProps, "id">;
+type StartPropsToOmit = Pick<StartProps, "startLeft" | "startTop">;
+type OmittedStartProps = Omit<StartProps, keyof StartPropsToOmit>;
 
-export type Props = OwnProps &
-  MinMaxProps &
-  StartProps & {
-    parent: ParentProps;
-  };
+export type Props = OwnProps & OmittedStartProps & Partial<OptionalProps>;
+export type SWProps = Omit<Props, "name" | keyof StartProps>;
 
-export type SWProps = Omit<Props, "name">;
-
-const SubWindow: React.FC<Props> = ({ children, ...ctxProps }) => {
+const SubWindow: React.FC<Props> = ({ children, ...rest }) => {
   return (
-    <Context {...ctxProps} data-test="ctx">
+    <Context {...rest} data-test="ctx">
       <WindowContainer classModifiers={["fixed"]} data-test="window">
         {children}
       </WindowContainer>

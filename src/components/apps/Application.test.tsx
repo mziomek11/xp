@@ -1,15 +1,20 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import { windowConfig, toolbarConfig } from "../../config";
 import { Application as App } from "../../store/models";
 import { OpenData } from "../../store/window/models";
 import { Application } from "./Application";
+import { windowConfig } from "../../config";
 import { findByTestAtrr } from "../../../testingUtils";
+import {
+  getWindowDefaultMinMaxProps,
+  getWindowStartWidthAndHeight,
+  getWindowStartLeftAndTop
+} from "../../utils/window";
 
-const id: string = "abcde";
-const screenHeight: number = window.innerHeight;
+const id = "this is id";
 const screenWidth: number = window.innerWidth;
+const screenHeight: number = window.innerHeight;
 
 const createWrapper = (application: App, openData?: OpenData) => {
   const window = { openData: openData, application } as any;
@@ -25,6 +30,15 @@ const createWrapper = (application: App, openData?: OpenData) => {
 };
 
 const wrapper = createWrapper("filesystem");
+const instance = wrapper.instance();
+
+const startSizeResult = { startWidth: 15, startHeight: 25 };
+const minMaxResult = {
+  minWidth: 10,
+  minHeight: 20,
+  maxWidth: 30,
+  maxHeight: 40
+};
 
 describe("Application Component", () => {
   describe("render", () => {
@@ -54,59 +68,85 @@ describe("Application Component", () => {
     });
   });
 
-  describe("getDefaultWindowSizes", () => {
+  describe("getWindowCtxProps", () => {
+    const startPositionResult = { startLeft: 1, startTop: 2 };
+    let instance: Application;
+    let mockGetMinMaxPropsFn: jest.Mock;
+    let mockGetStartSizeFn: jest.Mock;
+    let mockGetStartPositionFn: jest.Mock;
+
+    beforeEach(() => {
+      instance = createWrapper("filesystem").instance();
+      mockGetMinMaxPropsFn = jest.fn(() => minMaxResult);
+      mockGetStartSizeFn = jest.fn(() => startSizeResult);
+      mockGetStartPositionFn = jest.fn(() => startPositionResult);
+
+      instance.getMinMaxProps = mockGetMinMaxPropsFn;
+      instance.getStartSize = mockGetStartSizeFn;
+      instance.getStartPosition = mockGetStartPositionFn;
+      instance.getWindowCtxProps();
+    });
+
+    it("should call getMinMaxProps", () => {
+      expect(mockGetMinMaxPropsFn.mock.calls.length).toBe(1);
+    });
+
+    it("should call getStartSize with minMaxProps", () => {
+      expect(mockGetStartSizeFn.mock.calls.length).toBe(1);
+      expect(mockGetStartSizeFn.mock.calls[0]).toEqual([minMaxResult]);
+    });
+
+    it("should call getStartPosition with startSize", () => {
+      expect(mockGetStartPositionFn.mock.calls.length).toBe(1);
+      expect(mockGetStartPositionFn.mock.calls[0]).toEqual([startSizeResult]);
+    });
+
     it("should return proper object", () => {
-      expect(wrapper.instance().getDefaultWindowSizes()).toEqual({
-        minWidth: windowConfig.MINIMAL_WIDTH,
-        maxWidth: screenWidth,
-        minHeight: windowConfig.MINIMAL_HEIGHT,
-        maxHeight: screenHeight - toolbarConfig.HEIGHT
+      const result = instance.getWindowCtxProps();
+
+      expect(result).toEqual({
+        id,
+        startFullscreened: false,
+        ...minMaxResult,
+        ...startSizeResult,
+        ...startPositionResult
       });
     });
   });
 
-  describe("getDefaultStartProps", () => {
-    it("should return initial width and height", () => {
-      const instance = wrapper.instance();
-      const sizes = { maxWidth: 10, maxHeight: 20 } as any;
-
-      const { startHeight, startWidth } = instance.getDefaultStartProps(sizes);
-
-      expect(startWidth).toBe(sizes.maxWidth);
-      expect(startHeight).toBe(sizes.maxHeight);
+  describe("getMinMaxProps", () => {
+    it("should return getWindowDefaultMinMaxProps result with proper props", () => {
+      const result = instance.getMinMaxProps();
+      expect(result).toEqual(
+        getWindowDefaultMinMaxProps(screenWidth, screenHeight)
+      );
     });
+  });
 
-    it("should return max width and height", () => {
-      const instance = wrapper.instance();
-      const sizes = {
-        maxWidth: windowConfig.INITIAL_WIDTH + 1,
-        maxHeight: windowConfig.INITIAL_HEIGHT + 1
-      } as any;
-
-      const { startHeight, startWidth } = instance.getDefaultStartProps(sizes);
-
-      expect(startWidth).toBe(windowConfig.INITIAL_WIDTH);
-      expect(startHeight).toBe(windowConfig.INITIAL_HEIGHT);
+  describe("getStartSize", () => {
+    it("should return getWindowStartWidthAndHeight with proper props", () => {
+      const result = instance.getStartSize(minMaxResult);
+      expect(result).toEqual(
+        getWindowStartWidthAndHeight(
+          windowConfig.INITIAL_WIDTH,
+          windowConfig.INITIAL_HEIGHT,
+          minMaxResult
+        )
+      );
     });
   });
 
   describe("getStartPosition", () => {
-    it("should calculate startLeft and startTop", () => {
-      const instance = wrapper.instance();
-      const width: number = 100;
-      const maxWidth: number = 200;
-      const height: number = 400;
-      const maxHeight: number = 800;
-
-      const expectedResult = { startLeft: 50, startTop: 200 };
-      const result = instance.getStartPosition(
-        width,
-        maxWidth,
-        height,
-        maxHeight
+    it("should return getWindowStartLeftAndTop with proper props", () => {
+      const result = instance.getStartPosition(startSizeResult);
+      expect(result).toEqual(
+        getWindowStartLeftAndTop(
+          startSizeResult.startWidth,
+          startSizeResult.startHeight,
+          screenWidth,
+          screenHeight
+        )
       );
-
-      expect(result).toEqual(expectedResult);
     });
   });
 });

@@ -77,6 +77,14 @@
     top: 0;
     cursor: ne-resize;
   }
+
+  &--disabled,
+  &--bottom#{&}--left,
+  &--bottom#{&}--right,
+  &--top#{&}--left,
+  &--top#{&}--right {
+    cursor: default;
+  }
 }
 
 .window--focused {

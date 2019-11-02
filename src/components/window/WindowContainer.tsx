@@ -148,7 +148,6 @@ export class WindowContainer extends Component<Props, State> {
     const { children } = this.props;
     const inlineStyles = this.getInlineStyles();
     const className = this.getClassName();
-
     return (
       <>
         <Window

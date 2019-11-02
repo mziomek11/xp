@@ -14,6 +14,7 @@ type OwnProps = {
   onMouseMove?: (v: Vector) => void;
   onMouseUp?: (v: Vector) => void;
   onToolChange?: VoidFunction;
+  notImplemented?: boolean;
 };
 
 type CtxProps = {
@@ -127,10 +128,17 @@ export class Tool extends Component<Props, State> {
   };
 
   handleIconClick = () => {
-    const { setContext, selectedTool } = this.props.paint;
-    setContext({
-      lastSelectedTool: selectedTool,
-      selectedTool: this.props.toolType
+    const { window, paint, notImplemented, toolType } = this.props;
+
+    if (notImplemented) {
+      window.setContext({ disabled: true });
+      paint.setContext({ showError: true });
+      return;
+    }
+
+    paint.setContext({
+      lastSelectedTool: paint.selectedTool,
+      selectedTool: toolType
     });
   };
 
