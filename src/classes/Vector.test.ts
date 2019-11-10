@@ -1,4 +1,4 @@
-import Vector from "./Vector";
+import Vector, { Corner } from "./Vector";
 
 let expetation: Vector;
 
@@ -66,6 +66,39 @@ describe("Vector class", () => {
 
       const result = Vector.getXYDistance(v1, v2);
       expect(result).toEqual([5, 15]);
+    });
+  });
+
+  describe("getCorner", () => {
+    const minX = 1;
+    const maxX = 4;
+    const minY = 2;
+    const maxY = 5;
+    const minV = new Vector(minX, minY);
+    const maxV = new Vector(maxX, maxY);
+
+    it("should return minX and minY", () => {
+      const expV = new Vector(minX, minY);
+
+      expect(Vector.getCorner(minV, maxV, Corner.TopLeft)).toEqual(expV);
+    });
+
+    it("should return maxX and minY", () => {
+      const expV = new Vector(maxY, minY);
+
+      expect(Vector.getCorner(minV, maxV, Corner.TopRight)).toEqual(expV);
+    });
+
+    it("should return minX and maxY", () => {
+      const expV = new Vector(minX, maxY);
+
+      expect(Vector.getCorner(minV, maxV, Corner.BottomLeft)).toEqual(expV);
+    });
+
+    it("should return maxX and maxY", () => {
+      const expV = new Vector(maxX, maxY);
+
+      expect(Vector.getCorner(minV, maxV, Corner.BottomRight)).toEqual(expV);
     });
   });
 });

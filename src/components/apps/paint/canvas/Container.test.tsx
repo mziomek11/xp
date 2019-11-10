@@ -9,7 +9,7 @@ let mockFillRectFn: jest.Mock;
 let mockGetImageFn: jest.Mock;
 let mockPutImageFn: jest.Mock;
 
-const createWrapper = () => {
+const createWrapper = (isSelecting: boolean = false) => {
   mockSetContextFn = jest.fn();
   mockFillRectFn = jest.fn();
   mockGetImageFn = jest.fn();
@@ -20,6 +20,7 @@ const createWrapper = () => {
     primaryColor: "#000000",
     secondaryColor: "#ffffff",
     selectedTool: "pencil" as any,
+    options: { select: { isSelecting } },
     canvasCtx: {
       fillRect: mockFillRectFn,
       getImageData: mockGetImageFn,
@@ -39,28 +40,42 @@ describe("Paint CanvasContainer component", () => {
       expect(findByTestAtrr(wrapper, "canvas").length).toBe(1);
     });
 
-    it("should render right ContainerResizer", () => {
-      const resizer = findByTestAtrr(wrapper, "E");
-
-      expect(resizer.length).toBe(1);
-      expect(resizer.prop("isHorizontal")).toBe(true);
-      expect(resizer.prop("isVertical")).toBe(false);
+    it("should render MainCanvas component", () => {
+      expect(findByTestAtrr(wrapper, "main").length).toBe(1);
     });
 
-    it("should render bottom ContainerResizer", () => {
-      const resizer = findByTestAtrr(wrapper, "S");
-
-      expect(resizer.length).toBe(1);
-      expect(resizer.prop("isHorizontal")).toBe(false);
-      expect(resizer.prop("isVertical")).toBe(true);
+    it("should render TempCanvas component", () => {
+      expect(findByTestAtrr(wrapper, "temp").length).toBe(1);
     });
 
-    it("should render bottom right ContainerResizer", () => {
-      const resizer = findByTestAtrr(wrapper, "SE");
+    it("should render resizers", () => {
+      const wrapper = createWrapper(false);
+      const resizerRight = findByTestAtrr(wrapper, "E");
+      const resizerBottom = findByTestAtrr(wrapper, "S");
+      const resizerBottomRight = findByTestAtrr(wrapper, "SE");
 
-      expect(resizer.length).toBe(1);
-      expect(resizer.prop("isHorizontal")).toBe(true);
-      expect(resizer.prop("isVertical")).toBe(true);
+      expect(resizerRight.length).toBe(1);
+      expect(resizerRight.prop("isHorizontal")).toBe(true);
+      expect(resizerRight.prop("isVertical")).toBe(false);
+
+      expect(resizerBottom.length).toBe(1);
+      expect(resizerBottom.prop("isHorizontal")).toBe(false);
+      expect(resizerBottom.prop("isVertical")).toBe(true);
+
+      expect(resizerBottomRight.length).toBe(1);
+      expect(resizerBottomRight.prop("isHorizontal")).toBe(true);
+      expect(resizerBottomRight.prop("isVertical")).toBe(true);
+    });
+
+    it("should NOT render resizers", () => {
+      const wrapper = createWrapper(true);
+      const resizerRight = findByTestAtrr(wrapper, "E");
+      const resizerBottom = findByTestAtrr(wrapper, "S");
+      const resizerBottomRight = findByTestAtrr(wrapper, "SE");
+
+      expect(resizerRight.length).toBe(0);
+      expect(resizerBottom.length).toBe(0);
+      expect(resizerBottomRight.length).toBe(0);
     });
   });
 

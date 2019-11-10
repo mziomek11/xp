@@ -185,8 +185,12 @@
 
   &--temp {
     position: absolute;
-    left: $paint-canvas-container-padding;
-    top: $paint-canvas-container-padding;
+    left: 0;
+    top: 0;
+    transform: translate(
+      $paint-canvas-container-padding,
+      $paint-canvas-container-padding
+    );
   }
 }
 

@@ -22,8 +22,12 @@ export class Container extends Component<CtxProps, State> {
     height: 200
   };
 
-  shouldComponentUpdate(_: any, nextState: State) {
-    return !areObjectsEqual(this.state, nextState, ["width", "height"]);
+  shouldComponentUpdate(nextProps: CtxProps, nextState: State) {
+    const { isSelecting } = this.props.paint.options.select;
+    return (
+      !areObjectsEqual(this.state, nextState, ["width", "height"]) ||
+      isSelecting !== nextProps.paint.options.select.isSelecting
+    );
   }
 
   resize = (newWidth: number, newHeight: number) => {
@@ -45,17 +49,22 @@ export class Container extends Component<CtxProps, State> {
   };
 
   render() {
+    const { isSelecting } = this.props.paint.options.select;
     const { width, height } = this.state;
     const size = { width, height, resize: this.resize };
 
     return (
       <div className="paint__canvas-container" data-test="canvas">
-        <MainCanvas width={width} height={height} />
-        <TempCanvas width={width} height={height} />
+        <MainCanvas width={width} height={height} data-test="main" />
+        <TempCanvas width={width} height={height} data-test="temp" />
 
-        <Resizer isVertical={false} isHorizontal {...size} data-test="E" />
-        <Resizer isVertical isHorizontal={false} {...size} data-test="S" />
-        <Resizer isVertical isHorizontal {...size} data-test="SE" />
+        {!isSelecting && (
+          <>
+            <Resizer isVertical={false} isHorizontal {...size} data-test="E" />
+            <Resizer isVertical isHorizontal={false} {...size} data-test="S" />
+            <Resizer isVertical isHorizontal {...size} data-test="SE" />
+          </>
+        )}
       </div>
     );
   }

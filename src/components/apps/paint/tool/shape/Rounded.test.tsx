@@ -3,7 +3,7 @@ import { shallow } from "enzyme";
 
 import { Rounded, cornerRadius } from "./Rounded";
 import { findByTestAtrr } from "../../../../../../testingUtils";
-import Vector from "../../../../../classes/Vector";
+import Vector, { Corner } from "../../../../../classes/Vector";
 import { ShapeDrawMode } from "../../models";
 
 let mockSetContextFn: jest.Mock;
@@ -135,7 +135,8 @@ describe("Paint Rounded Tool component", () => {
       mockStrokeFn = jest.fn();
     });
 
-    const [minV, maxV] = instance.getMinAndMaxVectors(testVector);
+    const minV = Vector.getCorner(Vector.Zero, testVector, Corner.TopLeft);
+    const maxV = Vector.getCorner(Vector.Zero, testVector, Corner.BottomRight);
     const [x, y] = instance.getXYradius(testVector);
     const [NW, SE] = instance.getNWAndSECircleCenters(minV, maxV, x, y);
 
@@ -144,15 +145,6 @@ describe("Paint Rounded Tool component", () => {
         instance = createWrapper().instance();
         instance.fill = jest.fn();
         instance.stroke = jest.fn();
-      });
-
-      it("should call getMinAndMaxVectors with given vector", () => {
-        const mockGetMinMaxVector = jest.fn(() => [testVector, testVector]);
-        instance.getMinAndMaxVectors = mockGetMinMaxVector as any;
-        instance.draw(testVector, 10 as any);
-
-        expect(mockGetMinMaxVector.mock.calls.length).toBe(1);
-        expect(mockGetMinMaxVector.mock.calls[0]).toEqual([testVector]);
       });
 
       it("should call getXYradius with given vector", () => {
@@ -175,7 +167,8 @@ describe("Paint Rounded Tool component", () => {
         expect(mockGetNWAndSECircleCenters.mock.calls.length).toBe(1);
         expect(mockGetNWAndSECircleCenters.mock.calls[0].length).toBe(4);
         expect(mockGetNWAndSECircleCenters.mock.calls[0]).toEqual([
-          ...instance.getMinAndMaxVectors(testVector),
+          minV,
+          maxV,
           ...instance.getXYradius(testVector)
         ]);
       });
@@ -252,18 +245,6 @@ describe("Paint Rounded Tool component", () => {
         expect(mockFillFn.mock.calls.length).toBe(1);
         expect(mockFillFn.mock.calls[0]).toEqual([minV, maxV, NW, SE, x, y, 1]);
       });
-    });
-  });
-
-  describe("getMinAndMaxVectors", () => {
-    it("should return proper value", () => {
-      const { getMinAndMaxVectors, setState } = instance;
-
-      setState({ startPoint: new Vector(10, 20) });
-      expect(getMinAndMaxVectors(new Vector(40, -40))).toEqual([
-        new Vector(10, -40),
-        new Vector(40, 20)
-      ]);
     });
   });
 

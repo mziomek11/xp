@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 import Tool from "../Tool";
-import V from "../../../../../classes/Vector";
+import V, { Corner } from "../../../../../classes/Vector";
 import withContext from "../../../../../hoc/withContext";
 import { PaintContextType } from "ContextType";
 import {
@@ -58,9 +58,10 @@ export class Rounded extends Component<CtxProps, State> {
   draw = (canvasPos: V, ctx: CanvasRenderingContext2D) => {
     const { setColor, options } = this.props.paint;
     const { rounded } = options.shapeDrawMode;
-    const { isMouseButtonLeft } = this.state;
+    const { isMouseButtonLeft, startPoint } = this.state;
 
-    const [minV, maxV] = this.getMinAndMaxVectors(canvasPos);
+    const minV = V.getCorner(startPoint, canvasPos, Corner.TopLeft);
+    const maxV = V.getCorner(startPoint, canvasPos, Corner.BottomRight);
     const [rx, ry] = this.getXYradius(canvasPos);
     const [cornNW, cornSE] = this.getNWAndSECircleCenters(minV, maxV, rx, ry);
 
@@ -80,16 +81,6 @@ export class Rounded extends Component<CtxProps, State> {
       setColor(isMouseButtonLeft);
       this.stroke(minV, maxV, cornNW, cornSE, rx, ry, ctx);
     }
-  };
-
-  getMinAndMaxVectors = (endV: V): [V, V] => {
-    const { min, max } = Math;
-    const { startPoint } = this.state;
-
-    const minV = new V(min(startPoint.x, endV.x), min(startPoint.y, endV.y));
-    const maxV = new V(max(startPoint.x, endV.x), max(startPoint.y, endV.y));
-
-    return [minV, maxV];
   };
 
   getXYradius = (endV: V): [number, number] => {

@@ -5,7 +5,8 @@ import {
   calculateDistance,
   calculateDistancePerTick,
   hexToRgb,
-  rgbToHex
+  rgbToHex,
+  setColorAlphaToZero
 } from "./paint";
 
 let mockBeginPathFn: jest.Mock;
@@ -182,6 +183,16 @@ describe("Paint utils functions", () => {
       expect(call3).toEqual([{ x: 1, y: 0 }]);
       expect(call4).toEqual([{ x: 2, y: 1 }]);
       expect(call5).toEqual([endPos]);
+    });
+  });
+
+  describe("setColorAlphaToZero", () => {
+    it("should return updated image", () => {
+      const img = {
+        data: [255, 255, 255, 255, 255, 255, 254, 255]
+      } as any;
+      const updatedImage = setColorAlphaToZero(img, "#ffffff");
+      expect(updatedImage.data).toEqual([255, 255, 255, 0, 255, 255, 254, 255]);
     });
   });
 });

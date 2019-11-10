@@ -1,3 +1,5 @@
+import Vector from "../../../classes/Vector";
+
 export type ShapeDrawMode = "stroke" | "fill" | "both";
 
 export enum LineWidth {
@@ -35,6 +37,12 @@ export enum BrushSize {
   Big = 8
 }
 
+export type SelectionOptions = {
+  isSelecting: boolean;
+  position: Vector;
+  size: Vector;
+};
+
 export type Options = {
   lineWidth: LineWidth;
   rubberSize: RubberSize;
@@ -52,6 +60,7 @@ export type Options = {
     rounded: ShapeDrawMode;
     poly: ShapeDrawMode;
   };
+  select: SelectionOptions;
 };
 
 type Shape = "rect" | "poly" | "circle" | "rounded";

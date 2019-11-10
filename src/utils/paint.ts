@@ -242,3 +242,42 @@ function newton(n: number, k: number): number {
 function base(n: number, i: number, t: number): number {
   return newton(n, i) * Math.pow(t, i) * Math.pow(1 - t, n - i);
 }
+
+export function strokeBorder(start: Vector, end: Vector, ctx: Ctx) {
+  const lastWidth = ctx.lineWidth;
+  const lastStroke = ctx.strokeStyle;
+  const lastLineDash = ctx.getLineDash();
+
+  ctx.setLineDash([2, 1]);
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = "black";
+  ctx.beginPath();
+  ctx.moveTo(start.x, start.y);
+  ctx.lineTo(end.x, start.y);
+  ctx.lineTo(end.x, end.y);
+  ctx.lineTo(start.x, end.y);
+  ctx.lineTo(start.x, start.y);
+  ctx.stroke();
+
+  ctx.lineWidth = lastWidth;
+  ctx.strokeStyle = lastStroke;
+  ctx.setLineDash(lastLineDash);
+}
+
+export function setColorAlphaToZero(
+  image: ImageData,
+  color: string
+): ImageData {
+  const { r, g, b } = hexToRgb(color);
+  const { data } = image;
+
+  for (let i = 0; i < data.length - 4; i += 4) {
+    const pixelR = data[i];
+    const pixelG = data[i + 1];
+    const pixelB = data[i + 2];
+
+    if (pixelR === r && pixelG === g && pixelB === b) data[i + 3] = 0;
+  }
+
+  return image;
+}

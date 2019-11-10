@@ -7,8 +7,10 @@ import {
   LineWidth,
   RubberSize,
   ZoomSize,
-  AeroSize
+  AeroSize,
+  SelectionOptions as SelOpts
 } from "../models";
+import Vector from "../../../../classes/Vector";
 
 type State = {
   selectedTool: Tool;
@@ -25,15 +27,21 @@ type State = {
 type SetStateData = Partial<State>;
 type SetState = { setContext: (data: SetStateData) => void };
 type SetOptions = { setOptions: (options: Partial<Options>) => void };
+type SetSelect = { setSelectOptions: (o: Partial<SelOpts>) => void };
 type ClearCtx = { clearTempCanvas: VoidFunction };
 type SetColor = { setColor: (primary: boolean) => void };
-export type Context = State & SetState & SetOptions & ClearCtx & SetColor;
+export type Context = State &
+  SetState &
+  SetOptions &
+  ClearCtx &
+  SetColor &
+  SetSelect;
 
 const PaintContext = createContext<Partial<Context>>({});
 
 export class ContextProvider extends Component<{}, State> {
   readonly state: State = {
-    selectedTool: "poly",
+    selectedTool: "rectSelect",
     lastSelectedTool: "brush",
     primaryColor: "#000000",
     secondaryColor: "#ffffff",
@@ -57,6 +65,11 @@ export class ContextProvider extends Component<{}, State> {
         rect: "stroke",
         rounded: "fill",
         poly: "stroke"
+      },
+      select: {
+        isSelecting: false,
+        size: Vector.Zero,
+        position: Vector.Zero
       }
     }
   };
@@ -66,11 +79,18 @@ export class ContextProvider extends Component<{}, State> {
     setContext: (data: SetStateData) => this.setState(data as any),
     setOptions: this.setOptions,
     clearTempCanvas: this.clearTempCanvas,
-    setColor: this.setColor
+    setColor: this.setColor,
+    setSelectOptions: this.setSelectOptions
   });
 
   setOptions = (newOptions: Partial<Options>) => {
     this.setState({ options: { ...this.state.options, ...newOptions } });
+  };
+
+  setSelectOptions = (newSelectOpts: Partial<SelOpts>) => {
+    this.setOptions({
+      select: { ...this.state.options.select, ...newSelectOpts }
+    });
   };
 
   setColor = (primary: boolean) => {
