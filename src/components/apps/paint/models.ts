@@ -38,28 +38,33 @@ export enum BrushSize {
 }
 
 export type SelectionOptions = {
-  isSelecting: boolean;
+  isRect: boolean;
+  isText: boolean;
+  isTransparent: boolean;
   position: Vector;
   size: Vector;
+};
+
+type BrushOptions = {
+  type: Brush;
+  size: BrushSize;
+};
+
+type DrawModeOptions = {
+  circle: ShapeDrawMode;
+  rect: ShapeDrawMode;
+  rounded: ShapeDrawMode;
+  poly: ShapeDrawMode;
 };
 
 export type Options = {
   lineWidth: LineWidth;
   rubberSize: RubberSize;
-  isSelectTransparent: boolean;
   zoom: ZoomSize;
   aeroSize: AeroSize;
   pickColor: string;
-  brush: {
-    type: Brush;
-    size: BrushSize;
-  };
-  shapeDrawMode: {
-    circle: ShapeDrawMode;
-    rect: ShapeDrawMode;
-    rounded: ShapeDrawMode;
-    poly: ShapeDrawMode;
-  };
+  brush: BrushOptions;
+  shapeDrawMode: DrawModeOptions;
   select: SelectionOptions;
 };
 

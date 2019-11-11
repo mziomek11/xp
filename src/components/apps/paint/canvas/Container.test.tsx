@@ -9,7 +9,7 @@ let mockFillRectFn: jest.Mock;
 let mockGetImageFn: jest.Mock;
 let mockPutImageFn: jest.Mock;
 
-const createWrapper = (isSelecting: boolean = false) => {
+const createWrapper = (isRect: boolean = false) => {
   mockSetContextFn = jest.fn();
   mockFillRectFn = jest.fn();
   mockGetImageFn = jest.fn();
@@ -20,7 +20,7 @@ const createWrapper = (isSelecting: boolean = false) => {
     primaryColor: "#000000",
     secondaryColor: "#ffffff",
     selectedTool: "pencil" as any,
-    options: { select: { isSelecting } },
+    options: { select: { isRect } },
     canvasCtx: {
       fillRect: mockFillRectFn,
       getImageData: mockGetImageFn,

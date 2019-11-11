@@ -14,13 +14,13 @@ let mockSetColorFn: jest.Mock;
 let mockFillRectFn: jest.Mock;
 
 type OptionalProps = {
-  isSelecting: boolean;
+  isRect: boolean;
   isSelectTransparent: boolean;
 };
 
 const createWrapper = (opt: Partial<OptionalProps> = {}) => {
   const optionalProps: OptionalProps = {
-    isSelecting: true,
+    isRect: true,
     isSelectTransparent: false,
     ...opt
   };
@@ -40,7 +40,8 @@ const createWrapper = (opt: Partial<OptionalProps> = {}) => {
       setContext: mockSetContextFn,
       canvasCtx: {
         putImageData: mockPutImageDataFn,
-        fillRect: mockFillRectFn
+        fillRect: mockFillRectFn,
+        canvas: { width: 10, height: 10 }
       },
       tempCanvasCtx: {
         getImageData: mockGetImageDataFn,
@@ -50,7 +51,7 @@ const createWrapper = (opt: Partial<OptionalProps> = {}) => {
       options: {
         isSelectTransparent: optionalProps.isSelectTransparent,
         select: {
-          isSelecting: optionalProps.isSelecting,
+          isRect: optionalProps.isRect,
           position: Vector.One,
           size: Vector.One
         }
@@ -84,7 +85,7 @@ describe("Paint RectSelect Tool component", () => {
 
     it("should call endSelection", () => {
       const mockSetSelectionFn = jest.fn();
-      const instance = createWrapper({ isSelecting: true }).instance();
+      const instance = createWrapper({ isRect: true }).instance();
       instance.endSelection = mockSetSelectionFn;
       instance.handleToolChange();
 
@@ -93,7 +94,7 @@ describe("Paint RectSelect Tool component", () => {
 
     it("should NOT call endSelection", () => {
       const mockSetSelectionFn = jest.fn();
-      const instance = createWrapper({ isSelecting: false }).instance();
+      const instance = createWrapper({ isRect: false }).instance();
       instance.endSelection = mockSetSelectionFn;
       instance.handleToolChange();
 
@@ -104,8 +105,8 @@ describe("Paint RectSelect Tool component", () => {
   describe("handleMouseDown", () => {
     let mockEndSelectionFn: jest.Mock;
 
-    const createMouseDownInstance = (isSelecting: boolean) => {
-      const wrapper = createWrapper({ isSelecting });
+    const createMouseDownInstance = (isRect: boolean) => {
+      const wrapper = createWrapper({ isRect });
       const instance = wrapper.instance();
       mockEndSelectionFn = jest.fn();
       instance.endSelection = mockEndSelectionFn;
@@ -157,25 +158,19 @@ describe("Paint RectSelect Tool component", () => {
 
     it("should call setSelectOptions", () => {
       expect(mockSetSelectOptionsFn.mock.calls.length).toBe(1);
-      expect(mockSetSelectOptionsFn.mock.calls[0]).toEqual([
-        { isSelecting: false }
-      ]);
+      expect(mockSetSelectOptionsFn.mock.calls[0]).toEqual([{ isRect: false }]);
     });
   });
 
   describe("putImage", () => {
     const getSelectionResult = 1;
-    const convertResult = 2;
     let mockGetSelectionImageFn: jest.Mock;
-    let mockConvertFn: jest.Mock;
 
     const createPutImageInstance = (isSelectTransparent: boolean) => {
       mockGetSelectionImageFn = jest.fn(() => getSelectionResult);
-      mockConvertFn = jest.fn(() => convertResult);
 
       const instance = createWrapper({ isSelectTransparent }).instance();
       instance.getSelectionImage = mockGetSelectionImageFn;
-      instance.convertTransparencyToOriginalColor = mockConvertFn;
 
       return instance;
     };
@@ -186,17 +181,6 @@ describe("Paint RectSelect Tool component", () => {
 
       expect(mockPutImageDataFn.mock.calls.length).toBe(1);
       expect(mockPutImageDataFn.mock.calls[0][0]).toBe(getSelectionResult);
-    });
-
-    it("should call putImageData with convertTransparencyToOriginalColor", () => {
-      const instance = createPutImageInstance(true);
-      instance.putImage();
-
-      expect(mockConvertFn.mock.calls.length).toBe(1);
-      expect(mockConvertFn.mock.calls[0]).toEqual([getSelectionResult]);
-
-      expect(mockPutImageDataFn.mock.calls.length).toBe(1);
-      expect(mockPutImageDataFn.mock.calls[0][0]).toBe(convertResult);
     });
 
     it("should call putImageData with proper x and y", () => {
@@ -230,7 +214,6 @@ describe("Paint RectSelect Tool component", () => {
     let mockGetImageDataFn: jest.Mock;
     let mockUpdateSelectOptions: jest.Mock;
     let mockFillCopiedSpace: jest.Mock;
-    let mockGetSelectPositionAndSizeFn: jest.Mock;
 
     const createMouseUpInstance = (size: Vector = selectSize) => {
       const instance = createWrapper().instance();
@@ -238,12 +221,10 @@ describe("Paint RectSelect Tool component", () => {
       mockGetImageDataFn = jest.fn(() => getImageDataRes);
       mockUpdateSelectOptions = jest.fn();
       mockFillCopiedSpace = jest.fn();
-      mockGetSelectPositionAndSizeFn = jest.fn(() => [selectPos, size]);
 
       instance.getImageData = mockGetImageDataFn;
       instance.updateSelectOptions = mockUpdateSelectOptions;
       instance.fillCopiedSpace = mockFillCopiedSpace;
-      instance.getSelectPositionAndSize = mockGetSelectPositionAndSizeFn;
 
       return instance;
     };
@@ -273,7 +254,7 @@ describe("Paint RectSelect Tool component", () => {
 
     it("should call getImageData with proper args", () => {
       const instance = createMouseUpInstance();
-      instance.handleMouseUp(Vector.Zero);
+      instance.handleMouseUp(Vector.One);
 
       expect(mockGetImageDataFn.mock.calls.length).toBe(1);
       expect(mockGetImageDataFn.mock.calls[0]).toEqual([selectPos, selectSize]);
@@ -281,7 +262,7 @@ describe("Paint RectSelect Tool component", () => {
 
     it("should call updateSelectOptions with proper args", () => {
       const instance = createMouseUpInstance();
-      instance.handleMouseUp(Vector.Zero);
+      instance.handleMouseUp(Vector.One);
 
       expect(mockUpdateSelectOptions.mock.calls.length).toBe(1);
       expect(mockUpdateSelectOptions.mock.calls[0]).toEqual([
@@ -292,7 +273,7 @@ describe("Paint RectSelect Tool component", () => {
 
     it("should call putImageData with proper args", () => {
       const instance = createMouseUpInstance();
-      instance.handleMouseUp(Vector.Zero);
+      instance.handleMouseUp(Vector.One);
 
       expect(mockPutImageDataFn.mock.calls.length).toBe(1);
       expect(mockPutImageDataFn.mock.calls[0]).toEqual([getImageDataRes, 0, 0]);
@@ -300,7 +281,7 @@ describe("Paint RectSelect Tool component", () => {
 
     it("should call fillCopiedSpace with proper args", () => {
       const instance = createMouseUpInstance();
-      instance.handleMouseUp(Vector.Zero);
+      instance.handleMouseUp(Vector.One);
 
       expect(mockFillCopiedSpace.mock.calls.length).toBe(1);
       expect(mockFillCopiedSpace.mock.calls[0]).toEqual([
@@ -318,7 +299,7 @@ describe("Paint RectSelect Tool component", () => {
       instance.updateSelectOptions(position, size);
 
       expect(mockSetSelectOptionsFn.mock.calls.length).toBe(1);
-      const expResult = { isSelecting: true, position, size };
+      const expResult = { isRect: true, position, size };
       expect(mockSetSelectOptionsFn.mock.calls[0]).toEqual([expResult]);
     });
   });

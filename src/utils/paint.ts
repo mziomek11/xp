@@ -1,4 +1,4 @@
-import Vector from "../classes/Vector";
+import Vector, { Corner } from "../classes/Vector";
 
 type Ctx = CanvasRenderingContext2D;
 type RGB = { r: number; g: number; b: number };
@@ -277,6 +277,63 @@ export function setColorAlphaToZero(
     const pixelB = data[i + 2];
 
     if (pixelR === r && pixelG === g && pixelB === b) data[i + 3] = 0;
+  }
+
+  return image;
+}
+
+export function getSelectPosAndSize(
+  v1: Vector,
+  v2: Vector,
+  context: Ctx
+): [Vector, Vector] {
+  const { width, height } = context.canvas;
+  const { BottomRight, TopLeft } = Corner;
+  const { max, min } = Math;
+
+  const NWCorner = Vector.getCorner(v1, v2, TopLeft);
+  const SECorner = Vector.getCorner(v1, v2, BottomRight);
+
+  const position = new Vector(max(NWCorner.x, 0), max(NWCorner.y, 0));
+  const maxWidth = width - position.x;
+  const maxHeight = height - position.y;
+
+  const size = Vector.sub(SECorner, position);
+  const adjSize = new Vector(min(size.x, maxWidth), min(size.y, maxHeight));
+
+  return [position, adjSize];
+}
+
+export function convertTransparencyToOriginalColor(
+  image: ImageData,
+  mainCtx: Ctx,
+  selectPos: Vector,
+  selectSize: Vector
+) {
+  const { width, height } = mainCtx.canvas;
+  const { data } = image;
+  const orginalData = mainCtx.getImageData(0, 0, width, height).data;
+
+  for (let i = 0; i < data.length - 4; i += 4) {
+    const pixelAlpha = data[i + 3];
+
+    if (pixelAlpha === 0) {
+      const row = Math.floor(i / 4 / selectSize.x);
+      const col = (i / 4) % selectSize.x;
+      const originalRow = selectPos.y + row;
+      const originalCol = selectPos.x + col;
+
+      const originalPixelIndex = (originalRow * width + originalCol) * 4;
+      const originalR = orginalData[originalPixelIndex];
+      const originalG = orginalData[originalPixelIndex + 1];
+      const originalB = orginalData[originalPixelIndex + 2];
+      const originalA = orginalData[originalPixelIndex + 3];
+
+      data[i] = originalR;
+      data[i + 1] = originalG;
+      data[i + 2] = originalB;
+      data[i + 3] = originalA;
+    }
   }
 
   return image;

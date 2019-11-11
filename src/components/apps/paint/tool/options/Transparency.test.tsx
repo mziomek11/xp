@@ -7,10 +7,10 @@ import { findByTestAtrr } from "../../../../../../testingUtils";
 import defaultImage from "../../../../../assets/paint/select.png";
 import transparentImage from "../../../../../assets/paint/select-transparent.png";
 
-const mockSetOptionsFn = jest.fn();
+const mockSetSelectOptions = jest.fn();
 const paint: any = {
-  setOptions: mockSetOptionsFn,
-  options: { isSelectTransparent: false }
+  setSelectOptions: mockSetSelectOptions,
+  options: { select: { isTransparent: false } }
 };
 
 const wrapper = shallow<TransparencyOptions>(
@@ -57,9 +57,9 @@ describe("Paint ToolTransparencyOptions component", () => {
     it("should call setOptions", () => {
       instance.handleClick(true);
 
-      expect(mockSetOptionsFn.mock.calls.length).toBe(1);
-      expect(mockSetOptionsFn.mock.calls[0]).toEqual([
-        { isSelectTransparent: true }
+      expect(mockSetSelectOptions.mock.calls.length).toBe(1);
+      expect(mockSetSelectOptions.mock.calls[0]).toEqual([
+        { isTransparent: true }
       ]);
     });
   });

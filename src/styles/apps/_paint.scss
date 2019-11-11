@@ -182,16 +182,30 @@
 
 .paint__canvas {
   image-rendering: pixelated;
+}
 
-  &--temp {
-    position: absolute;
-    left: 0;
-    top: 0;
-    transform: translate(
-      $paint-canvas-container-padding,
-      $paint-canvas-container-padding
-    );
-  }
+.paint__canvas--temp,
+.paint__canvas__textarea {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-style: dashed;
+  border-color: $focus-color;
+  border-width: 0;
+  transform: translate(
+    $paint-canvas-container-padding,
+    $paint-canvas-container-padding
+  );
+}
+
+.paint__canvas__textarea {
+  outline: none;
+  display: block;
+  font-family: "Arial";
+  font-size: 12px;
+  line-height: 14px;
+  border-width: 1px;
 }
 
 .paint__canvas-container {

@@ -61,30 +61,30 @@ export class TempCanvas extends Component<Props, State> {
 
   getInlineStyles = (): React.CSSProperties => {
     const { showTempCanvas, options } = this.props.paint;
-    const { isSelecting } = options.select;
+    const { isRect } = options.select;
     const { lastCanvasPos } = this.state;
 
     const styles: React.CSSProperties = {};
-    styles.display = showTempCanvas ? "block" : "none";
 
-    if (isSelecting) {
+    if (showTempCanvas) styles.display = "block";
+    if (isRect) {
       styles.left = lastCanvasPos.x;
       styles.top = lastCanvasPos.y;
-      styles.border = "1px dashed black";
+      styles.borderWidth = 1;
     }
 
     return styles;
   };
 
   getWidthAndHeight = (): [number, number] => {
-    const { isSelecting, size } = this.props.paint.options.select;
-    if (isSelecting) return [size.x, size.y];
+    const { isRect, size } = this.props.paint.options.select;
+    if (isRect) return [size.x, size.y];
     else return [this.props.width, this.props.height];
   };
 
   handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    const { isSelecting, position } = this.props.paint.options.select;
-    if (!isSelecting) return;
+    const { isRect, position } = this.props.paint.options.select;
+    if (!isRect) return;
 
     const mousePos = this.getMousePosition(e);
     this.setState({ lastMousePos: mousePos, lastCanvasPos: position });

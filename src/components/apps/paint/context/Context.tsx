@@ -41,7 +41,7 @@ const PaintContext = createContext<Partial<Context>>({});
 
 export class ContextProvider extends Component<{}, State> {
   readonly state: State = {
-    selectedTool: "rectSelect",
+    selectedTool: "text",
     lastSelectedTool: "brush",
     primaryColor: "#000000",
     secondaryColor: "#ffffff",
@@ -55,7 +55,6 @@ export class ContextProvider extends Component<{}, State> {
       aeroSize: AeroSize.Small,
       zoom: ZoomSize.Default,
       pickColor: "transparent",
-      isSelectTransparent: false,
       brush: {
         type: "slash",
         size: BrushSize.Big
@@ -67,7 +66,9 @@ export class ContextProvider extends Component<{}, State> {
         poly: "stroke"
       },
       select: {
-        isSelecting: false,
+        isRect: false,
+        isText: false,
+        isTransparent: false,
         size: Vector.Zero,
         position: Vector.Zero
       }

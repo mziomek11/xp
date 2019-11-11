@@ -22,9 +22,9 @@ export class TransparencyOptions extends Component<CtxProps> {
   private transparencyClass = "paint__toolbar__options__transparency";
 
   shouldComponentUpdate(nextProps: CtxProps) {
-    const { isSelectTransparent } = this.props.paint.options;
+    const { isTransparent } = this.props.paint.options.select;
 
-    return isSelectTransparent !== nextProps.paint.options.isSelectTransparent;
+    return isTransparent !== nextProps.paint.options.select.isTransparent;
   }
 
   getOptionData = (isTransparent: boolean): [OptionProps, ImageProps] => {
@@ -35,9 +35,9 @@ export class TransparencyOptions extends Component<CtxProps> {
   };
 
   getOptionProps = (isTransparent: boolean) => {
-    const { isSelectTransparent } = this.props.paint.options;
+    const { select } = this.props.paint.options;
 
-    const focused = isTransparent === isSelectTransparent;
+    const focused = isTransparent === select.isTransparent;
     const onClick = () => this.handleClick(isTransparent);
 
     return { focused, onClick };
@@ -52,7 +52,7 @@ export class TransparencyOptions extends Component<CtxProps> {
   };
 
   handleClick = (isTransparent: boolean) => {
-    this.props.paint.setOptions({ isSelectTransparent: isTransparent });
+    this.props.paint.setSelectOptions({ isTransparent });
   };
 
   render() {

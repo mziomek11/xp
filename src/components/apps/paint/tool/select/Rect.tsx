@@ -1,12 +1,17 @@
 import React, { Component } from "react";
 
 import Tool from "../Tool";
-import Vector, { Corner } from "../../../../../classes/Vector";
+import Vector from "../../../../../classes/Vector";
 import withContext from "../../../../../hoc/withContext";
 import { PaintContextType } from "ContextType";
 
 import rectShapeIcon from "../../../../../assets/paint/rectshape.png";
-import { strokeBorder, setColorAlphaToZero } from "../../../../../utils/paint";
+import {
+  strokeBorder,
+  setColorAlphaToZero,
+  getSelectPosAndSize,
+  convertTransparencyToOriginalColor
+} from "../../../../../utils/paint";
 
 type CtxProps = {
   paint: PaintContextType;
@@ -28,13 +33,13 @@ export class RectSelect extends Component<CtxProps, State> {
   handleToolChange = () => {
     const { setContext } = this.props.paint;
     setContext({ showTempCanvas: false });
-    if (this.props.paint.options.select.isSelecting) this.endSelection();
+    if (this.props.paint.options.select.isRect) this.endSelection();
   };
 
   handleMouseDown = (canvasPos: Vector) => {
     const { setContext, options } = this.props.paint;
 
-    if (options.select.isSelecting) this.endSelection();
+    if (options.select.isRect) this.endSelection();
     else setContext({ showTempCanvas: true });
 
     this.setState({ startPoint: canvasPos });
@@ -44,58 +49,30 @@ export class RectSelect extends Component<CtxProps, State> {
     const { setSelectOptions } = this.props.paint;
 
     this.putImage();
-    setSelectOptions({ isSelecting: false });
+    setSelectOptions({ isRect: false });
   };
 
   putImage = () => {
     const { canvasCtx, options } = this.props.paint;
-    const { isSelectTransparent, select } = options;
-    const { x, y } = select.position;
+    const { position, size, isTransparent } = options.select;
 
     let image = this.getSelectionImage();
-    if (isSelectTransparent) {
-      image = this.convertTransparencyToOriginalColor(image);
+    if (isTransparent) {
+      image = convertTransparencyToOriginalColor(
+        image,
+        canvasCtx!,
+        position,
+        size
+      );
     }
 
-    canvasCtx!.putImageData(image, x, y);
+    canvasCtx!.putImageData(image, position.x, position.y);
   };
 
   getSelectionImage = (): ImageData => {
     const { tempCanvasCtx, options } = this.props.paint;
     const { x, y } = options.select.size;
     const image = tempCanvasCtx!.getImageData(0, 0, x, y);
-
-    return image;
-  };
-
-  convertTransparencyToOriginalColor = (image: ImageData) => {
-    const { canvasCtx, options } = this.props.paint;
-    const { position, size } = options.select;
-    const { width, height } = canvasCtx!.canvas;
-    const { data } = image;
-    const orginalData = canvasCtx!.getImageData(0, 0, width, height).data;
-
-    for (let i = 0; i < data.length - 4; i += 4) {
-      const pixelAlpha = data[i + 3];
-
-      if (pixelAlpha === 0) {
-        const row = Math.floor(i / 4 / size.x);
-        const col = (i / 4) % size.x;
-        const originalRow = position.y + row;
-        const originalCol = position.x + col;
-
-        const originalPixelIndex = (originalRow * width + originalCol) * 4;
-        const originalR = orginalData[originalPixelIndex];
-        const originalG = orginalData[originalPixelIndex + 1];
-        const originalB = orginalData[originalPixelIndex + 2];
-        const originalA = orginalData[originalPixelIndex + 3];
-
-        data[i] = originalR;
-        data[i + 1] = originalG;
-        data[i + 2] = originalB;
-        data[i + 3] = originalA;
-      }
-    }
 
     return image;
   };
@@ -109,10 +86,16 @@ export class RectSelect extends Component<CtxProps, State> {
   };
 
   handleMouseUp = (canvasPos: Vector) => {
-    const { clearTempCanvas, tempCanvasCtx, setContext } = this.props.paint;
+    const { startPoint } = this.state;
+    const {
+      clearTempCanvas,
+      tempCanvasCtx,
+      setContext,
+      canvasCtx
+    } = this.props.paint;
 
     clearTempCanvas();
-    const [pos, size] = this.getSelectPositionAndSize(canvasPos);
+    const [pos, size] = getSelectPosAndSize(startPoint, canvasPos, canvasCtx!);
     if (size.x === 0 || size.y === 0) {
       setContext({ showTempCanvas: false });
       return;
@@ -125,36 +108,17 @@ export class RectSelect extends Component<CtxProps, State> {
     this.fillCopiedSpace(pos, size);
   };
 
-  getSelectPositionAndSize = (secondPoint: Vector): [Vector, Vector] => {
-    const { width, height } = this.props.paint.canvasCtx!.canvas;
-    const { BottomRight, TopLeft } = Corner;
-    const { startPoint } = this.state;
-    const { max, min } = Math;
-
-    const NWCorner = Vector.getCorner(startPoint, secondPoint, TopLeft);
-    const SECorner = Vector.getCorner(startPoint, secondPoint, BottomRight);
-
-    const position = new Vector(max(NWCorner.x, 0), max(NWCorner.y, 0));
-    const maxWidth = width - position.x;
-    const maxHeight = height - position.y;
-
-    const size = Vector.sub(SECorner, position);
-    const adjSize = new Vector(min(size.x, maxWidth), min(size.y, maxHeight));
-
-    return [position, adjSize];
-  };
-
   getImageData = (pos: Vector, size: Vector): ImageData => {
     const { canvasCtx, options, secondaryColor } = this.props.paint;
     const image = canvasCtx!.getImageData(pos.x, pos.y, size.x, size.y);
 
-    if (!options.isSelectTransparent) return image;
+    if (!options.select.isTransparent) return image;
     return setColorAlphaToZero(image, secondaryColor);
   };
 
   updateSelectOptions = (pos: Vector, size: Vector) => {
     this.props.paint.setSelectOptions({
-      isSelecting: true,
+      isRect: true,
       position: pos,
       size: size
     });

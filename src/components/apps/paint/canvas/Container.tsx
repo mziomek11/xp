@@ -4,6 +4,7 @@ import withContext from "../../../../hoc/withContext";
 import Resizer from "./resizer/Resizer";
 import MainCanvas from "./Main";
 import TempCanvas from "./Temp";
+import TextArea from "./TextArea";
 import { PaintContextType } from "ContextType";
 import { areObjectsEqual } from "../../../../utils";
 
@@ -22,11 +23,11 @@ export class Container extends Component<CtxProps, State> {
     height: 200
   };
 
-  shouldComponentUpdate(nextProps: CtxProps, nextState: State) {
-    const { isSelecting } = this.props.paint.options.select;
+  shouldComponentUpdate({ paint }: CtxProps, nextState: State) {
+    const { select } = this.props.paint.options;
     return (
       !areObjectsEqual(this.state, nextState, ["width", "height"]) ||
-      isSelecting !== nextProps.paint.options.select.isSelecting
+      !areObjectsEqual(select, paint.options.select, ["isRect", "isText"])
     );
   }
 
@@ -49,7 +50,7 @@ export class Container extends Component<CtxProps, State> {
   };
 
   render() {
-    const { isSelecting } = this.props.paint.options.select;
+    const { isRect, isText } = this.props.paint.options.select;
     const { width, height } = this.state;
     const size = { width, height, resize: this.resize };
 
@@ -58,7 +59,8 @@ export class Container extends Component<CtxProps, State> {
         <MainCanvas width={width} height={height} data-test="main" />
         <TempCanvas width={width} height={height} data-test="temp" />
 
-        {!isSelecting && (
+        {isText && <TextArea data-test="textarea" />}
+        {!isRect && (
           <>
             <Resizer isVertical={false} isHorizontal {...size} data-test="E" />
             <Resizer isVertical isHorizontal={false} {...size} data-test="S" />

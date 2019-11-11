@@ -12,7 +12,7 @@ let mockGetMousePositionFn: jest.Mock;
 
 type OptionalProps = {
   showTempCanvas: boolean;
-  isSelecting: boolean;
+  isRect: boolean;
   size: Vector;
   position: Vector;
   width: number;
@@ -22,7 +22,7 @@ type OptionalProps = {
 const createWrapper = (optProps: Partial<OptionalProps> = {}) => {
   const optionalProps: OptionalProps = {
     showTempCanvas: true,
-    isSelecting: true,
+    isRect: true,
     size: Vector.Zero,
     position: Vector.One,
     width: 300,
@@ -46,7 +46,7 @@ const createWrapper = (optProps: Partial<OptionalProps> = {}) => {
       showTempCanvas: optionalProps.showTempCanvas,
       options: {
         select: {
-          isSelecting: optionalProps.isSelecting,
+          isRect: optionalProps.isRect,
           size: optionalProps.size,
           position: optionalProps.position
         }
@@ -75,30 +75,28 @@ describe("Paint TempCanvas component", () => {
         expect(instance.getInlineStyles().display).toBe("block");
       });
 
-      it("should be none", () => {
+      it("should be undefined", () => {
         const instance = createWrapper({ showTempCanvas: false }).instance();
-        expect(instance.getInlineStyles().display).toBe("none");
+        expect(instance.getInlineStyles().display).toBe(undefined);
       });
     });
 
     it("should have selecting styles when is selecting", () => {
       const canvasPos = new Vector(10, 15);
-      const instance = createWrapper({ isSelecting: true }).instance();
+      const instance = createWrapper({ isRect: true }).instance();
       instance.setState({ lastCanvasPos: canvasPos });
       const styles = instance.getInlineStyles();
 
       expect(styles.left).toBe(canvasPos.x);
       expect(styles.top).toBe(canvasPos.y);
-      expect(styles.border).toBe("1px dashed black");
     });
 
     it("should NOT have selecting styles when is NOT selecting", () => {
-      const instance = createWrapper({ isSelecting: false }).instance();
+      const instance = createWrapper({ isRect: false }).instance();
       const styles = instance.getInlineStyles();
 
       expect(styles.left).toBe(undefined);
       expect(styles.top).toBe(undefined);
-      expect(styles.border).toBe(undefined);
     });
   });
 
@@ -106,7 +104,7 @@ describe("Paint TempCanvas component", () => {
     it("should return size from options", () => {
       const sizeVector = new Vector(10, 15);
       const wrapper = createWrapper({
-        isSelecting: true,
+        isRect: true,
         size: sizeVector,
         width: 200,
         height: 200
@@ -123,7 +121,7 @@ describe("Paint TempCanvas component", () => {
       const width = 400;
       const height = 500;
       const wrapper = createWrapper({
-        isSelecting: false,
+        isRect: false,
         size: Vector.Zero,
         width,
         height
@@ -169,7 +167,7 @@ describe("Paint TempCanvas component", () => {
 
     it("should NOT call anything", () => {
       mockGetMousePositionFn = jest.fn(() => getEventPositionResult);
-      instance = createWrapper({ isSelecting: false }).instance();
+      instance = createWrapper({ isRect: false }).instance();
       instance.getMousePosition = mockGetMousePositionFn;
       instance.handleMouseDown("ev" as any);
 
