@@ -41,7 +41,7 @@ const PaintContext = createContext<Partial<Context>>({});
 
 export class ContextProvider extends Component<{}, State> {
   readonly state: State = {
-    selectedTool: "zoom",
+    selectedTool: "pencil",
     lastSelectedTool: "brush",
     primaryColor: "#000000",
     secondaryColor: "#ffffff",
@@ -51,18 +51,18 @@ export class ContextProvider extends Component<{}, State> {
     showError: false,
     options: {
       lineWidth: LineWidth.ExtraSmall,
-      rubberSize: RubberSize.ExtraBig,
+      rubberSize: RubberSize.Big,
       aeroSize: AeroSize.Small,
       zoom: ZoomSize.Default,
       pickColor: "transparent",
       brush: {
-        type: "slash",
-        size: BrushSize.Big
+        type: "circle",
+        size: BrushSize.Medium
       },
       shapeDrawMode: {
         circle: "stroke",
         rect: "stroke",
-        rounded: "fill",
+        rounded: "stroke",
         poly: "stroke"
       },
       select: {
