@@ -20,7 +20,11 @@ export class MainCanvas extends Component<Props> {
   private canvasRef = createRef<HTMLCanvasElement>();
 
   shouldComponentUpdate(nextProps: Props) {
-    return !areObjectsEqual(this.props, nextProps, ["width", "height"]);
+    const { zoom } = this.props.paint.options;
+    return (
+      !areObjectsEqual(this.props, nextProps, ["width", "height"]) ||
+      nextProps.paint.options.zoom !== zoom
+    );
   }
 
   componentDidMount() {
@@ -35,14 +39,28 @@ export class MainCanvas extends Component<Props> {
     this.props.paint.setContext({ canvasCtx: cvsCtx });
   }
 
+  getInlineStyles = (): React.CSSProperties => {
+    const { zoom } = this.props.paint.options;
+    const { width, height } = this.props;
+
+    const styles = {
+      width: width * zoom,
+      height: height * zoom
+    };
+
+    return styles;
+  };
+
   render() {
     const { width, height } = this.props;
+    const styles = this.getInlineStyles();
 
     return (
       <canvas
         className={getClassName(canvasClass, {}, ["main"])}
         width={width}
         height={height}
+        style={styles}
         ref={this.canvasRef}
         data-test="canvas"
       />

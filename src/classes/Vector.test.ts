@@ -101,4 +101,23 @@ describe("Vector class", () => {
       expect(Vector.getCorner(minV, maxV, Corner.BottomRight)).toEqual(expV);
     });
   });
+
+  describe("map", () => {
+    const addOne = (x: number) => x + 1;
+    const subOne = (x: number) => x - 1;
+
+    it("should apply function to vector", () => {
+      const v = new Vector(10, 11);
+      const mapped = Vector.map(v, addOne);
+
+      expect(mapped).toEqual(Vector.add(v, Vector.One));
+    });
+
+    it("should apply multiple functions to vector", () => {
+      const v = new Vector(10, 11);
+      const mapped = Vector.map(v, addOne, subOne);
+
+      expect(mapped).toEqual(v);
+    });
+  });
 });

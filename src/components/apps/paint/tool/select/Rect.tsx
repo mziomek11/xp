@@ -54,19 +54,20 @@ export class RectSelect extends Component<CtxProps, State> {
 
   putImage = () => {
     const { canvasCtx, options } = this.props.paint;
-    const { position, size, isTransparent } = options.select;
+    const { zoom, select } = options;
+    const { position, size, isTransparent } = select;
 
     let image = this.getSelectionImage();
     if (isTransparent) {
       image = convertTransparencyToOriginalColor(
         image,
         canvasCtx!,
-        position,
+        Vector.map(Vector.div(position, zoom), Math.round),
         size
       );
     }
 
-    canvasCtx!.putImageData(image, position.x, position.y);
+    canvasCtx!.putImageData(image, position.x / zoom, position.y / zoom);
   };
 
   getSelectionImage = (): ImageData => {
@@ -117,9 +118,12 @@ export class RectSelect extends Component<CtxProps, State> {
   };
 
   updateSelectOptions = (pos: Vector, size: Vector) => {
-    this.props.paint.setSelectOptions({
+    const { setSelectOptions, options } = this.props.paint;
+    const { zoom } = options;
+
+    setSelectOptions({
       isRect: true,
-      position: pos,
+      position: Vector.mul(pos, zoom),
       size: size
     });
   };

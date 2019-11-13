@@ -85,10 +85,11 @@ class Resizer extends Component<Props, State> {
   };
 
   handleMouseUp = () => {
+    const { rectWidth, rectHeight } = this.state;
     changeCursor();
     this.removeListeners();
     this.setState({ isResizing: false });
-    this.props.resize(this.state.rectWidth, this.state.rectHeight);
+    this.props.resize(rectWidth, rectHeight);
   };
 
   getInlineStyles = () => {

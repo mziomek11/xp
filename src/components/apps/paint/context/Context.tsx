@@ -41,7 +41,7 @@ const PaintContext = createContext<Partial<Context>>({});
 
 export class ContextProvider extends Component<{}, State> {
   readonly state: State = {
-    selectedTool: "text",
+    selectedTool: "zoom",
     lastSelectedTool: "brush",
     primaryColor: "#000000",
     secondaryColor: "#ffffff",

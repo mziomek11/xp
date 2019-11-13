@@ -271,7 +271,7 @@ export function setColorAlphaToZero(
   const { r, g, b } = hexToRgb(color);
   const { data } = image;
 
-  for (let i = 0; i < data.length - 4; i += 4) {
+  for (let i = 0; i <= data.length - 4; i += 4) {
     const pixelR = data[i];
     const pixelG = data[i + 1];
     const pixelB = data[i + 2];
@@ -314,7 +314,7 @@ export function convertTransparencyToOriginalColor(
   const { data } = image;
   const orginalData = mainCtx.getImageData(0, 0, width, height).data;
 
-  for (let i = 0; i < data.length - 4; i += 4) {
+  for (let i = 0; i <= data.length - 4; i += 4) {
     const pixelAlpha = data[i + 3];
 
     if (pixelAlpha === 0) {

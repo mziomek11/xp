@@ -16,12 +16,14 @@ let mockFillRectFn: jest.Mock;
 type OptionalProps = {
   isRect: boolean;
   isSelectTransparent: boolean;
+  zoom: number;
 };
 
 const createWrapper = (opt: Partial<OptionalProps> = {}) => {
   const optionalProps: OptionalProps = {
     isRect: true,
     isSelectTransparent: false,
+    zoom: 1,
     ...opt
   };
 
@@ -49,6 +51,7 @@ const createWrapper = (opt: Partial<OptionalProps> = {}) => {
       },
       setSelectOptions: mockSetSelectOptionsFn,
       options: {
+        zoom: optionalProps.zoom,
         isSelectTransparent: optionalProps.isSelectTransparent,
         select: {
           isRect: optionalProps.isRect,
@@ -166,10 +169,13 @@ describe("Paint RectSelect Tool component", () => {
     const getSelectionResult = 1;
     let mockGetSelectionImageFn: jest.Mock;
 
-    const createPutImageInstance = (isSelectTransparent: boolean) => {
+    const createPutImageInstance = (
+      isSelectTransparent: boolean,
+      zoom: number = 1
+    ) => {
       mockGetSelectionImageFn = jest.fn(() => getSelectionResult);
 
-      const instance = createWrapper({ isSelectTransparent }).instance();
+      const instance = createWrapper({ isSelectTransparent, zoom }).instance();
       instance.getSelectionImage = mockGetSelectionImageFn;
 
       return instance;
@@ -193,6 +199,19 @@ describe("Paint RectSelect Tool component", () => {
 
       expect(x).toBe(position.x);
       expect(y).toBe(position.y);
+    });
+
+    it("should call putImageData with zoomed x and y", () => {
+      const zoom = 2;
+      const instance = createPutImageInstance(true, zoom);
+      instance.putImage();
+
+      expect(mockPutImageDataFn.mock.calls.length).toBe(1);
+      const [, x, y] = mockPutImageDataFn.mock.calls[0];
+      const { position } = instance.props.paint.options.select;
+
+      expect(x).toBe(position.x / zoom);
+      expect(y).toBe(position.y / zoom);
     });
   });
 
@@ -301,6 +320,16 @@ describe("Paint RectSelect Tool component", () => {
       expect(mockSetSelectOptionsFn.mock.calls.length).toBe(1);
       const expResult = { isRect: true, position, size };
       expect(mockSetSelectOptionsFn.mock.calls[0]).toEqual([expResult]);
+    });
+
+    it("should zoom position", () => {
+      const zoom = 2;
+      const position = new Vector(10, 25);
+      const instance = createWrapper({ zoom }).instance();
+      instance.updateSelectOptions(position, Vector.Zero);
+      expect(mockSetSelectOptionsFn.mock.calls[0][0].position).toEqual(
+        Vector.mul(position, 2)
+      );
     });
   });
 

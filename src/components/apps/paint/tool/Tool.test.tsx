@@ -16,7 +16,8 @@ const toolType: any = "fill";
 const createWrapper = (
   focused: boolean = false,
   selectedTool: any = "fill",
-  notImplemented: boolean = false
+  notImplemented: boolean = false,
+  zoom: number = 1
 ) => {
   mockSetPaintContextFn = jest.fn();
   mockSetWindowContextFn = jest.fn();
@@ -29,7 +30,11 @@ const createWrapper = (
     icon: "x",
     toolType,
     notImplemented,
-    paint: { setContext: mockSetPaintContextFn, selectedTool } as any,
+    paint: {
+      setContext: mockSetPaintContextFn,
+      selectedTool,
+      options: { zoom }
+    } as any,
     window: { focused, setContext: mockSetWindowContextFn } as any,
     onMouseDown: mockOnMouseDownFn,
     onMouseMove: mockOnMouseMoveFn,
@@ -174,6 +179,17 @@ describe("Paint Tool component", () => {
       const result = wrapper.instance().calculateCanvasPos(ev as any);
       expect(result).toEqual({ x: -30, y: 30 });
     });
+
+    it("should return zoomed value", () => {
+      const zoom = 2;
+      const instance = createWrapper(true, "", false, zoom).instance();
+      const newState = { canvasLeft: 40, canvasTop: 50 };
+      instance.setState(newState);
+
+      const ev = { clientX: 10, clientY: 80 };
+      const result = instance.calculateCanvasPos(ev as any);
+      expect(result).toEqual({ x: -30 / zoom, y: 30 / zoom });
+    });
   });
 
   describe("handleIconClick", () => {
@@ -184,7 +200,7 @@ describe("Paint Tool component", () => {
         instance = createWrapper(true, "a", true).instance();
         instance.handleIconClick();
       });
-      
+
       it("should call window.setContext with proper args", () => {
         expect(mockSetWindowContextFn.mock.calls.length).toBe(1);
         expect(mockSetWindowContextFn.mock.calls[0]).toEqual([

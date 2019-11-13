@@ -57,4 +57,16 @@ export default class Vector {
 
     throw Error("Invalid corner");
   }
+
+  static map(v: Vector, ...mapFunctions: Array<(n: number) => number>): Vector {
+    let x: number = v.x;
+    let y: number = v.y;
+
+    mapFunctions.forEach(mapFunction => {
+      x = mapFunction(x);
+      y = mapFunction(y);
+    });
+
+    return new Vector(x, y);
+  }
 }

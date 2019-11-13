@@ -17,6 +17,7 @@ type OptionalProps = {
   position: Vector;
   width: number;
   height: number;
+  zoom: number;
 };
 
 const createWrapper = (optProps: Partial<OptionalProps> = {}) => {
@@ -27,6 +28,7 @@ const createWrapper = (optProps: Partial<OptionalProps> = {}) => {
     position: Vector.One,
     width: 300,
     height: 300,
+    zoom: 1,
     ...optProps
   };
   mockSetContextFn = jest.fn();
@@ -45,6 +47,7 @@ const createWrapper = (optProps: Partial<OptionalProps> = {}) => {
       setSelectOptions: mockSetSelectOptionsFn,
       showTempCanvas: optionalProps.showTempCanvas,
       options: {
+        zoom: optionalProps.zoom,
         select: {
           isRect: optionalProps.isRect,
           size: optionalProps.size,
@@ -72,20 +75,40 @@ describe("Paint TempCanvas component", () => {
     describe("display", () => {
       it("should be block", () => {
         const instance = createWrapper({ showTempCanvas: true }).instance();
-        expect(instance.getInlineStyles().display).toBe("block");
+        expect(instance.getInlineStyles(0, 0).display).toBe("block");
       });
 
       it("should be undefined", () => {
         const instance = createWrapper({ showTempCanvas: false }).instance();
-        expect(instance.getInlineStyles().display).toBe(undefined);
+        expect(instance.getInlineStyles(0, 0).display).toBe(undefined);
       });
+    });
+
+    it("should have given width and height", () => {
+      const width = 10;
+      const height = 20;
+      const result = instance.getInlineStyles(width, height);
+
+      expect(result.width).toBe(width);
+      expect(result.height).toBe(height);
+    });
+
+    it("should have give width and height zoomed", () => {
+      const width = 10;
+      const height = 20;
+      const zoom = 2;
+      const instance = createWrapper({ zoom }).instance();
+      const result = instance.getInlineStyles(width, height);
+
+      expect(result.width).toBe(width * zoom);
+      expect(result.height).toBe(height * zoom);
     });
 
     it("should have selecting styles when is selecting", () => {
       const canvasPos = new Vector(10, 15);
       const instance = createWrapper({ isRect: true }).instance();
       instance.setState({ lastCanvasPos: canvasPos });
-      const styles = instance.getInlineStyles();
+      const styles = instance.getInlineStyles(0, 0);
 
       expect(styles.left).toBe(canvasPos.x);
       expect(styles.top).toBe(canvasPos.y);
@@ -93,7 +116,7 @@ describe("Paint TempCanvas component", () => {
 
     it("should NOT have selecting styles when is NOT selecting", () => {
       const instance = createWrapper({ isRect: false }).instance();
-      const styles = instance.getInlineStyles();
+      const styles = instance.getInlineStyles(0, 0);
 
       expect(styles.left).toBe(undefined);
       expect(styles.top).toBe(undefined);

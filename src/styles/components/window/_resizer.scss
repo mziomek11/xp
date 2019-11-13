@@ -79,10 +79,10 @@
   }
 
   &--disabled,
-  &--bottom#{&}--left,
-  &--bottom#{&}--right,
-  &--top#{&}--left,
-  &--top#{&}--right {
+  &--disabled#{&}--bottom#{&}--left,
+  &--disabled#{&}--bottom#{&}--right,
+  &--disabled#{&}--top#{&}--left,
+  &--disabled#{&}--top#{&}--right {
     cursor: default;
   }
 }

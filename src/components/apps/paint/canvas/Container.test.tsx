@@ -9,7 +9,7 @@ let mockFillRectFn: jest.Mock;
 let mockGetImageFn: jest.Mock;
 let mockPutImageFn: jest.Mock;
 
-const createWrapper = (isRect: boolean = false) => {
+const createWrapper = (isRect: boolean = false, zoom: number = 1) => {
   mockSetContextFn = jest.fn();
   mockFillRectFn = jest.fn();
   mockGetImageFn = jest.fn();
@@ -20,7 +20,7 @@ const createWrapper = (isRect: boolean = false) => {
     primaryColor: "#000000",
     secondaryColor: "#ffffff",
     selectedTool: "pencil" as any,
-    options: { select: { isRect } },
+    options: { select: { isRect }, zoom },
     canvasCtx: {
       fillRect: mockFillRectFn,
       getImageData: mockGetImageFn,
@@ -90,6 +90,15 @@ describe("Paint CanvasContainer component", () => {
         width: newWidth,
         height: newHeight
       });
+    });
+
+    it("should update state with proper values when zoomed", () => {
+      const instance = createWrapper(false, 2).instance();
+      instance.setState({ width: 0, height: 0 });
+      instance.resize(50, 60);
+
+      expect(instance.state.width).toBe(25);
+      expect(instance.state.height).toBe(30);
     });
 
     it("should call getImageData with proper props", () => {

@@ -119,12 +119,15 @@ export class Tool extends Component<Props, State> {
   };
 
   calculateCanvasPos = (event: MouseEvent): Vector => {
+    const { zoom } = this.props.paint.options;
     const { clientX, clientY } = event;
     const { canvasLeft, canvasTop } = this.state;
-    const canvasX = Math.floor(clientX - canvasLeft);
-    const canvasY = Math.floor(clientY - canvasTop);
 
-    return { x: canvasX, y: canvasY };
+    const pos = new Vector(clientX - canvasLeft, clientY - canvasTop);
+    const zoomedPos = Vector.div(pos, zoom);
+    const roundedPos = Vector.map(zoomedPos, Math.round);
+
+    return roundedPos;
   };
 
   handleIconClick = () => {

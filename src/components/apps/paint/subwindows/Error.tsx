@@ -9,7 +9,7 @@ type Props = {
   paint: PaintContextType;
 };
 
-class ErrorPopUp extends Component<Props, {}> {
+export class ErrorPopUp extends Component<Props, {}> {
   handleClose = () => {
     this.props.paint.setContext({ showError: false });
     this.props.window.setContext({ disabled: false });
@@ -22,6 +22,7 @@ class ErrorPopUp extends Component<Props, {}> {
         height={138}
         text="This tool has not been implemented."
         onClose={this.handleClose}
+        data-test="error"
       />
     );
   }

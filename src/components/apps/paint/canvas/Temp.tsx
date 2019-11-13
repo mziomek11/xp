@@ -59,12 +59,16 @@ export class TempCanvas extends Component<Props, State> {
     window.addEventListener("mouseup", this.handleMouseUp);
   };
 
-  getInlineStyles = (): React.CSSProperties => {
+  getInlineStyles = (width: number, height: number): React.CSSProperties => {
     const { showTempCanvas, options } = this.props.paint;
-    const { isRect } = options.select;
+    const { zoom, select } = options;
+    const { isRect } = select;
     const { lastCanvasPos } = this.state;
 
-    const styles: React.CSSProperties = {};
+    const styles: React.CSSProperties = {
+      width: width * zoom,
+      height: height * zoom
+    };
 
     if (showTempCanvas) styles.display = "block";
     if (isRect) {
@@ -83,10 +87,12 @@ export class TempCanvas extends Component<Props, State> {
   };
 
   handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    const { isRect, position } = this.props.paint.options.select;
+    const { select } = this.props.paint.options;
+    const { isRect, position } = select;
     if (!isRect) return;
 
     const mousePos = this.getMousePosition(e);
+
     this.setState({ lastMousePos: mousePos, lastCanvasPos: position });
     this.addListeners();
   };
@@ -112,15 +118,17 @@ export class TempCanvas extends Component<Props, State> {
     canvasPos: Vector,
     mousePos: Vector
   ): [Vector, Vector] => {
-    const { x, y } = canvasPos;
     const { canvasCtx, options } = this.props.paint;
     const { width, height } = canvasCtx!.canvas;
-    const { size } = options.select;
+    const { select, zoom } = options;
+    const { size } = select;
 
-    const minX = -size.x - 2;
-    const maxX = width;
-    const minY = -size.y - 2;
-    const maxY = height;
+    const { x, y } = canvasPos;
+
+    const minX = -(size.x * zoom) - 1;
+    const maxX = width * zoom;
+    const minY = -(size.y * zoom) - 1;
+    const maxY = height * zoom;
 
     const adjustedX = Math.min(Math.max(minX, x), maxX);
     const adjustedY = Math.min(Math.max(minY, y), maxY);
@@ -135,13 +143,14 @@ export class TempCanvas extends Component<Props, State> {
   handleMouseUp = () => {
     const { setSelectOptions } = this.props.paint;
     const { lastCanvasPos } = this.state;
+
     setSelectOptions({ position: lastCanvasPos });
     this.removeListeners();
   };
 
   render() {
     const [width, height] = this.getWidthAndHeight();
-    const inlineStyles = this.getInlineStyles();
+    const inlineStyles = this.getInlineStyles(width, height);
 
     return (
       <canvas

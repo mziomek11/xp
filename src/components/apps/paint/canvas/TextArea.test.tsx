@@ -1,12 +1,13 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import { TextArea } from "./TextArea";
+import { TextArea, lineHeight, fontSize } from "./TextArea";
 import { findByTestAtrr } from "../../../../../testingUtils";
 import Vector from "../../../../classes/Vector";
 
 type OptProps = {
   isTransparent: boolean;
+  zoom: number;
 };
 
 const position = new Vector(15, 16);
@@ -21,6 +22,7 @@ let mockFillTextFn: jest.Mock;
 const createWrapper = (opts: Partial<OptProps> = {}) => {
   const optionalProps: OptProps = {
     isTransparent: false,
+    zoom: 1,
     ...opts
   };
 
@@ -38,6 +40,7 @@ const createWrapper = (opts: Partial<OptProps> = {}) => {
         fillText: mockFillTextFn
       },
       options: {
+        zoom: optionalProps.zoom,
         select: { isTransparent: optionalProps.isTransparent, position, size }
       }
     } as any
@@ -159,6 +162,26 @@ describe("Paint Canvas TextArea component", () => {
     it("width and height should be size", () => {
       expect(styles.width).toBe(size.x);
       expect(styles.height).toBe(size.y);
+    });
+
+    it("should have fontSize and lineHeight", () => {
+      expect(styles.fontSize).toBe(fontSize);
+      expect(styles.lineHeight).toBe(`${lineHeight}px`);
+    });
+
+    it("should return zoomed styles", () => {
+      const zoom = 2;
+      const instance = createWrapper({ zoom }).instance();
+      const styles = instance.getInlineStyles();
+
+      expect(styles.left).toBe(position.x * zoom);
+      expect(styles.top).toBe(position.y * zoom);
+
+      expect(styles.width).toBe(size.x * zoom);
+      expect(styles.height).toBe(size.y * zoom);
+
+      expect(styles.fontSize).toBe(fontSize * zoom);
+      expect(styles.lineHeight).toBe(`${lineHeight * zoom}px`);
     });
 
     it("color should be primary color", () => {

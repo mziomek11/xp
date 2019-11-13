@@ -11,6 +11,9 @@ type State = {
   text: string;
 };
 
+export const fontSize: number = 12;
+export const lineHeight: number = 14;
+
 export class TextArea extends Component<CtxProps, State> {
   readonly state: State = { text: "" };
 
@@ -43,18 +46,25 @@ export class TextArea extends Component<CtxProps, State> {
 
     const lines = text.split(/\r?\n/);
     lines.forEach((line, i) => {
-      canvasCtx!.fillText(line, position.x + 1, position.y + 12 + 14 * i);
+      canvasCtx!.fillText(
+        line,
+        position.x + 1,
+        position.y + fontSize + lineHeight * i
+      );
     });
   };
 
   getInlineStyles = (): React.CSSProperties => {
     const { primaryColor, secondaryColor, options } = this.props.paint;
-    const { size, position, isTransparent } = options.select;
+    const { select, zoom } = options;
+    const { size, position, isTransparent } = select;
     const styles: React.CSSProperties = {
-      left: position.x,
-      top: position.y,
-      width: size.x,
-      height: size.y,
+      fontSize: fontSize * zoom,
+      lineHeight: `${lineHeight * zoom}px`,
+      left: position.x * zoom,
+      top: position.y * zoom,
+      width: size.x * zoom,
+      height: size.y * zoom,
       color: primaryColor,
       background: isTransparent ? "transparent" : secondaryColor
     };

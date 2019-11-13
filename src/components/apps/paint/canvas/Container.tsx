@@ -24,19 +24,24 @@ export class Container extends Component<CtxProps, State> {
   };
 
   shouldComponentUpdate({ paint }: CtxProps, nextState: State) {
-    const { select } = this.props.paint.options;
+    const { select, zoom } = this.props.paint.options;
     return (
       !areObjectsEqual(this.state, nextState, ["width", "height"]) ||
-      !areObjectsEqual(select, paint.options.select, ["isRect", "isText"])
+      !areObjectsEqual(select, paint.options.select, ["isRect", "isText"]) ||
+      zoom !== paint.options.zoom
     );
   }
 
   resize = (newWidth: number, newHeight: number) => {
-    const { canvasCtx } = this.props.paint;
+    const { canvasCtx, options } = this.props.paint;
+    const { zoom } = options;
     const { width, height } = this.state;
     const imageData = canvasCtx!.getImageData(0, 0, width, height);
 
-    this.setState({ width: newWidth, height: newHeight });
+    const adjustedWidth = Math.round(newWidth / zoom);
+    const adjustedHeight = Math.round(newHeight / zoom);
+
+    this.setState({ width: adjustedWidth, height: adjustedHeight });
     this.redraw(imageData);
   };
 
@@ -50,9 +55,14 @@ export class Container extends Component<CtxProps, State> {
   };
 
   render() {
-    const { isRect, isText } = this.props.paint.options.select;
+    const { select, zoom } = this.props.paint.options;
+    const { isRect, isText } = select;
     const { width, height } = this.state;
-    const size = { width, height, resize: this.resize };
+    const size = {
+      width: width * zoom,
+      height: height * zoom,
+      resize: this.resize
+    };
 
     return (
       <div className="paint__canvas-container" data-test="canvas">
