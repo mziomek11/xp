@@ -6,7 +6,7 @@ import { findByTestAtrr } from "../../../../../testingUtils";
 import { deepCopy } from "../../../../utils";
 
 const wrapper = shallow<ContextProvider>(
-  <ContextProvider>
+  <ContextProvider startPath={[]}>
     <p data-test="child" />
   </ContextProvider>
 );
@@ -82,6 +82,25 @@ describe("Paint ContextProvider component", () => {
 
       expect(instance.state.tempCanvasCtx!.fillStyle).toBe(secondary);
       expect(instance.state.tempCanvasCtx!.strokeStyle).toBe(secondary);
+    });
+  });
+
+  describe("getImageData", () => {
+    it("should call return canvasCtx data", () => {
+      const width = 150;
+      const height = 160;
+      const imageData = "this is result";
+      const mockGetImageDataFn = jest.fn(() => imageData);
+      const mockCtx = {
+        getImageData: mockGetImageDataFn,
+        canvas: { width, height }
+      };
+
+      instance.setState({ canvasCtx: mockCtx as any });
+      expect(instance.getImageData()).toBe(imageData);
+
+      expect(mockGetImageDataFn.mock.calls.length).toBe(1);
+      expect(mockGetImageDataFn.mock.calls[0]).toEqual([0, 0, width, height]);
     });
   });
 

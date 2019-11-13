@@ -68,8 +68,9 @@ export class Application extends Component<Props, {}> {
   };
 
   getPaintApp = () => {
+    const { content, path } = this.props.window.openData!;
     return (
-      <PaintContextProvider>
+      <PaintContextProvider startImage={content as ImageData} startPath={path}>
         <Paint data-test="paint" />
       </PaintContextProvider>
     );

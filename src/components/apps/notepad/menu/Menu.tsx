@@ -4,7 +4,7 @@ import { Dispatch } from "redux";
 import { connect } from "react-redux";
 
 import Menu from "../../../menu/Menu";
-import File from "./File";
+import SaveableFile from "../../../menu/SaveableFile";
 import Format from "./Format";
 import withContext from "../../../../hoc/withContext";
 import { NotepadContextType, WindowContextType } from "ContextType";
@@ -93,7 +93,7 @@ export class NotepadMenu extends Component<Props, {}> {
   render() {
     return (
       <Menu data-test="menu">
-        <File
+        <SaveableFile
           onNewClick={this.handleNewClick}
           onOpenClick={this.handleOpenClick}
           onSaveClick={this.handleSaveClick}

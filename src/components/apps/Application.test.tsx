@@ -58,7 +58,7 @@ describe("Application Component", () => {
     });
 
     it("should render Paint app", () => {
-      const wrapper = createWrapper("paint");
+      const wrapper = createWrapper("paint", { content: undefined, path: [] });
 
       expect(findByTestAtrr(wrapper, "paint").length).toBe(1);
     });

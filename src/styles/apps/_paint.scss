@@ -236,8 +236,8 @@
 }
 
 .paint__color__current {
+  @include all-widths($paint-colors-current-width);
   position: relative;
-  width: $paint-colors-current-width;
   border: 1px solid $dropdown-border-color;
   background: map-get($menu, "main");
 }

@@ -155,13 +155,15 @@ describe("Filesystem ContextProvider Component", () => {
   });
 
   describe("getSortedFiles", () => {
+    const instance = wrapper.instance();
+
     it("should return files sorted by name", () => {
-      wrapper.instance().setState({
+      instance.setState({
         path: ["Local Disk (C:)"],
-        options: { ...wrapper.instance().state.options, arrangeIconsBy: "name" }
+        options: { ...instance.state.options, arrangeIconsBy: "name" }
       });
 
-      expect(wrapper.instance().getSortedFiles()).toEqual([
+      expect(instance.getSortedFiles(instance.state.files)).toEqual([
         { name: "aTextFile1", type: "text", content: "adasdasd" },
         { name: "Folder1", type: "folder", content: {} }
       ]);
@@ -173,7 +175,7 @@ describe("Filesystem ContextProvider Component", () => {
         options: { ...wrapper.instance().state.options, arrangeIconsBy: "type" }
       });
 
-      expect(wrapper.instance().getSortedFiles()).toEqual([
+      expect(wrapper.instance().getSortedFiles(instance.state.files)).toEqual([
         { name: "Folder1", type: "folder", content: {} },
         { name: "aTextFile1", type: "text", content: "adasdasd" }
       ]);

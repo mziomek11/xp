@@ -13,7 +13,11 @@ import { RootState } from "MyTypes";
 import { FileTree, File } from "../../../../store/filesystem/models";
 import { remove, copy, cut, paste } from "../../../../store/filesystem/actions";
 import { rename } from "../../../../store/window/actions";
-import { areArraysEqual, deepCopy } from "../../../../utils";
+import {
+  areArraysEqual,
+  deepCopy,
+  areArraysValuesEqual
+} from "../../../../utils";
 import { objectPropFromPath } from "../../../../utils/filesystem";
 import { listClass, containerClass } from "../classNames";
 import { Icon } from "../../../../icons";
@@ -78,10 +82,11 @@ export class ContextProvider extends Component<Props, State> {
   componentDidMount() {
     const { fileTree, startPath } = this.props;
     const [files, possiblePath] = objectPropFromPath(fileTree, startPath);
+    const sortedFiles = this.getSortedFiles(files);
 
     this.setState({
       path: possiblePath,
-      files: files,
+      files: sortedFiles,
       history: [possiblePath]
     });
 
@@ -98,13 +103,13 @@ export class ContextProvider extends Component<Props, State> {
     const oldFilenames = Array.from(files, file => file.name);
 
     if (!areArraysEqual(this.state.path, newPath)) {
-      newState.files = newFiles;
+      newState.files = this.getSortedFiles(newFiles);
       newState.path = newPath;
       this.setWindowNameAndIcon(newPath);
       window.removeEventListener("mousedown", this.handleUnfocusClick);
       newState.focused = [];
-    } else if (!areArraysEqual(oldFilenames, newFilenames)) {
-      newState.files = newFiles;
+    } else if (!areArraysValuesEqual(oldFilenames, newFilenames)) {
+      newState.files = this.getSortedFiles(newFiles);
       window.removeEventListener("mousedown", this.handleUnfocusClick);
       newState.focused = [];
     } else if (focusedWindow !== prevProps.focusedWindow) {
@@ -113,24 +118,25 @@ export class ContextProvider extends Component<Props, State> {
     }
 
     if (!newState.files && this.areFileContentsDifferent(files, newFiles)) {
-      newState.files = newFiles;
+      newState.files = this.getSortedFiles(newFiles);
     }
 
     if (options.arrangeIconsBy !== prevState.options.arrangeIconsBy) {
-      newState.files = this.getSortedFiles();
+      newState.files = this.getSortedFiles(this.state.files);
     }
 
     if (Object.keys(newState).length > 0) this.setState(newState as State);
   }
 
   areFileContentsDifferent = (oldFiles: File[], newFiles: File[]) => {
-    const skipTypes = ["disk", "computer", "folder"];
+    const skipTypes = ["disk", "computer", "folder", "image"];
     for (let i = 0; i < newFiles.length; i++) {
       const oldFile = oldFiles[i];
       const newFile = newFiles[i];
 
       if (skipTypes.indexOf(oldFile.type) !== -1) continue;
       if (skipTypes.indexOf(newFile.type) !== -1) continue;
+
       if (oldFile.content !== newFile.content) return true;
     }
 
@@ -142,14 +148,12 @@ export class ContextProvider extends Component<Props, State> {
     window.removeEventListener("keydown", this.handleKeyDown);
   }
 
-  getSortedFiles = () => {
+  getSortedFiles = (files: File[]) => {
     const { arrangeIconsBy } = this.state.options;
-    const { files } = this.state;
 
-    const sortFn = (a: any, b: any) => {
-      return ("" + a[arrangeIconsBy]).localeCompare(b[arrangeIconsBy]);
-    };
-    const sortedFiles = Array.from(files).sort(sortFn);
+    const sortedFiles = Array.from(files).sort((a: any, b: any) =>
+      a[arrangeIconsBy].localeCompare(b[arrangeIconsBy])
+    );
 
     return sortedFiles;
   };
@@ -157,12 +161,13 @@ export class ContextProvider extends Component<Props, State> {
   setPath = (path: string[], newHistoryPos: number) => {
     const { fileTree } = this.props;
     const [files, possiblePath] = objectPropFromPath(fileTree, path);
+    const sortedFiles = this.getSortedFiles(files);
     const newHistory = this.calculateHistory(newHistoryPos, possiblePath);
 
     this.setWindowNameAndIcon(possiblePath);
     this.setState({
       path: possiblePath,
-      files: files,
+      files: sortedFiles,
       history: newHistory,
       historyPosition: newHistoryPos,
       focused: []

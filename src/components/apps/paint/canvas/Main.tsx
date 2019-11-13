@@ -3,11 +3,12 @@ import React, { Component, createRef } from "react";
 import withContext from "../../../../hoc/withContext";
 import { PaintContextType } from "ContextType";
 import { canvasClass } from "../classes";
-import { getClassName, areObjectsEqual } from "../../../../utils";
+import { getClassName } from "../../../../utils";
 
 type OwnProps = {
   width: number;
   height: number;
+  resize: (width: number, height: number) => void;
 };
 
 type CtxProps = {
@@ -18,26 +19,37 @@ type Props = OwnProps & CtxProps;
 
 export class MainCanvas extends Component<Props> {
   private canvasRef = createRef<HTMLCanvasElement>();
+  private insertImageOnUpdate: boolean = true;
 
-  shouldComponentUpdate(nextProps: Props) {
-    const { zoom } = this.props.paint.options;
-    return (
-      !areObjectsEqual(this.props, nextProps, ["width", "height"]) ||
-      nextProps.paint.options.zoom !== zoom
-    );
+  componentDidUpdate() {
+    if (this.insertImageOnUpdate) {
+      const { canvasCtx, startImage } = this.props.paint;
+
+      if (startImage) canvasCtx!.putImageData(startImage, 0, 0);
+      this.insertImageOnUpdate = false;
+    }
   }
 
   componentDidMount() {
-    const { width, height } = this.props;
-    const { canvasRef } = this;
-    if (!canvasRef.current) return;
+    const { paint, resize } = this.props;
+    const { startImage } = paint;
 
-    const cvsCtx = canvasRef.current.getContext("2d") as any;
-    cvsCtx.fillStyle = "#ffffff";
-    cvsCtx.fillRect(0, 0, width, height);
+    if (!this.canvasRef.current) return;
+    const canvasContext = this.canvasRef.current.getContext("2d")!;
+    paint.setContext({ canvasCtx: canvasContext });
 
-    this.props.paint.setContext({ canvasCtx: cvsCtx });
+    if (startImage) {
+      const { width, height } = startImage;
+      resize(width, height);
+    } else this.initialFill(canvasContext);
   }
+
+  initialFill = (ctx: CanvasRenderingContext2D) => {
+    const { width, height } = this.props;
+
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, width, height);
+  };
 
   getInlineStyles = (): React.CSSProperties => {
     const { zoom } = this.props.paint.options;

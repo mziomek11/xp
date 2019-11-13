@@ -85,7 +85,9 @@ export class FileContainer extends Component<Props, {}> {
   onDoubleClick = () => {
     switch (this.props.file.type) {
       case "text":
-        return this.openNotepad;
+        return () => this.openApp("notepad");
+      case "image":
+        return () => this.openApp("paint");
       default:
         return this.enterFolder;
     }
@@ -98,11 +100,11 @@ export class FileContainer extends Component<Props, {}> {
     setPath([...path, file.name], historyPosition + 1);
   };
 
-  openNotepad = () => {
+  openApp = (app: Application) => {
     const { open, file, filesystem, isFilePicker } = this.props;
 
     if (!isFilePicker) {
-      open("notepad", { path: filesystem.path, content: file.content });
+      open(app, { path: filesystem.path, content: file.content });
     }
   };
 

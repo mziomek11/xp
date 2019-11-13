@@ -523,8 +523,8 @@
   @include flex-centered;
 
   &--thumbnails {
-    width: $filesystem-thumbnails-icon-container-size;
-    height: $filesystem-thumbnails-icon-container-size;
+    @include all-widths($filesystem-thumbnails-icon-container-size);
+    @include all-heights($filesystem-thumbnails-icon-container-size);
     border: 1px solid $filesystem-thumbnails-border-color;
 
     .filesystem__file--focused & {
@@ -534,14 +534,14 @@
   }
 
   &--tiles {
-    min-width: $filesystem-tiles-icon-size;
-    height: $filesystem-tiles-icon-size;
+    @include all-widths($filesystem-tiles-icon-size);
+    @include all-heights($filesystem-tiles-icon-size);
     margin-right: $filesystem-tiles-padding;
   }
 
   &--icons {
     width: 100%;
-    height: $filesystem-icons-icon-container-height;
+    @include all-heights($filesystem-icons-icon-container-height);
   }
 
   &--list {

@@ -45,6 +45,10 @@ export class Container extends Component<CtxProps, State> {
     this.redraw(imageData);
   };
 
+  initialResize = (newWidth: number, newHeight: number) => {
+    this.setState({ width: newWidth, height: newHeight });
+  };
+
   redraw = (oldImageData: ImageData) => {
     const { canvasCtx, secondaryColor } = this.props.paint;
     const { width, height } = this.state;
@@ -66,7 +70,12 @@ export class Container extends Component<CtxProps, State> {
 
     return (
       <div className="paint__canvas-container" data-test="canvas">
-        <MainCanvas width={width} height={height} data-test="main" />
+        <MainCanvas
+          width={width}
+          height={height}
+          resize={this.initialResize}
+          data-test="main"
+        />
         <TempCanvas width={width} height={height} data-test="temp" />
 
         {isText && <TextArea data-test="textarea" />}

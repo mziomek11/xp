@@ -5,6 +5,11 @@ const initFileTree: FileTree = {
     name: "Local Disk (C:)",
     type: "disk",
     content: {
+      image: {
+        name: "image",
+        type: "image",
+        content: undefined
+      },
       "Documents and settings": {
         name: "Documents and settings",
         type: "folder",

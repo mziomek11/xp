@@ -1,7 +1,7 @@
 import React from "react";
 
-import MenuItem from "../../../menu/Item";
-import { DropDown, Option, Divider } from "../../../dropdown";
+import MenuItem from "./Item";
+import { DropDown, Option, Divider } from "../dropdown";
 
 type Props = {
   onNewClick: VoidFunction;
@@ -11,7 +11,7 @@ type Props = {
   onCloseClick: VoidFunction;
 };
 
-const File: React.FC<Props> = ({
+const SaveableFile: React.FC<Props> = ({
   onNewClick,
   onOpenClick,
   onSaveAsClick,
@@ -32,4 +32,4 @@ const File: React.FC<Props> = ({
   return <MenuItem name="File" dropdown={dropDown} data-test="file" />;
 };
 
-export default File;
+export default SaveableFile;

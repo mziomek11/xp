@@ -31,6 +31,16 @@ export function areArraysEqual<T>(arr1: T[], arr2: T[]) {
   return true;
 }
 
+export function areArraysValuesEqual<T>(arr1: T[], arr2: T[]) {
+  if (arr1.length !== arr2.length) return false;
+
+  for (let i = 0; i < arr1.length; i++) {
+    if (!arr2.some(val => val === arr1[i])) return false;
+  }
+
+  return true;
+}
+
 export function areObjectsEqual<T>(a: T, b: T, properties: string[]) {
   for (let i = 0; i < properties.length; i++) {
     const property = properties[i];

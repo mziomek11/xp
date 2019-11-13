@@ -12,7 +12,16 @@ import {
 } from "../models";
 import Vector from "../../../../classes/Vector";
 
+type Path = string[] | undefined;
+
+type Props = {
+  startPath: Path;
+  startImage?: ImageData;
+};
+
 type State = {
+  path: Path;
+  startImage?: ImageData;
   selectedTool: Tool;
   lastSelectedTool: Tool;
   primaryColor: string;
@@ -21,6 +30,8 @@ type State = {
   tempCanvasCtx: CanvasRenderingContext2D | null;
   showTempCanvas: boolean;
   showError: boolean;
+  isOpening: boolean;
+  isSaving: boolean;
   options: Options;
 };
 
@@ -30,17 +41,24 @@ type SetOptions = { setOptions: (options: Partial<Options>) => void };
 type SetSelect = { setSelectOptions: (o: Partial<SelOpts>) => void };
 type ClearCtx = { clearTempCanvas: VoidFunction };
 type SetColor = { setColor: (primary: boolean) => void };
+type GetImageData = { getImageData: () => ImageData };
 export type Context = State &
   SetState &
   SetOptions &
   ClearCtx &
   SetColor &
-  SetSelect;
+  SetSelect &
+  GetImageData;
 
 const PaintContext = createContext<Partial<Context>>({});
 
-export class ContextProvider extends Component<{}, State> {
+export class ContextProvider extends Component<Props, State> {
   readonly state: State = {
+    path: this.props.startPath,
+    startImage: this.props.startImage,
+    showError: false,
+    isOpening: false,
+    isSaving: false,
     selectedTool: "pencil",
     lastSelectedTool: "brush",
     primaryColor: "#000000",
@@ -48,7 +66,6 @@ export class ContextProvider extends Component<{}, State> {
     canvasCtx: null,
     tempCanvasCtx: null,
     showTempCanvas: false,
-    showError: false,
     options: {
       lineWidth: LineWidth.ExtraSmall,
       rubberSize: RubberSize.Big,
@@ -81,7 +98,8 @@ export class ContextProvider extends Component<{}, State> {
     setOptions: this.setOptions,
     clearTempCanvas: this.clearTempCanvas,
     setColor: this.setColor,
-    setSelectOptions: this.setSelectOptions
+    setSelectOptions: this.setSelectOptions,
+    getImageData: this.getImageData
   });
 
   setOptions = (newOptions: Partial<Options>) => {
@@ -111,6 +129,14 @@ export class ContextProvider extends Component<{}, State> {
     const { width, height } = canvasCtx!.canvas;
 
     tempCanvasCtx!.clearRect(0, 0, width, height);
+  };
+
+  getImageData = (): ImageData => {
+    const { canvasCtx } = this.state;
+    const { width, height } = canvasCtx!.canvas;
+
+    const imageData = canvasCtx!.getImageData(0, 0, width, height);
+    return imageData;
   };
 
   render() {

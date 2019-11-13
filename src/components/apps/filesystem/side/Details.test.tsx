@@ -85,6 +85,11 @@ describe("Filesystem Side Details component", () => {
       expect(result).toBe("Text document");
     });
 
+    it("should return Image", () => {
+      const result = wrapper.instance().mapFileTypeToParagraph("image");
+      expect(result).toBe("Image");
+    });
+
     it("should throw error", () => {
       expect(() => {
         wrapper.instance().mapFileTypeToParagraph("computer");

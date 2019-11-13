@@ -48,6 +48,8 @@ export class Details extends Component<Props, {}> {
         return "File folder";
       case "text":
         return "Text document";
+      case "image":
+        return "Image";
       default:
         throw Error("Unknown file type");
     }

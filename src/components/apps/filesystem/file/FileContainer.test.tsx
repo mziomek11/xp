@@ -108,7 +108,7 @@ describe("Filesystem FileContainer Component", () => {
   });
 
   describe("onDoubleClick", () => {
-    describe("notepad", () => {
+    describe("notepad or paint", () => {
       it("should call open when is NOT picker", () => {
         const wrapper = createWrapper({}, { type: "text" }, false);
         wrapper.instance().onDoubleClick()();

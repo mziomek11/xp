@@ -115,6 +115,17 @@ describe("Paint CanvasContainer component", () => {
     });
   });
 
+  describe("initialResize", () => {
+    it("should update state", () => {
+      const instance = createWrapper().instance();
+      instance.setState({ width: 0, height: 0 });
+      instance.resize(50, 60);
+
+      expect(instance.state.width).toBe(50);
+      expect(instance.state.height).toBe(60);
+    });
+  });
+
   describe("redraw", () => {
     it("should call fillRect with proper args", () => {
       const instance = createWrapper().instance();

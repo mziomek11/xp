@@ -4,7 +4,8 @@ import {
   getClassName,
   areArraysEqual,
   areObjectsEqual,
-  pickRandomItemsFromArray
+  pickRandomItemsFromArray,
+  areArraysValuesEqual
 } from "./";
 
 describe("Utils functions", () => {
@@ -78,11 +79,30 @@ describe("Utils functions", () => {
     });
 
     it("should return false", () => {
+      expect(areArraysEqual([1, 0], [0, 1])).toBe(false);
       expect(areArraysEqual([1], [0])).toBe(false);
       expect(areArraysEqual([0], [1])).toBe(false);
       expect(areArraysEqual([1], [])).toBe(false);
       expect(areArraysEqual([], [1])).toBe(false);
       expect(areArraysEqual([1], ["1"] as any)).toBe(false);
+    });
+  });
+
+  describe("areArraysValuesEqual", () => {
+    it("should return true", () => {
+      const arr = [1, 2, 3, 4, 5];
+      expect(areArraysValuesEqual(arr, arr)).toBe(true);
+      expect(areArraysValuesEqual([1, 0], [0, 1])).toBe(true);
+      expect(areArraysValuesEqual([1, 2, 3], [3, 2, 1])).toBe(true);
+      expect(areArraysValuesEqual([], [])).toBe(true);
+    });
+
+    it("should return false", () => {
+      expect(areArraysValuesEqual([1], [0])).toBe(false);
+      expect(areArraysValuesEqual([0], [1])).toBe(false);
+      expect(areArraysValuesEqual([1], [])).toBe(false);
+      expect(areArraysValuesEqual([], [1])).toBe(false);
+      expect(areArraysValuesEqual([1], ["1"] as any)).toBe(false);
     });
   });
 
