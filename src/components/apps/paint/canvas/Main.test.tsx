@@ -85,7 +85,8 @@ describe("Paint MainCanvas component", () => {
       const instance = createWrapper({ width, height }).instance();
       const styles = instance.getInlineStyles();
 
-      expect(styles).toEqual({ width, height });
+      expect(styles.width).toBe(width);
+      expect(styles.height).toBe(height);
     });
 
     it("should return zoomed width and height", () => {
@@ -95,7 +96,8 @@ describe("Paint MainCanvas component", () => {
       const instance = createWrapper({ width, height, zoom }).instance();
       const styles = instance.getInlineStyles();
 
-      expect(styles).toEqual({ width: width * zoom, height: height * zoom });
+      expect(styles.width).toBe(width * zoom);
+      expect(styles.height).toBe(height * zoom);
     });
   });
 });

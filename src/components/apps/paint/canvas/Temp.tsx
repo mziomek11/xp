@@ -5,6 +5,7 @@ import { PaintContextType } from "ContextType";
 import { canvasClass } from "../classes";
 import { getClassName, areObjectsEqual } from "../../../../utils";
 import Vector from "../../../../classes/Vector";
+import { getPaintCursor } from "../../../../icons";
 
 type OwnProps = {
   width: number;
@@ -60,14 +61,15 @@ export class TempCanvas extends Component<Props, State> {
   };
 
   getInlineStyles = (width: number, height: number): React.CSSProperties => {
-    const { showTempCanvas, options } = this.props.paint;
+    const { showTempCanvas, options, selectedTool } = this.props.paint;
     const { zoom, select } = options;
     const { isRect } = select;
     const { lastCanvasPos } = this.state;
 
     const styles: React.CSSProperties = {
       width: width * zoom,
-      height: height * zoom
+      height: height * zoom,
+      cursor: getPaintCursor(selectedTool)
     };
 
     if (showTempCanvas) styles.display = "block";

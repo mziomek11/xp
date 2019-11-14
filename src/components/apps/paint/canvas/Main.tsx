@@ -4,6 +4,7 @@ import withContext from "../../../../hoc/withContext";
 import { PaintContextType } from "ContextType";
 import { canvasClass } from "../classes";
 import { getClassName } from "../../../../utils";
+import { getPaintCursor } from "../../../../icons";
 
 type OwnProps = {
   width: number;
@@ -52,12 +53,14 @@ export class MainCanvas extends Component<Props> {
   };
 
   getInlineStyles = (): React.CSSProperties => {
-    const { zoom } = this.props.paint.options;
+    const { selectedTool, options } = this.props.paint;
+    const { zoom } = options;
     const { width, height } = this.props;
 
-    const styles = {
+    const styles: React.CSSProperties = {
       width: width * zoom,
-      height: height * zoom
+      height: height * zoom,
+      cursor: getPaintCursor(selectedTool)
     };
 
     return styles;

@@ -18,7 +18,14 @@ import paintFocused from "./assets/icons/paint-focused.png";
 import image from "./assets/icons/image.png";
 import imageFocused from "./assets/icons/image-focused.png";
 
+import cursorPaintFill from "./assets/paint/cursors/fill.png";
+import cursorPaintAero from "./assets/paint/cursors/aero.png";
+import cursorPaintPencil from "./assets/paint/cursors/pencil.png";
+import cursorPaintPick from "./assets/paint/cursors/pick.png";
+import cursorPaintZoom from "./assets/paint/cursors/zoom.png";
+
 import { Application } from "./store/models";
+import { Tool } from "./components/apps/paint/models";
 
 export type FileIcon = "folder" | "disk" | "text" | "image";
 
@@ -69,5 +76,22 @@ const getFocusedIcon = (type: Icon): string => {
       return imageFocused;
     default:
       throw Error("This icon does not exists");
+  }
+};
+
+export const getPaintCursor = (tool: Tool): string => {
+  switch (tool) {
+    case "aero":
+      return `url(${cursorPaintAero}) 0 16, auto `;
+    case "fill":
+      return `url(${cursorPaintFill}) 0 16, auto `;
+    case "pencil":
+      return `url(${cursorPaintPencil}) 0 16, auto `;
+    case "pick":
+      return `url(${cursorPaintPick}) 0 24, auto `;
+    case "zoom":
+      return `url(${cursorPaintZoom}), auto `;
+    default:
+      return "crosshair";
   }
 };
