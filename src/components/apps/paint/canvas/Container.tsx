@@ -19,8 +19,8 @@ type State = {
 
 export class Container extends Component<CtxProps, State> {
   readonly state: State = {
-    width: 200,
-    height: 200
+    width: 400,
+    height: 400
   };
 
   shouldComponentUpdate({ paint }: CtxProps, nextState: State) {

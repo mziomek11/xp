@@ -16,7 +16,10 @@ const id = "this is id";
 const screenWidth: number = window.innerWidth;
 const screenHeight: number = window.innerHeight;
 
-const createWrapper = (application: App, openData?: OpenData) => {
+const createWrapper = (
+  application: App,
+  openData: OpenData = { content: "", path: [] }
+) => {
   const window = { openData: openData, application } as any;
 
   return shallow<Application>(
@@ -111,6 +114,21 @@ describe("Application Component", () => {
         ...startSizeResult,
         ...startPositionResult
       });
+    });
+  });
+
+  describe("isAppStartingFullscreened", () => {
+    it("should return false", () => {
+      const noteIns = createWrapper("notepad").instance();
+      expect(noteIns.isAppStartingFullscreened()).toBe(false);
+
+      const fileIns = createWrapper("filesystem").instance();
+      expect(fileIns.isAppStartingFullscreened()).toBe(false);
+    });
+
+    it("should return true", () => {
+      const paintIns = createWrapper("paint").instance();
+      expect(paintIns.isAppStartingFullscreened()).toBe(true);
     });
   });
 

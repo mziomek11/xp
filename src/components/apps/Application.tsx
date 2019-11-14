@@ -83,11 +83,22 @@ export class Application extends Component<Props, {}> {
 
     return {
       id: this.props.id,
-      startFullscreened: false,
+      startFullscreened: this.isAppStartingFullscreened(),
       ...windowMinMaxProps,
       ...startSize,
       ...startPosition
     };
+  };
+
+  isAppStartingFullscreened = () => {
+    const { application } = this.props.window;
+
+    switch (application) {
+      case "paint":
+        return true;
+      default:
+        return false;
+    }
   };
 
   getMinMaxProps = () => {
