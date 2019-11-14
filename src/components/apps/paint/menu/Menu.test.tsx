@@ -59,10 +59,6 @@ describe("Paint Menu Component", () => {
       expect(findByTestAtrr(wrapper, "file").length).toBe(1);
     });
 
-    it("should render Edit component", () => {
-      expect(findByTestAtrr(wrapper, "edit").length).toBe(1);
-    });
-
     it("should render View component", () => {
       expect(findByTestAtrr(wrapper, "view").length).toBe(1);
     });

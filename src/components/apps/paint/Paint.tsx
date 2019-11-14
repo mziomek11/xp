@@ -18,13 +18,13 @@ type Props = {
 
 export class Paint extends Component<Props, {}> {
   shouldComponentUpdate(nextProps: Props) {
-    const keys = ["showError", "isOpening", "isSaving"];
+    const keys = ["showError", "isOpening", "isSaving", "showColorBox"];
 
     return !areObjectsEqual(this.props.paint, nextProps.paint, keys);
   }
 
   render() {
-    const { showError, isOpening, isSaving } = this.props.paint;
+    const { showError, isOpening, isSaving, showColorBox } = this.props.paint;
     return (
       <div className="paint" data-test="paint">
         <Menu data-test="menu" />
@@ -32,7 +32,7 @@ export class Paint extends Component<Props, {}> {
           <ToolBar data-test="toolbar" />
           <CanvasContainer data-test="canvas" />
         </div>
-        <ColorBar data-test="colorbar" />
+        {showColorBox && <ColorBar data-test="colorbar" />}
         {showError && <ErrorPopUp data-test="error" />}
         {isOpening && <Open data-test="open" />}
         {isSaving && <Save data-test="save" />}

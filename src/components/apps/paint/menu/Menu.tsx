@@ -5,7 +5,6 @@ import { connect } from "react-redux";
 
 import Menu from "../../../menu/Menu";
 import SaveableFile from "../../../menu/SaveableFile";
-import Edit from "./Edit";
 import View from "./View";
 import Image from "./Image";
 import withContext from "../../../../hoc/withContext";
@@ -106,7 +105,6 @@ export class PaintMenu extends Component<Props> {
           onSaveAsClick={this.handleSaveAsClick}
           data-test="file"
         />
-        <Edit data-test="edit" />
         <View data-test="view" />
         <Image data-test="image" />
       </Menu>

@@ -27,8 +27,10 @@ export class Text extends Component<CtxProps, State> {
 
   handleToolChange = () => {
     const { setContext, setSelectOptions, options } = this.props.paint;
+    const { isText } = options.select;
+
     setContext({ showTempCanvas: false });
-    if (options.select.isText) setSelectOptions({ isText: false });
+    if (isText) setSelectOptions({ isText: false });
   };
 
   handleMouseDown = (canvasPos: Vector) => {

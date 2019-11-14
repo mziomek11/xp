@@ -33,6 +33,8 @@ type State = {
   isOpening: boolean;
   isSaving: boolean;
   options: Options;
+  showToolBox: boolean;
+  showColorBox: boolean;
 };
 
 type SetStateData = Partial<State>;
@@ -66,6 +68,8 @@ export class ContextProvider extends Component<Props, State> {
     canvasCtx: null,
     tempCanvasCtx: null,
     showTempCanvas: false,
+    showColorBox: true,
+    showToolBox: true,
     options: {
       lineWidth: LineWidth.ExtraSmall,
       rubberSize: RubberSize.Big,
@@ -84,6 +88,7 @@ export class ContextProvider extends Component<Props, State> {
       },
       select: {
         isRect: false,
+        isSelectingAll: false,
         isText: false,
         isTransparent: false,
         size: Vector.Zero,

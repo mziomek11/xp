@@ -39,6 +39,7 @@ export enum BrushSize {
 
 export type SelectionOptions = {
   isRect: boolean;
+  isSelectingAll: boolean;
   isText: boolean;
   isTransparent: boolean;
   position: Vector;
