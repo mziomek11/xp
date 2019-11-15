@@ -18,7 +18,7 @@ const createWrapper = (
     options: { display }
   } as any;
 
-  return shallow<List>(<List filesystem={context} />);
+  return shallow<List>(<List filesystem={context} isFilePicker={false} />);
 };
 
 const wrapper = createWrapper([], ["a", "b", "c"], "tiles", null);
@@ -85,6 +85,7 @@ describe("Filesystem File List Component", () => {
     it("should change state", () => {
       const wrapper = createWrapper([], [], "tiles", null);
       const ev = {
+        type: "mousedown",
         clientX: 1,
         clientY: 2,
         currentTarget: { getClientRects: () => [{ left: 3, top: 4, width: 5 }] }
@@ -96,8 +97,7 @@ describe("Filesystem File List Component", () => {
       expect(wrapper.instance().state).toEqual({
         creatingRect: true,
         mouseDownData: {
-          clientX: 1,
-          clientY: 2,
+          windowPosition: { x: 1, y: 2 },
           filesLeft: 3,
           filesTop: 4,
           filesWidth: 5

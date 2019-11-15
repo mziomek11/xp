@@ -10,8 +10,10 @@ import { listClass } from "../classNames";
 import {
   getClassName,
   areArraysEqual,
-  areObjectsEqual
+  areObjectsEqual,
+  getWindowPosition
 } from "../../../../utils";
+import Vector from "../../../../classes/Vector";
 
 type Props = {
   isFilePicker: boolean;
@@ -27,8 +29,7 @@ export class List extends Component<Props, State> {
   readonly state: State = {
     creatingRect: false,
     mouseDownData: {
-      clientX: 0,
-      clientY: 0,
+      windowPosition: Vector.Zero,
       filesLeft: 0,
       filesTop: 0,
       filesWidth: 0
@@ -53,17 +54,20 @@ export class List extends Component<Props, State> {
     return false;
   }
 
-  handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+  handleMouseDown = (
+    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
+  ) => {
     const { filesystem, isFilePicker } = this.props;
     if (isFilePicker || filesystem.renamedFile !== null) return null;
     const clientRects = (e.currentTarget as Element).getClientRects()[0];
     const { left, top, width } = clientRects;
 
+    const windowPosition = getWindowPosition(e);
+
     this.setState({
       creatingRect: true,
       mouseDownData: {
-        clientX: e.clientX,
-        clientY: e.clientY,
+        windowPosition,
         filesLeft: left,
         filesTop: top,
         filesWidth: width
@@ -86,6 +90,7 @@ export class List extends Component<Props, State> {
       <div
         className={className}
         onMouseDown={this.handleMouseDown}
+        onTouchStart={this.handleMouseDown}
         ref={this.container}
         data-test="container"
       >

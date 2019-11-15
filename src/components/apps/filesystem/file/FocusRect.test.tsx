@@ -5,6 +5,7 @@ import { Display } from "../context/models";
 import { FocusRect, StartEventData } from "./FocusRect";
 import { filesystemConfig } from "../../../../config";
 import { findByTestAtrr } from "../../../../../testingUtils";
+import Vector from "../../../../classes/Vector";
 
 let mockOnMouseUpFn: jest.Mock;
 let mockSetFocusedFn: jest.Mock;
@@ -25,8 +26,7 @@ const createWrapper = (
   const props = {
     onMouseUp: mockOnMouseUpFn,
     mouseDownData: {
-      clientX: 0,
-      clientY: 0,
+      windowPosition: { x: 0, y: 0 },
       filesLeft: 0,
       filesTop: 0,
       filesWidth: 0,
@@ -58,7 +58,7 @@ describe("Filesystem FocusRect Component", () => {
   describe("componentDidMount", () => {
     it("should change state", () => {
       wrapper = createWrapper(
-        { clientX: 50, filesLeft: 20, clientY: 50, filesTop: 20 },
+        { windowPosition: new Vector(50, 50), filesLeft: 20, filesTop: 20 },
         { scrollTop: 10 }
       );
 
@@ -70,8 +70,10 @@ describe("Filesystem FocusRect Component", () => {
   describe("handleMouseMove", () => {
     it("should updateState", () => {
       const instance = createWrapper().instance();
-      const ev = { clientX: 10, clientY: 20 };
-      const newState = instance.calculateNewState(ev.clientX, ev.clientY);
+      const ev = { clientX: 10, clientY: 20, type: "mousemove" };
+      const newState = instance.calculateNewState(
+        new Vector(ev.clientX, ev.clientY)
+      );
 
       instance.handleMouseMove(ev as any);
       expect(instance.state).toEqual({ ...instance.state, ...newState });
@@ -83,7 +85,7 @@ describe("Filesystem FocusRect Component", () => {
         {},
         { focused: ["psajfspd"] }
       ).instance();
-      const ev = { clientX: 10, clientY: 20 };
+      const ev = { clientX: 10, clientY: 20, type: "mousemove" };
 
       instance.handleMouseMove(ev as any);
       expect(mockSetFocusedFn.mock.calls.length).toBe(1);
@@ -99,7 +101,7 @@ describe("Filesystem FocusRect Component", () => {
       const newWidth = instance.calculateWidth(mouseX);
       const newHeight = instance.calculateHeight(mouseY);
 
-      expect(instance.calculateNewState(mouseX, mouseY)).toEqual({
+      expect(instance.calculateNewState(new Vector(mouseX, mouseY))).toEqual({
         left: instance.calculateLeft(mouseX, newWidth),
         top: instance.calculateTop(mouseY, newHeight),
         width: newWidth,
@@ -110,7 +112,7 @@ describe("Filesystem FocusRect Component", () => {
 
   describe("calculateWidth", () => {
     it("should return positive value", () => {
-      wrapper = createWrapper({ clientX: 10 });
+      wrapper = createWrapper({ windowPosition: new Vector(10, 0) });
 
       expect(wrapper.instance().calculateWidth(20)).toBe(10);
       expect(wrapper.instance().calculateWidth(0)).toBe(10);
@@ -119,7 +121,7 @@ describe("Filesystem FocusRect Component", () => {
 
   describe("calculateLeft", () => {
     it("mouseX is greater than clientX", () => {
-      wrapper = createWrapper({ clientX: 20 });
+      wrapper = createWrapper({ windowPosition: new Vector(20, 0) });
       wrapper.instance().setState({ startLeft: 10 });
 
       const result = wrapper.instance().calculateLeft(40, 50);
@@ -127,7 +129,7 @@ describe("Filesystem FocusRect Component", () => {
     });
 
     it("mouseX is NOT greater than clientX", () => {
-      wrapper = createWrapper({ clientX: 20 });
+      wrapper = createWrapper({ windowPosition: new Vector(20, 0) });
       wrapper.instance().setState({ startLeft: 10 });
 
       const result = wrapper.instance().calculateLeft(10, 10);
@@ -137,7 +139,7 @@ describe("Filesystem FocusRect Component", () => {
 
   describe("calculateTop", () => {
     it("mouseY is greater than clientY", () => {
-      wrapper = createWrapper({ clientY: 20 });
+      wrapper = createWrapper({ windowPosition: new Vector(0, 20) });
       wrapper.instance().setState({ startTop: 10 });
 
       const result = wrapper.instance().calculateTop(40, 50);
@@ -145,7 +147,7 @@ describe("Filesystem FocusRect Component", () => {
     });
 
     it("mouseY is NOT greater than clientY", () => {
-      wrapper = createWrapper({ clientY: 20 });
+      wrapper = createWrapper({ windowPosition: new Vector(0, 20) });
       wrapper.instance().setState({ startTop: 10 });
 
       const result = wrapper.instance().calculateTop(10, 10);

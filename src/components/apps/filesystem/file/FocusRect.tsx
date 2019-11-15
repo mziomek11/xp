@@ -1,13 +1,13 @@
 import React, { Component, CSSProperties } from "react";
 
 import withContext from "../../../../hoc/withContext";
+import Vector from "../../../../classes/Vector";
 import { FilesystemContextType } from "ContextType";
 import { filesystemConfig } from "../../../../config";
-import { areArraysEqual } from "../../../../utils";
+import { areArraysEqual, getWindowPosition } from "../../../../utils";
 
 export type StartEventData = {
-  clientX: number;
-  clientY: number;
+  windowPosition: Vector;
   filesLeft: number;
   filesTop: number;
   filesWidth: number;
@@ -46,16 +46,19 @@ export class FocusRect extends Component<Props, State> {
 
   componentDidMount() {
     const { mouseDownData, containerRef } = this.props;
-    const { clientX, clientY, filesLeft, filesTop } = mouseDownData;
+    const { windowPosition, filesLeft, filesTop } = mouseDownData;
     const { scrollTop } = containerRef.current as any;
 
-    const startLeft = clientX - filesLeft;
-    const startTop = clientY - filesTop + scrollTop;
+    const startLeft = windowPosition.x - filesLeft;
+    const startTop = windowPosition.y - filesTop + scrollTop;
 
     this.setState({ startLeft, startTop });
 
     window.addEventListener("mousemove", this.handleMouseMove);
     window.addEventListener("mouseup", this.handleMouseUp);
+
+    window.addEventListener("touchmove", this.handleMouseMove);
+    window.addEventListener("touchend", this.handleMouseUp);
   }
 
   componentWillUnmount() {
@@ -65,12 +68,16 @@ export class FocusRect extends Component<Props, State> {
   removeListeners = () => {
     window.removeEventListener("mousemove", this.handleMouseMove);
     window.removeEventListener("mouseup", this.handleMouseUp);
+
+    window.removeEventListener("touchmove", this.handleMouseMove);
+    window.removeEventListener("touchend", this.handleMouseUp);
   };
 
-  handleMouseMove = ({ clientX, clientY }: MouseEvent) => {
+  handleMouseMove = (e: MouseEvent | TouchEvent) => {
     const { setFocused, focused } = this.props.filesystem;
 
-    const newState: StyleState = this.calculateNewState(clientX, clientY);
+    const windowPosition = getWindowPosition(e);
+    const newState: StyleState = this.calculateNewState(windowPosition);
     this.setState(newState);
 
     const newFocused = this.calculateFocusedFiles(newState);
@@ -79,31 +86,32 @@ export class FocusRect extends Component<Props, State> {
     }
   };
 
-  calculateNewState = (mouseX: number, mouseY: number): StyleState => {
-    const newWidth = this.calculateWidth(mouseX);
-    const newHeight = this.calculateHeight(mouseY);
+  calculateNewState = (windowPosition: Vector): StyleState => {
+    const newWidth = this.calculateWidth(windowPosition.x);
+    const newHeight = this.calculateHeight(windowPosition.y);
 
     return {
-      left: this.calculateLeft(mouseX, newWidth),
-      top: this.calculateTop(mouseY, newHeight),
+      left: this.calculateLeft(windowPosition.x, newWidth),
+      top: this.calculateTop(windowPosition.y, newHeight),
       width: newWidth,
       height: newHeight
     };
   };
 
   calculateWidth = (mouseX: number): number => {
-    return Math.abs(mouseX - this.props.mouseDownData.clientX);
+    return Math.abs(mouseX - this.props.mouseDownData.windowPosition.x);
   };
 
   calculateHeight = (mouseY: number): number => {
     const { containerRef, mouseDownData } = this.props;
     const { scrollTop, scrollHeight } = containerRef.current as Element;
-    const { filesTop, clientY } = mouseDownData;
+    const { filesTop, windowPosition } = mouseDownData;
     const { startTop } = this.state;
 
     const actualTop = mouseY - filesTop + scrollTop;
     const heightPossibleTooBig = Math.abs(startTop - actualTop);
-    const top = startTop - (mouseY > clientY ? 0 : heightPossibleTooBig);
+    const top =
+      startTop - (mouseY > windowPosition.y ? 0 : heightPossibleTooBig);
 
     const height = Math.min(scrollHeight - top, heightPossibleTooBig);
 
@@ -112,16 +120,16 @@ export class FocusRect extends Component<Props, State> {
 
   calculateLeft = (mouseX: number, width: number): number => {
     const { startLeft } = this.state;
-    const { clientX } = this.props.mouseDownData;
+    const { x } = this.props.mouseDownData.windowPosition;
 
-    return startLeft - (mouseX > clientX ? 0 : width);
+    return startLeft - (mouseX > x ? 0 : width);
   };
 
   calculateTop = (mouseY: number, height: number): number => {
     const { startTop } = this.state;
-    const { clientY } = this.props.mouseDownData;
+    const { y } = this.props.mouseDownData.windowPosition;
 
-    return startTop - (mouseY > clientY ? 0 : height);
+    return startTop - (mouseY > y ? 0 : height);
   };
 
   calculateFocusedFiles = (styleState: StyleState) => {
