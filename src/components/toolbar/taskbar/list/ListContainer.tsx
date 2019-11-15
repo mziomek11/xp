@@ -5,7 +5,7 @@ import ApplicationList from "./List";
 import { RootState } from "MyTypes";
 import { WindowById } from "../../../../store/window/models";
 import { toolbarConfig } from "../../../../config";
-import { areArraysEqual } from "../../../../utils";
+import {  areArraysValuesEqual } from "../../../../utils";
 
 type AppNamesWithIds = { [appName: string]: string[] };
 
@@ -35,7 +35,7 @@ export class ApplicationsListContainer extends React.Component<
     return (
       nextProps.openWindowCount !== openWindowCount ||
       nextState.maxAppsWithDefaultWidth !== maxAppsWithDefaultWidth ||
-      !areArraysEqual(nextProps.allIds, allIds)
+      !areArraysValuesEqual(nextProps.allIds, allIds)
     );
   }
 
