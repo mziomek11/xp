@@ -167,7 +167,7 @@ describe("WindowResizer Component", () => {
       const stateDataX = instance.calculateStateDataX(clientX);
       const stateDataY = instance.calculateStateDataY(clientY);
 
-      const result = instance.calculateNewState(clientX, clientY);
+      const result = instance.calculateNewState({ x: clientX, y: clientY });
       const expectedResult = { ...stateDataX, ...stateDataY };
 
       expect(result).toEqual(expectedResult);
@@ -176,33 +176,36 @@ describe("WindowResizer Component", () => {
 
   describe("handleMouseDown", () => {
     it("should update state correctly", () => {
-      const expectedState = instance.calculateNewState(clientX, clientY);
+      const expectedState = instance.calculateNewState({
+        x: clientX,
+        y: clientY
+      });
 
       instance.handleMouseDown({ clientX, clientY } as any);
       expect(instance.state).toEqual(expectedState);
     });
   });
 
-  describe("convertMousePos", () => {
+  describe("convertWindowPos", () => {
     it("should return exact clientX and clientY", () => {
-      const mousePos = { clientX, clientY } as MouseEvent;
-      const result = instance.convertMousePos(mousePos);
+      const mousePos = { x: clientX, y: clientY } as MouseEvent;
+      const result = instance.convertWindowPos(mousePos);
       const expectedResult = { x: clientX, y: clientY };
 
       expect(result).toEqual(expectedResult);
     });
 
     it("should return exact clientX and clientY should be 0", () => {
-      const mousePos = { clientX, clientY: -500 } as MouseEvent;
-      const result = instance.convertMousePos(mousePos);
+      const mousePos = { x: clientX, y: -500 } as MouseEvent;
+      const result = instance.convertWindowPos(mousePos);
       const expectedResult = { x: clientX, y: 0 };
 
       expect(result).toEqual(expectedResult);
     });
 
     it("should return exact clientX and clientY should be max", () => {
-      const mousePos = { clientX, clientY: 99999 } as MouseEvent;
-      const result = instance.convertMousePos(mousePos);
+      const mousePos = { x: clientX, y: 99999 } as MouseEvent;
+      const result = instance.convertWindowPos(mousePos);
       const expectedResult = {
         x: clientX,
         y: window.innerHeight - toolbarConfig.HEIGHT

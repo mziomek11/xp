@@ -4,7 +4,8 @@ import withContext from "../../../hoc/withContext";
 import { WindowContextType } from "ContextType";
 import { windowConfig, toolbarConfig } from "../../../config";
 import { changeCursor } from "../../../utils/dom";
-import { getClassName } from "../../../utils";
+import { getClassName, getWindowPosition } from "../../../utils";
+import Vector from "../../../classes/Vector";
 
 export type OwnProps = {
   window: WindowContextType;
@@ -52,11 +53,18 @@ export class WindowResizer extends Component<OwnProps, State> {
   addListeners = () => {
     window.addEventListener("mousemove", this.handleMouseMove);
     window.addEventListener("mouseup", this.removeListeners);
+
+    window.addEventListener("touchmove", this.handleMouseMove);
+    window.addEventListener("touchend", this.removeListeners);
   };
 
   removeListeners = () => {
     window.removeEventListener("mousemove", this.handleMouseMove);
     window.removeEventListener("mouseup", this.removeListeners);
+
+    window.removeEventListener("touchmove", this.handleMouseMove);
+    window.removeEventListener("touchend", this.removeListeners);
+
     if (this.props.window.resizable) changeCursor();
     this.props.window.setContext({ resizing: false });
   };
@@ -81,9 +89,12 @@ export class WindowResizer extends Component<OwnProps, State> {
     return ownCursor;
   };
 
-  handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+  handleMouseDown = (
+    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
+  ) => {
     if (!this.props.window.resizable) return;
-    const newState = this.calculateNewState(e.clientX, e.clientY);
+    const windowPos = getWindowPosition(e);
+    const newState = this.calculateNewState(windowPos);
 
     this.setState(newState);
     this.props.window.setContext({ resizing: true });
@@ -91,9 +102,9 @@ export class WindowResizer extends Component<OwnProps, State> {
     this.addListeners();
   };
 
-  calculateNewState = (clientX: number, clientY: number): State => {
-    const newStateDataX = this.calculateStateDataX(clientX);
-    const newStateDataY = this.calculateStateDataY(clientY);
+  calculateNewState = (windowPosition: Vector): State => {
+    const newStateDataX = this.calculateStateDataX(windowPosition.x);
+    const newStateDataY = this.calculateStateDataY(windowPosition.y);
     const newState: State = { ...newStateDataX, ...newStateDataY };
 
     return newState;
@@ -125,18 +136,19 @@ export class WindowResizer extends Component<OwnProps, State> {
     return calculatedStateData;
   };
 
-  handleMouseMove = (e: MouseEvent) => {
-    const convertedMousePos = this.convertMousePos(e);
-    const newSize = this.calculateNewSize(convertedMousePos);
+  handleMouseMove = (e: MouseEvent | TouchEvent) => {
+    const windowPos = getWindowPosition(e);
+    const convertedWindowPos = this.convertWindowPos(windowPos);
+    const newSize = this.calculateNewSize(convertedWindowPos);
     this.resize(newSize);
   };
 
-  convertMousePos = ({ clientX, clientY }: MouseEvent) => {
+  convertWindowPos = (windowPos: Vector) => {
     const { min, max } = Math;
     const { innerHeight } = window;
 
-    const x = clientX;
-    const y = max(0, min(clientY, innerHeight - toolbarConfig.HEIGHT));
+    const x = windowPos.x;
+    const y = max(0, min(windowPos.y, innerHeight - toolbarConfig.HEIGHT));
 
     return { x, y };
   };
@@ -242,6 +254,7 @@ export class WindowResizer extends Component<OwnProps, State> {
         className={this.getClassModifier()}
         data-test="resizer"
         onMouseDown={this.handleMouseDown}
+        onTouchStart={this.handleMouseDown}
       />
     );
   }
