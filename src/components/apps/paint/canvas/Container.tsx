@@ -19,7 +19,7 @@ type State = {
 
 export class Container extends Component<CtxProps, State> {
   readonly state: State = {
-    width: 400,
+    width: 200,
     height: 400
   };
 

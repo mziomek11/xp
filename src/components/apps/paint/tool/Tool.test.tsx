@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MouseEvent } from "react";
 import { shallow } from "enzyme";
 
 import { Tool } from "./Tool";
@@ -108,7 +108,7 @@ describe("Paint Tool component", () => {
   describe("handleMouseDown", () => {
     it("should call onMouseDown when left mouse button is clicked", () => {
       const instance = createWrapper(true, "fill").instance();
-      const ev = { ...validMouseEvent, which: 1 };
+      const ev = { ...validMouseEvent, which: 1, type: "mousedown" };
 
       instance.handleMouseDown(ev as any);
       expect(mockOnMouseDownFn.mock.calls.length).toBe(1);
@@ -116,7 +116,7 @@ describe("Paint Tool component", () => {
 
     it("should NOT call onMouseDown when right mouse button is clicked", () => {
       const instance = createWrapper(true, "fill").instance();
-      const ev = { ...validMouseEvent, which: 3 };
+      const ev = { ...validMouseEvent, which: 3, type: "mousedown" };
 
       instance.handleMouseDown(ev as any);
       expect(mockOnMouseDownFn.mock.calls.length).toBe(0);
@@ -127,7 +127,11 @@ describe("Paint Tool component", () => {
     it("should preventDefault", () => {
       const mockPreventDefaultFn = jest.fn();
       const instance = createWrapper(true, "fill").instance();
-      const ev = { ...validMouseEvent, preventDefault: mockPreventDefaultFn };
+      const ev = {
+        ...validMouseEvent,
+        preventDefault: mockPreventDefaultFn,
+        type: "mousedown"
+      };
       instance.handleContextMenu(ev);
 
       expect(mockPreventDefaultFn.mock.calls.length).toBe(1);
@@ -153,7 +157,7 @@ describe("Paint Tool component", () => {
   describe("handleMouseMove", () => {
     it("should call onMouseMove", () => {
       const instance = createWrapper().instance();
-      const ev = { target: { clientX: 10, clientY: 20 } };
+      const ev = { target: { clientX: 10, clientY: 20 }, type: "mousemove" };
 
       instance.handleMouseMove(ev as any);
       expect(mockOnMouseMoveFn.mock.calls.length).toBe(1);
@@ -163,7 +167,7 @@ describe("Paint Tool component", () => {
   describe("handleMouseUp", () => {
     it("should call onMouseUp", () => {
       const instance = createWrapper().instance();
-      const ev = { target: { clientX: 10, clientY: 20 } };
+      const ev = { target: { clientX: 10, clientY: 20 }, type: "mouseup" };
 
       instance.handleMouseUp(ev as any);
       expect(mockOnMouseUpFn.mock.calls.length).toBe(1);
@@ -171,11 +175,15 @@ describe("Paint Tool component", () => {
   });
 
   describe("calculateCanvasPos", () => {
+    const ev: Partial<MouseEvent> = {
+      clientX: 10,
+      clientY: 80,
+      type: "mousemove"
+    };
     it("should return proper value", () => {
       const newState = { canvasLeft: 40, canvasTop: 50 };
       wrapper.instance().setState(newState);
 
-      const ev = { clientX: 10, clientY: 80 };
       const result = wrapper.instance().calculateCanvasPos(ev as any);
       expect(result).toEqual({ x: -30, y: 30 });
     });
@@ -186,7 +194,6 @@ describe("Paint Tool component", () => {
       const newState = { canvasLeft: 40, canvasTop: 50 };
       instance.setState(newState);
 
-      const ev = { clientX: 10, clientY: 80 };
       const result = instance.calculateCanvasPos(ev as any);
       expect(result).toEqual({ x: -30 / zoom, y: 30 / zoom });
     });

@@ -156,6 +156,10 @@ describe("Paint TempCanvas component", () => {
   });
 
   describe("handleMouseDown", () => {
+    const ev: Partial<React.MouseEvent<HTMLCanvasElement>> = {
+      type: "mousedown"
+    };
+
     let instance: TempCanvas;
     let mockSetStateFn: jest.Mock;
     let mockAddListenersFn: jest.Mock;
@@ -169,12 +173,12 @@ describe("Paint TempCanvas component", () => {
       instance.getMousePosition = mockGetMousePositionFn;
       instance.setState = mockSetStateFn;
       instance.addListeners = mockAddListenersFn;
-      instance.handleMouseDown("Event" as any);
+
+      instance.handleMouseDown(ev as any);
     });
 
-    it("should call getMousePos with event", () => {
+    it("should call getMousePos", () => {
       expect(mockGetMousePositionFn.mock.calls.length).toBe(1);
-      expect(mockGetMousePositionFn.mock.calls[0]).toEqual(["Event"]);
     });
 
     it("should update state with proper args", () => {
@@ -199,6 +203,7 @@ describe("Paint TempCanvas component", () => {
   });
 
   describe("handleMouseMove", () => {
+    const ev: Partial<MouseEvent> = { type: "mousemove" };
     let instance: TempCanvas;
     let mockaAdjustCanvasAndMousePosFn: jest.Mock;
 
@@ -209,12 +214,11 @@ describe("Paint TempCanvas component", () => {
 
       instance.getMousePosition = mockGetMousePositionFn;
       instance.adjustCanvasAndMousePos = mockaAdjustCanvasAndMousePosFn;
-      instance.handleMouseMove("Event" as any);
+      instance.handleMouseMove(ev as any);
     });
 
-    it("should call getMousePos with event", () => {
+    it("should call getMousePos", () => {
       expect(mockGetMousePositionFn.mock.calls.length).toBe(1);
-      expect(mockGetMousePositionFn.mock.calls[0]).toEqual(["Event"]);
     });
 
     it("should call adjustCanvasAndMousePos with canvasPos and mousePos", () => {
@@ -237,14 +241,14 @@ describe("Paint TempCanvas component", () => {
 
   describe("getMousePosition", () => {
     it("should return floored Vector", () => {
-      let ev: any = { screenX: 10, screenY: 20 };
-      expect(instance.getMousePosition(ev)).toEqual(new Vector(10, 20));
+      let v = new Vector(10, 20);
+      expect(instance.getMousePosition(v)).toEqual(new Vector(10, 20));
 
-      ev = { screenX: 10.9, screenY: 20.9 };
-      expect(instance.getMousePosition(ev)).toEqual(new Vector(10, 20));
+      v = new Vector(10.9, 20.9);
+      expect(instance.getMousePosition(v)).toEqual(new Vector(10, 20));
 
-      ev = { screenX: 10.1, screenY: 20.1 };
-      expect(instance.getMousePosition(ev)).toEqual(new Vector(10, 20));
+      v = new Vector(10.1, 20.1);
+      expect(instance.getMousePosition(v)).toEqual(new Vector(10, 20));
     });
   });
 

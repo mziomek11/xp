@@ -102,9 +102,13 @@ export function isTouchEvent(e: MouseOrTouchEvent): e is TouchEvent {
 export function getWindowPosition(e: MouseOrTouchEvent): Vector {
   if (isMouseEvent(e)) return new Vector(e.clientX, e.clientY);
 
-  const { touches } = e as TouchEvent;
+  const { touches, changedTouches } = e as TouchEvent;
   if (touches.length > 0) {
     return new Vector(touches[0].clientX, touches[0].clientY);
+  }
+
+  if (changedTouches.length > 0) {
+    return new Vector(changedTouches[0].clientX, changedTouches[0].clientY);
   }
 
   return Vector.Zero;

@@ -10,6 +10,7 @@ import {
   isTouchEvent,
   getWindowPosition
 } from "./";
+import Vector from "../classes/Vector";
 
 describe("Utils functions", () => {
   describe("deepCopy", () => {
@@ -166,29 +167,49 @@ describe("Utils functions", () => {
   });
 
   describe("getWindowPosition", () => {
+    const clientX = 10;
+    const clientY = 20;
+    const clientXYVector = new Vector(clientX, clientY);
+
     it("should return clientX and clienY", () => {
-      const clientX = 10;
-      const clientY = 20;
       const mouseEvent = { type: "mousemove", clientX, clientY } as any;
 
-      expect(getWindowPosition(mouseEvent)).toEqual({ x: 10, y: 20 });
+      expect(getWindowPosition(mouseEvent)).toEqual(clientXYVector);
     });
 
     it("should return first touch clientX and clientY", () => {
-      const clientX = 10;
-      const clientY = 20;
       const mouseEvent = {
         type: "touchmove",
-        touches: [{ clientX, clientY }]
+        touches: [
+          { clientX, clientY },
+          { clientX: 44, clientY: 22 }
+        ]
       } as any;
 
-      expect(getWindowPosition(mouseEvent)).toEqual({ x: 10, y: 20 });
+      expect(getWindowPosition(mouseEvent)).toEqual(clientXYVector);
     });
-  });
 
-  it("should return zero vector", () => {
-    const mouseEvent = { type: "touchmove", touches: [] } as any;
+    it("should return first changedTouches clientX and clientY", () => {
+      const mouseEvent = {
+        type: "touchmove",
+        touches: [],
+        changedTouches: [
+          { clientX, clientY },
+          { clientX: 44, clientY: 22 }
+        ]
+      } as any;
 
-    expect(getWindowPosition(mouseEvent)).toEqual({ x: 0, y: 0 });
+      expect(getWindowPosition(mouseEvent)).toEqual(clientXYVector);
+    });
+
+    it("should return zero vector", () => {
+      const mouseEvent = {
+        type: "touchmove",
+        touches: [],
+        changedTouches: []
+      } as any;
+
+      expect(getWindowPosition(mouseEvent)).toEqual(Vector.Zero);
+    });
   });
 });

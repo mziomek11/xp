@@ -2,7 +2,11 @@ import React, { Component } from "react";
 
 import withContext from "../../../../hoc/withContext";
 import Vector from "../../../../classes/Vector";
-import { getClassName } from "../../../../utils";
+import {
+  getClassName,
+  getWindowPosition,
+  isMouseEvent
+} from "../../../../utils";
 import { Tool as ToolType } from "../models";
 import { PaintContextType, WindowContextType } from "ContextType";
 import { canvasClass } from "../classes";
@@ -46,22 +50,26 @@ export class Tool extends Component<Props, State> {
   componentDidMount() {
     window.addEventListener("mousedown", this.handleMouseDown);
     window.addEventListener("contextmenu", this.handleContextMenu);
+    window.addEventListener("touchstart", this.handleMouseDown);
   }
 
   componentWillUnmount() {
     window.removeEventListener("mousedown", this.handleMouseDown);
     window.removeEventListener("contextmenu", this.handleContextMenu);
+    window.removeEventListener("touchstart", this.handleMouseDown);
     this.removeMoveAndUpListeners();
   }
 
   removeMoveAndUpListeners = () => {
     window.removeEventListener("mousemove", this.handleMouseMove);
     window.removeEventListener("mouseup", this.handleMouseUp);
+    window.removeEventListener("touchmove", this.handleMouseMove);
+    window.removeEventListener("touchend", this.handleMouseUp);
   };
 
-  handleMouseDown = (e: MouseEvent) => {
+  handleMouseDown = (e: MouseEvent | TouchEvent) => {
     if (!this.clickedOwnCanvas(e)) return;
-    if (e.which !== 1) return;
+    if (isMouseEvent(e) && e.which !== 1) return;
 
     this.handleMouseButtonDown(e, true);
   };
@@ -73,7 +81,7 @@ export class Tool extends Component<Props, State> {
     this.handleMouseButtonDown(e, false);
   };
 
-  handleMouseButtonDown = (e: MouseEvent, isLeft?: boolean) => {
+  handleMouseButtonDown = (e: MouseEvent | TouchEvent, isLeft?: boolean) => {
     this.setCanvasData(e);
     if (this.props.onMouseDown) {
       const canvasPos: Vector = this.calculateCanvasPos(e);
@@ -82,9 +90,11 @@ export class Tool extends Component<Props, State> {
 
     window.addEventListener("mousemove", this.handleMouseMove);
     window.addEventListener("mouseup", this.handleMouseUp);
+    window.addEventListener("touchmove", this.handleMouseMove);
+    window.addEventListener("touchend", this.handleMouseUp);
   };
 
-  clickedOwnCanvas = ({ target }: MouseEvent): boolean => {
+  clickedOwnCanvas = ({ target }: MouseEvent | TouchEvent): boolean => {
     const { window, paint, toolType } = this.props;
     if (!window.focused) return false;
 
@@ -97,19 +107,19 @@ export class Tool extends Component<Props, State> {
     return isToolSelected && clickedCanvas;
   };
 
-  setCanvasData = (e: MouseEvent) => {
+  setCanvasData = (e: MouseEvent | TouchEvent) => {
     const { left, top } = (e.target as any).getClientRects()[0];
     this.setState({ canvasLeft: left, canvasTop: top });
   };
 
-  handleMouseMove = (e: MouseEvent) => {
+  handleMouseMove = (e: MouseEvent | TouchEvent) => {
     if (this.props.onMouseMove) {
       const canvasPos: Vector = this.calculateCanvasPos(e);
       this.props.onMouseMove(canvasPos);
     }
   };
 
-  handleMouseUp = (e: MouseEvent) => {
+  handleMouseUp = (e: MouseEvent | TouchEvent) => {
     if (this.props.onMouseUp) {
       const canvasPos: Vector = this.calculateCanvasPos(e);
       this.props.onMouseUp(canvasPos);
@@ -118,12 +128,12 @@ export class Tool extends Component<Props, State> {
     this.removeMoveAndUpListeners();
   };
 
-  calculateCanvasPos = (event: MouseEvent): Vector => {
+  calculateCanvasPos = (event: MouseEvent | TouchEvent): Vector => {
     const { zoom } = this.props.paint.options;
-    const { clientX, clientY } = event;
     const { canvasLeft, canvasTop } = this.state;
+    const windowPos = getWindowPosition(event);
 
-    const pos = new Vector(clientX - canvasLeft, clientY - canvasTop);
+    const pos = new Vector(windowPos.x - canvasLeft, windowPos.y - canvasTop);
     const zoomedPos = Vector.div(pos, zoom);
     const roundedPos = Vector.map(zoomedPos, Math.round);
 

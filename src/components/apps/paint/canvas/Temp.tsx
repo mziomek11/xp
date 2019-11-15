@@ -3,7 +3,11 @@ import React, { Component, createRef } from "react";
 import withContext from "../../../../hoc/withContext";
 import { PaintContextType } from "ContextType";
 import { canvasClass } from "../classes";
-import { getClassName, areObjectsEqual } from "../../../../utils";
+import {
+  getClassName,
+  areObjectsEqual,
+  getWindowPosition
+} from "../../../../utils";
 import Vector from "../../../../classes/Vector";
 import { getPaintCursor } from "../../../../icons";
 
@@ -53,11 +57,17 @@ export class TempCanvas extends Component<Props, State> {
   removeListeners = () => {
     window.removeEventListener("mousemove", this.handleMouseMove);
     window.removeEventListener("mouseup", this.handleMouseUp);
+
+    window.removeEventListener("touchmove", this.handleMouseMove);
+    window.removeEventListener("touchend", this.handleMouseUp);
   };
 
   addListeners = () => {
     window.addEventListener("mousemove", this.handleMouseMove);
     window.addEventListener("mouseup", this.handleMouseUp);
+
+    window.addEventListener("touchmove", this.handleMouseMove);
+    window.addEventListener("touchend", this.handleMouseUp);
   };
 
   getInlineStyles = (width: number, height: number): React.CSSProperties => {
@@ -88,20 +98,24 @@ export class TempCanvas extends Component<Props, State> {
     else return [this.props.width, this.props.height];
   };
 
-  handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  handleMouseDown = (
+    e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>
+  ) => {
     const { select } = this.props.paint.options;
     const { isRect, position } = select;
     if (!isRect) return;
 
-    const mousePos = this.getMousePosition(e);
+    const windowPosition = getWindowPosition(e);
+    const mousePos = this.getMousePosition(windowPosition);
 
     this.setState({ lastMousePos: mousePos, lastCanvasPos: position });
     this.addListeners();
   };
 
-  handleMouseMove = (e: MouseEvent) => {
+  handleMouseMove = (e: MouseEvent | TouchEvent) => {
     const { lastMousePos, lastCanvasPos } = this.state;
-    const mousePos = this.getMousePosition(e);
+    const windowPosition = getWindowPosition(e);
+    const mousePos = this.getMousePosition(windowPosition);
     const moveVector = Vector.sub(mousePos, lastMousePos);
     const canvasPos = Vector.add(lastCanvasPos, moveVector);
     const [adjCanvasPos, adjMousePos] = this.adjustCanvasAndMousePos(
@@ -112,8 +126,11 @@ export class TempCanvas extends Component<Props, State> {
     this.setState({ lastMousePos: adjMousePos, lastCanvasPos: adjCanvasPos });
   };
 
-  getMousePosition = (e: MouseEvent | React.MouseEvent): Vector => {
-    return new Vector(Math.floor(e.screenX), Math.floor(e.screenY));
+  getMousePosition = (windowPosition: Vector): Vector => {
+    return new Vector(
+      Math.floor(windowPosition.x),
+      Math.floor(windowPosition.y)
+    );
   };
 
   adjustCanvasAndMousePos = (
@@ -162,6 +179,7 @@ export class TempCanvas extends Component<Props, State> {
         height={height}
         ref={this.canvasRef}
         onMouseDown={this.handleMouseDown}
+        onTouchStart={this.handleMouseDown}
         data-test="canvas"
       />
     );
