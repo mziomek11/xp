@@ -1,10 +1,16 @@
-import React from "react";
+import React, { MouseEvent } from "react";
 
 import Bar from "./Bar";
 import withContext from "../../../hoc/withContext";
 import withDoubleClick from "../../../hoc/withDoubleClick";
 import { toolbarConfig, windowConfig } from "../../../config";
 import { Context } from "../Context";
+import { getWindowPosition } from "../../../utils";
+import Vector from "../../../classes/Vector";
+
+type DivMouseOrTouchEv =
+  | React.MouseEvent<HTMLDivElement>
+  | React.TouchEvent<HTMLDivElement>;
 
 type OwnProps = {
   window: Context;
@@ -44,16 +50,22 @@ export class BarContainer extends React.Component<Props, State> {
   }
 
   addListeners = () => {
+    window.addEventListener("touchend", this.removeListeners);
+    window.addEventListener("touchmove", this.handleMouseMove);
+
     window.addEventListener("mouseup", this.removeListeners);
     window.addEventListener("mousemove", this.handleMouseMove);
   };
 
   removeListeners = () => {
+    window.removeEventListener("touchend", this.removeListeners);
+    window.removeEventListener("touchmove", this.handleMouseMove);
+
     window.removeEventListener("mouseup", this.removeListeners);
     window.removeEventListener("mousemove", this.handleMouseMove);
   };
 
-  handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+  handleMouseDown = (e: DivMouseOrTouchEv) => {
     if (this.isAbleToMove(e)) {
       const newState: State = this.calculateNewState(e);
       this.setState(newState);
@@ -61,18 +73,22 @@ export class BarContainer extends React.Component<Props, State> {
     }
   };
 
-  isAbleToMove = (e: any) => {
+  isAbleToMove = (e: DivMouseOrTouchEv) => {
     const actionClass: string = "window__action";
-    const clickedOnAction: boolean = e.target.classList.contains(actionClass);
+    const clickedOnAction: boolean = (e.target as Element).classList.contains(
+      actionClass
+    );
 
     return !clickedOnAction && !this.props.window.fullscreened;
   };
 
-  calculateNewState = (e: React.MouseEvent<HTMLDivElement>): State => {
+  calculateNewState = (e: DivMouseOrTouchEv): State => {
     const { left, top, width } = this.props.window;
 
-    const barX: number = e.clientX - left;
-    const barY: number = e.clientY - top;
+    const windowPos: Vector = getWindowPosition(e);
+
+    const barX: number = windowPos.x - left;
+    const barY: number = windowPos.y - top;
     const minLeft: number = -width + windowConfig.PIXELS_TO_LEAVE;
     const maxLeft: number = window.innerWidth - windowConfig.PIXELS_TO_LEAVE;
     const maxTop: number =
@@ -81,17 +97,21 @@ export class BarContainer extends React.Component<Props, State> {
     return { barX, barY, minLeft, maxLeft, maxTop };
   };
 
-  handleMouseMove = (e: MouseEvent) => {
+  handleMouseMove = (e: any) => {
     const newPosition = this.calculateNewPosition(e);
 
     this.props.window.setContext(newPosition);
   };
 
-  calculateNewPosition = (e: MouseEvent): { left: number; top: number } => {
+  calculateNewPosition = (
+    e: MouseEvent | TouchEvent
+  ): { left: number; top: number } => {
     const { barX, barY, minLeft, maxLeft, maxTop } = this.state;
 
-    const left = Math.min(Math.max(e.clientX - barX, minLeft), maxLeft);
-    const top = Math.min(Math.max(e.clientY - barY, 0), maxTop);
+    const windowPos: Vector = getWindowPosition(e);
+
+    const left = Math.min(Math.max(windowPos.x - barX, minLeft), maxLeft);
+    const top = Math.min(Math.max(windowPos.y - barY, 0), maxTop);
 
     return { left, top };
   };

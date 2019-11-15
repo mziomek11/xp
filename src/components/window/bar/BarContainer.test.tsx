@@ -18,6 +18,7 @@ const createWrapper = (ctxOverride: Partial<typeof testContextData> = {}) => {
 const wrapper = createWrapper();
 
 const getMouseEventData = (contains: boolean) => ({
+  type: "mousedown",
   clientX: testContextData.left + testContextData.width / 2,
   clientY: testContextData.height + 10,
   target: {
@@ -82,13 +83,13 @@ describe("WindowBarContainer Component", () => {
     });
 
     it("should not be called when mouseDown did not occur", () => {
-      map.mousemove({});
+      map.mousemove({ type: "mousemove" });
       expect(mockSetContext.mock.calls.length).toBe(0);
     });
 
     it("should be called when mouseDown occured", () => {
       findByTestAtrr(wrapper, "bar").simulate("mousedown", mouseDownFalse);
-      map.mousemove({});
+      map.mousemove({ type: "mousemove" });
 
       expect(mockSetContext.mock.calls.length).toBe(1);
     });
@@ -100,7 +101,7 @@ describe("WindowBarContainer Component", () => {
       const checkOutput = (moveX: number, moveY: number) => {
         const { state } = wrapper.instance();
         const { barX, barY, minLeft, maxLeft, maxTop } = state;
-        const moveData = { clientX: moveX, clientY: moveY };
+        const moveData = { clientX: moveX, clientY: moveY, type: "mousemove" };
 
         map.mousemove(moveData);
         const expectedOutput = {

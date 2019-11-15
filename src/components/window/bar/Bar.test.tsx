@@ -4,12 +4,14 @@ import { shallow } from "enzyme";
 import { Bar, Props } from "./Bar";
 import { findByTestAtrr } from "../../../../testingUtils";
 
-const mockOnMouseDownFn = jest.fn();
-const mockOnClickFn = jest.fn();
+let mockOnMouseDownFn: jest.Mock;
+let mockOnClickFn: jest.Mock;
 
 const createWrapper = (
   displayProps: Partial<Omit<Props, "onMouseDown" | "onClick">> = {}
 ) => {
+  mockOnMouseDownFn = jest.fn();
+  mockOnClickFn = jest.fn();
   const dsProps = {
     showExit: false,
     showFullscreen: false,
@@ -89,7 +91,17 @@ describe("WindowBar Component", () => {
 
   describe("onMouseDown", () => {
     it("should call onMouseDown", () => {
+      const wrapper = createWrapper();
       findByTestAtrr(wrapper, "bar").simulate("mousedown");
+
+      expect(mockOnMouseDownFn.mock.calls.length).toBe(1);
+    });
+  });
+
+  describe("onTouchStart", () => {
+    it("should call onMouseDown", () => {
+      const wrapper = createWrapper();
+      findByTestAtrr(wrapper, "bar").simulate("touchstart");
 
       expect(mockOnMouseDownFn.mock.calls.length).toBe(1);
     });
@@ -97,6 +109,7 @@ describe("WindowBar Component", () => {
 
   describe("onClick", () => {
     it("should call onClick", () => {
+      const wrapper = createWrapper();
       findByTestAtrr(wrapper, "bar").simulate("click");
 
       expect(mockOnClickFn.mock.calls.length).toBe(1);

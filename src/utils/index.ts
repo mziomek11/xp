@@ -1,3 +1,12 @@
+import React from "react";
+import Vector from "../classes/Vector";
+
+type MouseOrTouchEvent =
+  | MouseEvent
+  | TouchEvent
+  | React.MouseEvent<any>
+  | React.TouchEvent<any>;
+
 export function capitalize(s: string): string {
   if (typeof s !== "string") return "";
   return s.charAt(0).toUpperCase() + s.slice(1);
@@ -76,6 +85,29 @@ export function pickRandomItemsFromArray<T>(arr: T[], percent: number) {
   }
 
   return pickedIndexes.map(i => arr[i]);
+}
+
+export function isMouseEvent(e: MouseOrTouchEvent): e is MouseEvent {
+  const mouseEvents = ["mousedown", "mousemove", "mouseup"];
+
+  return mouseEvents.some(event => event === e.type);
+}
+
+export function isTouchEvent(e: MouseOrTouchEvent): e is TouchEvent {
+  const touchEvents = ["touchstart", "touchmove", "touchend"];
+
+  return touchEvents.some(event => event === e.type);
+}
+
+export function getWindowPosition(e: MouseOrTouchEvent): Vector {
+  if (isMouseEvent(e)) return new Vector(e.clientX, e.clientY);
+
+  const { touches } = e as TouchEvent;
+  if (touches.length > 0) {
+    return new Vector(touches[0].clientX, touches[0].clientY);
+  }
+
+  return Vector.Zero;
 }
 
 export function deepCopy<T>(a: any): T {

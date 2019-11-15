@@ -7,7 +7,9 @@ import FullscreenAction from "../action/FullscreenAction";
 import ExitAction from "../action/ExitAction";
 
 export type Props = {
-  onMouseDown: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onMouseDown: (
+    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
+  ) => void;
   onClick: () => void;
   showMinimalize: boolean;
   showFullscreen: boolean;
@@ -27,6 +29,7 @@ export const Bar: React.FC<Props> = ({
     <div
       className="window__bar"
       onMouseDown={onMouseDown}
+      onTouchStart={onMouseDown}
       data-test="bar"
       onClick={onClick}
     >

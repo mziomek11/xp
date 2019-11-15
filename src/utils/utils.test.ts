@@ -5,7 +5,10 @@ import {
   areArraysEqual,
   areObjectsEqual,
   pickRandomItemsFromArray,
-  areArraysValuesEqual
+  areArraysValuesEqual,
+  isMouseEvent,
+  isTouchEvent,
+  getWindowPosition
 } from "./";
 
 describe("Utils functions", () => {
@@ -136,5 +139,56 @@ describe("Utils functions", () => {
 
       expect(randomedArr.length).toBe(3);
     });
+  });
+
+  describe("isMouseEvent", () => {
+    it("should return true", () => {
+      expect(isMouseEvent({ type: "mousedown" } as any)).toBe(true);
+      expect(isMouseEvent({ type: "mousemove" } as any)).toBe(true);
+      expect(isMouseEvent({ type: "mouseup" } as any)).toBe(true);
+    });
+
+    it("should return false", () => {
+      expect(isMouseEvent({ type: "notmouseevent" } as any)).toBe(false);
+    });
+  });
+
+  describe("isTouchEvent", () => {
+    it("should return true", () => {
+      expect(isTouchEvent({ type: "touchstart" } as any)).toBe(true);
+      expect(isTouchEvent({ type: "touchmove" } as any)).toBe(true);
+      expect(isTouchEvent({ type: "touchend" } as any)).toBe(true);
+    });
+
+    it("should return false", () => {
+      expect(isTouchEvent({ type: "nottouchevent" } as any)).toBe(false);
+    });
+  });
+
+  describe("getWindowPosition", () => {
+    it("should return clientX and clienY", () => {
+      const clientX = 10;
+      const clientY = 20;
+      const mouseEvent = { type: "mousemove", clientX, clientY } as any;
+
+      expect(getWindowPosition(mouseEvent)).toEqual({ x: 10, y: 20 });
+    });
+
+    it("should return first touch clientX and clientY", () => {
+      const clientX = 10;
+      const clientY = 20;
+      const mouseEvent = {
+        type: "touchmove",
+        touches: [{ clientX, clientY }]
+      } as any;
+
+      expect(getWindowPosition(mouseEvent)).toEqual({ x: 10, y: 20 });
+    });
+  });
+
+  it("should return zero vector", () => {
+    const mouseEvent = { type: "touchmove", touches: [] } as any;
+
+    expect(getWindowPosition(mouseEvent)).toEqual({ x: 0, y: 0 });
   });
 });
