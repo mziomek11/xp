@@ -97,7 +97,11 @@ describe("Paint CanvasResizer component", () => {
       startTop: 100
     };
 
-    const event = { clientX: 500, clientY: 400 };
+    const event: Partial<MouseEvent> = {
+      clientX: 500,
+      clientY: 400,
+      type: "mousemove"
+    };
 
     it("should update width when and height when is SE", () => {
       const instance = wrapperSE.instance();
@@ -131,7 +135,11 @@ describe("Paint CanvasResizer component", () => {
 
     it("should return minRectSize", () => {
       const instance = wrapperSE.instance();
-      const event = { clientX: -9999, clientY: -9999 };
+      const event: Partial<MouseEvent> = {
+        clientX: -9999,
+        clientY: -9999,
+        type: "mousemove"
+      };
 
       instance.setState(startState);
       instance.handleMouseMove(event as any);

@@ -1,7 +1,8 @@
-import React, { Component } from "react";
+import React, { Component, TouchEvent } from "react";
 
 import ResizerRect from "./Rect";
 import { changeCursor } from "../../../../../utils/dom";
+import { getWindowPosition } from "../../../../../utils";
 
 type Props = {
   width: number;
@@ -37,9 +38,14 @@ class Resizer extends Component<Props, State> {
   removeListeners = () => {
     window.removeEventListener("mousemove", this.handleMouseMove);
     window.removeEventListener("mouseup", this.handleMouseUp);
+
+    window.removeEventListener("touchmove", this.handleMouseMove);
+    window.removeEventListener("touchend", this.handleMouseUp);
   };
 
-  handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+  handleMouseDown = (
+    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
+  ) => {
     const { width, height } = this.props;
     const { left, top } = e.currentTarget.getClientRects()[0];
 
@@ -54,6 +60,9 @@ class Resizer extends Component<Props, State> {
 
     window.addEventListener("mousemove", this.handleMouseMove);
     window.addEventListener("mouseup", this.handleMouseUp);
+
+    window.addEventListener("touchmove", this.handleMouseMove);
+    window.addEventListener("touchend", this.handleMouseUp);
   };
 
   getOwnCursor = () => {
@@ -65,19 +74,22 @@ class Resizer extends Component<Props, State> {
     else throw Error("Wrong resizer position");
   };
 
-  handleMouseMove = ({ clientX, clientY }: MouseEvent) => {
+  handleMouseMove = (e: any) => {
     const { max, floor } = Math;
     const { isHorizontal, isVertical, width, height } = this.props;
     const { startLeft, startTop } = this.state;
+    const windowPos = getWindowPosition(e);
 
     let newState: Partial<State> = {};
 
     if (isHorizontal) {
-      newState.rectWidth = floor(max(clientX - startLeft + width, minRectSize));
+      newState.rectWidth = floor(
+        max(windowPos.x - startLeft + width, minRectSize)
+      );
     }
     if (isVertical) {
       newState.rectHeight = floor(
-        max(clientY - startTop + height, minRectSize)
+        max(windowPos.y - startTop + height, minRectSize)
       );
     }
 
@@ -112,6 +124,7 @@ class Resizer extends Component<Props, State> {
         <div
           className="paint__canvas__resizer"
           onMouseDown={this.handleMouseDown}
+          onTouchStart={this.handleMouseDown}
           style={inlineStyles}
           data-test="resizer"
         />
