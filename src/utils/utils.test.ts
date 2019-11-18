@@ -5,6 +5,7 @@ import {
   areArraysEqual,
   areObjectsEqual,
   pickRandomItemsFromArray,
+  pickPercentRandomItemsFromArray,
   areArraysValuesEqual,
   isMouseEvent,
   isTouchEvent,
@@ -110,15 +111,38 @@ describe("Utils functions", () => {
     });
   });
 
+  describe("pickPercentRandomItemsFromArray", () => {
+    it("should throw an error", () => {
+      expect(() => pickPercentRandomItemsFromArray([], 101)).toThrow();
+      expect(() => pickPercentRandomItemsFromArray([], -1)).toThrow();
+    });
+
+    it("should return empty array", () => {
+      const startArr = [10, 22, 13, 10, -5];
+      const randomedArr = pickPercentRandomItemsFromArray(startArr, 0);
+
+      expect(randomedArr.length).toBe(0);
+    });
+
+    it("should return three items", () => {
+      const startArr = [10, 15, 20, 44, 11, 6];
+      const randomedArr = pickPercentRandomItemsFromArray(startArr, 50);
+
+      expect(randomedArr.length).toBe(3);
+    });
+  });
+
   describe("pickRandomItemsFromArray", () => {
     it("should throw an error", () => {
-      expect(() => pickRandomItemsFromArray([], 101)).toThrow();
-      expect(() => pickRandomItemsFromArray([], -1)).toThrow();
+      const arr = [1, 2, 3];
+
+      expect(() => pickRandomItemsFromArray(arr, -1)).toThrow();
+      expect(() => pickRandomItemsFromArray(arr, 4)).toThrow();
     });
 
     it("should contain all pieces from start array", () => {
       const startArr = [10, 22, 13, 10, -5];
-      const randomedArr = pickRandomItemsFromArray(startArr, 100);
+      const [randomedArr] = pickRandomItemsFromArray(startArr, 5);
 
       expect(startArr.length).toBe(randomedArr.length);
 
@@ -127,16 +151,9 @@ describe("Utils functions", () => {
       });
     });
 
-    it("should return empty array", () => {
-      const startArr = [10, 22, 13, 10, -5];
-      const randomedArr = pickRandomItemsFromArray(startArr, 0);
-
-      expect(randomedArr.length).toBe(0);
-    });
-
     it("should return three items", () => {
       const startArr = [10, 15, 20, 44, 11, 6];
-      const randomedArr = pickRandomItemsFromArray(startArr, 50);
+      const [randomedArr] = pickRandomItemsFromArray(startArr, 3);
 
       expect(randomedArr.length).toBe(3);
     });

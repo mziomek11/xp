@@ -5,7 +5,7 @@ import Vector from "../../../../../classes/Vector";
 import withContext from "../../../../../hoc/withContext";
 import { PaintContextType } from "ContextType";
 import { AeroSize } from "../../models";
-import { pickRandomItemsFromArray } from "../../../../../utils";
+import { pickPercentRandomItemsFromArray } from "../../../../../utils";
 import { fillRect, getFillEllipsePoints } from "../../../../../utils/paint";
 
 import aeroIcon from "../../../../../assets/paint/aero.png";
@@ -63,7 +63,10 @@ export class Aero extends Component<CtxProps, State> {
     const { mousePos } = this.state;
     const { canvasCtx } = this.props.paint;
     const vectors = this.getVectorArray();
-    const pickedVects = pickRandomItemsFromArray(vectors, vectorPercentToPick);
+    const pickedVects = pickPercentRandomItemsFromArray(
+      vectors,
+      vectorPercentToPick
+    );
 
     pickedVects.forEach(({ x, y }) => {
       fillRect({ x: mousePos.x + x, y: mousePos.y + y }, 1, canvasCtx!);

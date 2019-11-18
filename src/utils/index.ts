@@ -66,25 +66,35 @@ export function areObjectsEqual<T>(a: T, b: T, properties: string[]) {
   return true;
 }
 
-export function pickRandomItemsFromArray<T>(arr: T[], percent: number) {
+export function pickPercentRandomItemsFromArray<T>(arr: T[], percent: number) {
   if (percent > 100) throw Error("Cannot pick more than 100% items from array");
   if (percent < 0) throw Error("Cannot pick less than 0% items from array");
 
   const targetLen: number = Math.floor(arr.length * (percent / 100));
+  return pickRandomItemsFromArray(arr, targetLen)[0];
+}
+
+export function pickRandomItemsFromArray<T>(
+  arr: T[],
+  pickCount: number
+): [T[], number[]] {
+  if (pickCount < 0) throw Error("Cannot pick less than 0 items");
+  if (pickCount > arr.length) throw Error("Cannot pick more items than exists");
+
   const pickedIndexes: number[] = [];
   const availbeIndexes: number[] = Array.from(
     new Array(arr.length),
     (_, i) => i
   );
 
-  for (let i = 0; i < targetLen; i++) {
+  for (let i = 0; i < pickCount; i++) {
     const index: number = Math.floor(Math.random() * availbeIndexes.length);
 
-    pickedIndexes.push(index);
-    availbeIndexes.slice(index);
+    pickedIndexes.push(availbeIndexes[index]);
+    availbeIndexes.splice(index, 1);
   }
 
-  return pickedIndexes.map(i => arr[i]);
+  return [pickedIndexes.map(i => arr[i]), pickedIndexes];
 }
 
 export function isMouseEvent(e: MouseOrTouchEvent): e is MouseEvent {
