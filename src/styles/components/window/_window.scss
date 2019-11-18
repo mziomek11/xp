@@ -45,6 +45,18 @@
   max-width: calc(100% - #{$window-actions-size} - #{$window-bar-padding});
   display: flex;
   align-items: center;
+
+  .window__bar--two-actions & {
+    max-width: calc(
+      100% - #{$window-actions-size / 3 * 2} - #{$window-bar-padding}
+    );
+  }
+
+  .window__bar--two-action & {
+    max-width: calc(
+      100% - #{$window-actions-size / 3} - #{$window-bar-padding}
+    );
+  }
 }
 
 .window__icon-container {

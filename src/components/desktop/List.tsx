@@ -3,6 +3,7 @@ import React from "react";
 import Computer from "./file/Computer";
 import Notepad from "./file/Notepad";
 import Paint from "./file/Paint";
+import Minesweeper from "./file/Minesweeper";
 
 const FileList = () => {
   return (
@@ -10,6 +11,7 @@ const FileList = () => {
       <Computer data-test="computer" />
       <Notepad data-test="notepad" />
       <Paint data-test="paint" />
+      <Minesweeper data-test="minesweeper" />
     </div>
   );
 };

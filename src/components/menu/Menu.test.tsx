@@ -2,6 +2,7 @@ import React from "react";
 import { shallow } from "enzyme";
 
 import Menu from "./Menu";
+import menuConfig from "./config";
 import { findByTestAtrr } from "../../../testingUtils";
 
 const wrapper = shallow(
@@ -23,6 +24,16 @@ describe("Menu Component", () => {
 
     it("should render children", () => {
       expect(findByTestAtrr(wrapper, "child").length).toBe(2);
+    });
+  });
+
+  describe("inline styles", () => {
+    it("should have all heights from config", () => {
+      expect(findByTestAtrr(wrapper, "menu").prop("style")).toEqual({
+        height: menuConfig.height,
+        minHeight: menuConfig.height,
+        maxHeight: menuConfig.height
+      });
     });
   });
 });

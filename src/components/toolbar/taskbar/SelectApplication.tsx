@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 
 import ApplicationMenu from "./menu/Menu";
 import { RootState } from "MyTypes";
-import { getClassName } from "../../../utils";
+import { getClassName, capitalize } from "../../../utils";
 import { getIcon } from "../../../icons";
 import { Application } from "../../../store/models";
 
@@ -40,12 +40,8 @@ export class SelectApplication extends React.Component<Props, State> {
     switch (this.props.application) {
       case "filesystem":
         return getIcon("folder", false);
-      case "notepad":
-        return getIcon("notepad", false);
-      case "paint":
-        return getIcon("paint", false);
       default:
-        throw Error("Unknown app");
+        return getIcon(this.props.application, false);
     }
   };
 
@@ -53,12 +49,8 @@ export class SelectApplication extends React.Component<Props, State> {
     switch (this.props.application) {
       case "filesystem":
         return "Windows explorer";
-      case "notepad":
-        return "Notepad";
-      case "paint":
-        return "Paint";
       default:
-        throw Error("Unknown app");
+        return capitalize(this.props.application);
     }
   };
 

@@ -34,12 +34,21 @@ describe("Higher Order Component withContext", () => {
     });
   });
 
-  describe("Paing", () => {
+  describe("Paint", () => {
     it("should render without throwing an error", () => {
       const Enchanced = withContext(BaseComp, "paint");
       const wrapper = shallow(<Enchanced />);
 
       expect(findByTestAtrr(wrapper, "paint").length).toBe(1);
+    });
+  });
+
+  describe("Minesweeper", () => {
+    it("should render without throwing an error", () => {
+      const Enchanced = withContext(BaseComp, "minesweeper");
+      const wrapper = shallow(<Enchanced />);
+
+      expect(findByTestAtrr(wrapper, "minesweeper").length).toBe(1);
     });
   });
 });

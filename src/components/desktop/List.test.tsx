@@ -24,5 +24,9 @@ describe("FileList Component", () => {
     it("should render paint", () => {
       expect(findByTestAtrr(wrapper, "paint").length).toBe(1);
     });
+
+    it("should render minesweeper", () => {
+      expect(findByTestAtrr(wrapper, "minesweeper").length).toBe(1);
+    });
   });
 });

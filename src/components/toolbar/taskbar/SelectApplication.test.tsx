@@ -5,6 +5,7 @@ import { SelectApplication } from "./SelectApplication";
 import { findByTestAtrr } from "../../../../testingUtils";
 import { getIcon } from "../../../icons";
 import { Application } from "../../../store/models";
+import { capitalize } from "../../../utils";
 
 const props = {
   width: 300,
@@ -117,6 +118,11 @@ describe("Taskbar SelectApplication Component", () => {
 
       expect(wrapper.instance().getIcon()).toBe(getIcon("folder", false));
     });
+
+    it("should return given application icon", () => {
+      let wrapper = createWrapper("minesweeper");
+      expect(wrapper.instance().getIcon()).toBe(getIcon("minesweeper", false));
+    });
   });
 
   describe("getName", () => {
@@ -124,6 +130,11 @@ describe("Taskbar SelectApplication Component", () => {
       const wrapper = createWrapper("filesystem");
 
       expect(wrapper.instance().getName()).toBe("Windows explorer");
+    });
+
+    it("should return calitazed application name", () => {
+      let wrapper = createWrapper("minesweeper");
+      expect(wrapper.instance().getName()).toBe(capitalize("minesweeper"));
     });
   });
 });

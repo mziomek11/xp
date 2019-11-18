@@ -1,0 +1,75 @@
+.minesweeper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.minesweeper__content {
+  background: $minesweeper-background-color;
+  border-top: 2px solid white;
+  border-left: 2px solid white;
+  height: 100%;
+  padding: 6px 5px 5px 6px;
+}
+
+.minesweeper__scoreboard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 4px 7px 3px 6px;
+  @include border(2px, solid, $minesweeper-border-color-map);
+}
+
+.minesweeper__digital {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: $minesweeper-scoreboard-digital-width;
+  height: $minesweeper-scoreboard-digital-height;
+  @include border(1px, solid, $minesweeper-border-color-map);
+}
+
+.minesweeper__digital__number {
+  background-repeat: no-repeat;
+  background-size: cover;
+  @include digital-numbers;
+}
+
+.minesweeper__scoreboard__button {
+  background-color: $minesweeper-background-color;
+  background-image: url("../../assets/minesweeper/happy.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: $minesweeper-scoreboard-button-size;
+  height: $minesweeper-scoreboard-button-size;
+  @include border(2px, solid, $minesweeper-reversed-border-color-map);
+
+  &--afraid {
+    background-image: url("../../assets/minesweeper/afraid.png");
+  }
+
+  &--sad {
+    background-image: url("../../assets/minesweeper/sad.png");
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.minesweeper__gameboard {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  margin-top: $minesweeper-gameboard-margin;
+  @include border(3px, solid, $minesweeper-border-color-map);
+}
+
+.minesweeper__field {
+  background: $minesweeper-background-color;
+  @include border(2px, solid, $minesweeper-reversed-border-color-map);
+
+  &:focus {
+    outline: none;
+  }
+}

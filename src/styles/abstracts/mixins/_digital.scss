@@ -1,0 +1,7 @@
+@mixin digital-numbers {
+  @for $i from 0 through 9 {
+    &--#{$i} {
+      background-image: url(../../../assets/minesweeper/digital/#{$i}.png);
+    }
+  }
+}

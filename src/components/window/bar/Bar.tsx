@@ -11,6 +11,7 @@ export type Props = {
     e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
   ) => void;
   onClick: () => void;
+  containerClassName: string;
   showMinimalize: boolean;
   showFullscreen: boolean;
   showExit: boolean;
@@ -18,6 +19,7 @@ export type Props = {
 };
 
 export const Bar: React.FC<Props> = ({
+  containerClassName,
   onMouseDown,
   onClick,
   showMinimalize,
@@ -27,7 +29,7 @@ export const Bar: React.FC<Props> = ({
 }) => {
   return (
     <div
-      className="window__bar"
+      className={containerClassName}
       onMouseDown={onMouseDown}
       onTouchStart={onMouseDown}
       data-test="bar"

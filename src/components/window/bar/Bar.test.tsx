@@ -4,6 +4,8 @@ import { shallow } from "enzyme";
 import { Bar, Props } from "./Bar";
 import { findByTestAtrr } from "../../../../testingUtils";
 
+const containerClassName = "this is container classname";
+
 let mockOnMouseDownFn: jest.Mock;
 let mockOnClickFn: jest.Mock;
 
@@ -12,16 +14,18 @@ const createWrapper = (
 ) => {
   mockOnMouseDownFn = jest.fn();
   mockOnClickFn = jest.fn();
-  const dsProps = {
+  const props = {
+    containerClassName: containerClassName,
     showExit: false,
     showFullscreen: false,
     showIcon: false,
     showMinimalize: false,
+    onMouseDown: mockOnMouseDownFn,
+    onClick: mockOnClickFn,
     ...displayProps
   };
-  return shallow(
-    <Bar onMouseDown={mockOnMouseDownFn} onClick={mockOnClickFn} {...dsProps} />
-  );
+
+  return shallow(<Bar {...props} />);
 };
 
 const wrapper = createWrapper();
@@ -29,7 +33,10 @@ const wrapper = createWrapper();
 describe("WindowBar Component", () => {
   describe("render", () => {
     it("should render without throwing an error", () => {
-      expect(findByTestAtrr(wrapper, "bar").length).toBe(1);
+      const bar = findByTestAtrr(wrapper, "bar");
+
+      expect(bar.length).toBe(1);
+      expect(bar.prop("className")).toBe(containerClassName);
     });
 
     it("should render Title component", () => {

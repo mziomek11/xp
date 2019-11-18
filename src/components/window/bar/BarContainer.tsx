@@ -5,7 +5,7 @@ import withContext from "../../../hoc/withContext";
 import withDoubleClick from "../../../hoc/withDoubleClick";
 import { toolbarConfig, windowConfig } from "../../../config";
 import { Context } from "../Context";
-import { getWindowPosition } from "../../../utils";
+import { getWindowPosition, getClassName } from "../../../utils";
 import Vector from "../../../classes/Vector";
 
 type DivMouseOrTouchEv =
@@ -128,6 +128,23 @@ export class BarContainer extends React.Component<Props, State> {
     this.props.checkForDoubleClick(this.onDoubleClick);
   };
 
+  getContainerClassName = () => {
+    const { hideExit, hideFullscreen, hideMinimalize } = this.props.window;
+
+    let actionCount = 3;
+    if (hideExit) actionCount--;
+    if (hideFullscreen) actionCount--;
+    if (hideMinimalize) actionCount--;
+
+    const baseClass = "window__bar";
+    const modifiers = {
+      "two-actions": actionCount === 2,
+      "one-action": actionCount === 1
+    };
+
+    return getClassName(baseClass, modifiers);
+  };
+
   render() {
     const {
       hideMinimalize,
@@ -135,8 +152,11 @@ export class BarContainer extends React.Component<Props, State> {
       hideExit,
       hideIcon
     } = this.props.window;
+
+    const containerClassName = this.getContainerClassName();
     return (
       <Bar
+        containerClassName={containerClassName}
         onMouseDown={this.handleMouseDown}
         onClick={this.handleClick}
         data-test="bar"

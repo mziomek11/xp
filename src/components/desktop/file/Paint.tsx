@@ -8,7 +8,7 @@ const Paint = () => {
       startWindowName="Untilted - Paint"
       application="paint"
       openData={{
-        content: "",
+        content: undefined,
         path: undefined
       }}
       data-test="file"

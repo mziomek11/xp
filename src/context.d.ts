@@ -4,4 +4,5 @@ declare module "ContextType" {
   export type FilesystemContextType = import("./components/apps/filesystem/context/Context").Context;
   export type NotepadContextType = import("./components/apps/notepad/context/Context").Context;
   export type PaintContextType = import("./components/apps/paint/context/Context").Context;
+  export type MinesweeperContextType = import("./components/apps/minesweeper/context/Context").Context;
 }

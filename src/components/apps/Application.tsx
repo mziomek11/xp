@@ -4,23 +4,28 @@ import { connect } from "react-redux";
 import FileSystem from "./filesystem/FileSystem";
 import Notepad from "./notepad/Notepad";
 import Paint from "./paint/Paint";
+import Minesweeper from "./minesweeper/Minesweeper";
 import WindowContainer from "../window/WindowContainer";
 import windowConfig from "../../config/window";
 import { Provider as FilesystemContextProvider } from "./filesystem/context/Context";
 import { Provider as NotepadContextProvider } from "./notepad/context/Context";
 import { Provider as PaintContextProvider } from "./paint/context/Context";
+import { Provider as MinesweeperContextProvider } from "./minesweeper/context/Context";
 import { RootState } from "MyTypes";
 import { Window } from "../../store/window/models";
 import {
   Provider as WindowContextProvider,
   MinMaxProps,
-  StartProps
+  StartProps,
+  OptionalProps
 } from "../window/Context";
 import {
   getWindowDefaultMinMaxProps,
   getWindowStartWidthAndHeight,
-  getWindowStartLeftAndTop
+  getWindowStartLeftAndTop,
+  getWindowNoResizableMinMaxProps
 } from "../../utils/window";
+import { getMinesweeperSize } from "../../utils/minesweeper";
 
 type OwnProps = {
   id: string;
@@ -35,7 +40,7 @@ type StateProps = {
 type Props = OwnProps & StateProps;
 
 export class Application extends Component<Props, {}> {
-  getApplication = () => {
+  getApplication = (): JSX.Element => {
     switch (this.props.window.application) {
       case "filesystem":
         return this.getFilesystemApp();
@@ -43,6 +48,8 @@ export class Application extends Component<Props, {}> {
         return this.getNotepadApp();
       case "paint":
         return this.getPaintApp();
+      case "minesweeper":
+        return this.getMinesweeperApp();
       default:
         throw Error(`${this.props.window.application} is not an application`);
     }
@@ -76,35 +83,53 @@ export class Application extends Component<Props, {}> {
     );
   };
 
-  getWindowCtxProps = () => {
+  getMinesweeperApp = () => {
+    return (
+      <MinesweeperContextProvider>
+        <Minesweeper data-test="minesweeper" />
+      </MinesweeperContextProvider>
+    );
+  };
+
+  getWindowCtxProps = (): MinMaxProps & StartProps & OwnProps => {
     const windowMinMaxProps = this.getMinMaxProps();
     const startSize = this.getStartSize(windowMinMaxProps);
     const startPosition = this.getStartPosition(startSize);
+    const specialAppProps = this.getSpecialAppProps();
 
     return {
       id: this.props.id,
-      startFullscreened: this.isAppStartingFullscreened(),
+      startFullscreened: false,
       ...windowMinMaxProps,
       ...startSize,
-      ...startPosition
+      ...startPosition,
+      ...specialAppProps
     };
   };
 
-  isAppStartingFullscreened = () => {
+  getSpecialAppProps = (): Partial<OptionalProps | StartProps> => {
     const { application } = this.props.window;
 
     switch (application) {
       case "paint":
-        return true;
+        return { startFullscreened: true };
+      case "minesweeper":
+        return { resizable: false, hideFullscreen: true };
       default:
-        return false;
+        return {};
     }
   };
 
-  getMinMaxProps = () => {
-    const { screenWidth, screenHeight } = this.props;
+  getMinMaxProps = (): MinMaxProps => {
+    const { screenWidth, screenHeight, window } = this.props;
 
-    return getWindowDefaultMinMaxProps(screenWidth, screenHeight);
+    switch (window.application) {
+      case "minesweeper":
+        const { x, y } = getMinesweeperSize("easy");
+        return getWindowNoResizableMinMaxProps(x, y);
+      default:
+        return getWindowDefaultMinMaxProps(screenWidth, screenHeight);
+    }
   };
 
   getStartSize = (minMaxProps: MinMaxProps) => {

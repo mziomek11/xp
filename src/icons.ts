@@ -1,4 +1,5 @@
 import computer from "./assets/icons/computer.png";
+import computerFocused from "./assets/icons/computer-focused.png";
 
 import folder from "./assets/icons/folder.png";
 import folderFocused from "./assets/icons/folder-focused.png";
@@ -17,6 +18,9 @@ import paintFocused from "./assets/icons/paint-focused.png";
 
 import image from "./assets/icons/image.png";
 import imageFocused from "./assets/icons/image-focused.png";
+
+import minesweeper from "./assets/icons/minesweeper.png";
+import minesweeperFocused from "./assets/icons/minesweeper-focused.png";
 
 import cursorPaintFill from "./assets/paint/cursors/fill.png";
 import cursorPaintAero from "./assets/paint/cursors/aero.png";
@@ -52,9 +56,10 @@ const getNormalIcon = (type: Icon): string => {
       return paint;
     case "image":
       return image;
-
+    case "minesweeper":
+      return minesweeper;
     default:
-      throw Error("This icon does not exists");
+      throw Error(`${type} icon does not exists`);
   }
 };
 
@@ -67,15 +72,17 @@ const getFocusedIcon = (type: Icon): string => {
     case "text":
       return textFocused;
     case "filesystem":
-      return computer;
+      return computerFocused;
     case "notepad":
       return notepadFocused;
     case "paint":
       return paintFocused;
     case "image":
       return imageFocused;
+    case "minesweeper":
+      return minesweeperFocused;
     default:
-      throw Error("This icon does not exists");
+      throw Error(`${type} icon does not exists`);
   }
 };
 

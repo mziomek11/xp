@@ -373,3 +373,30 @@ $paint-colors-current-rect-distance: 3px;
 
 $paint-colors-padding: 7px;
 $paint-colors-rect-size: 15px;
+
+//Minesweeper colors
+
+$minesweeper-background-color: #c0c0c0;
+$minesweeper-border-color: #808080;
+$minesweeper-border-color-map: (
+  top: $minesweeper-border-color,
+  left: $minesweeper-border-color,
+  right: #ffffff,
+  bottom: #ffffff
+);
+$minesweeper-reversed-border-color-map: (
+  right: $minesweeper-border-color,
+  bottom: $minesweeper-border-color,
+  top: #ffffff,
+  left: #ffffff
+);
+
+//Minesweeper scoreboard
+
+$minesweeper-scoreboard-button-size: 26px;
+$minesweeper-scoreboard-digital-width: 39px;
+$minesweeper-scoreboard-digital-height: 24px;
+
+//Minesweeper gameboard
+
+$minesweeper-gameboard-margin: 6px;
