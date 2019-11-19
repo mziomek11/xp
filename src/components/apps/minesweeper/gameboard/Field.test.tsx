@@ -12,6 +12,8 @@ type OptionalProps = {
   isGameOver: boolean;
 };
 
+const index = 0;
+
 let mockOnGameOverFn: jest.Mock;
 let mockCheckFieldFn: jest.Mock;
 
@@ -40,13 +42,11 @@ const createWrapper = (optProps: Partial<OptionalProps> = {}) => {
       checkField: mockCheckFieldFn,
       isGameOver: optionalProps.isGameOver
     } as any,
-    index: 0
+    index: index
   };
 
   return shallow<Field>(<Field {...props} />);
 };
-
-const wrapper = createWrapper();
 
 describe("Minesweeper Gameboard Field Component", () => {
   describe("render", () => {
@@ -115,6 +115,7 @@ describe("Minesweeper Gameboard Field Component", () => {
       instance.handleClick();
 
       expect(mockCheckFieldFn.mock.calls.length).toBe(1);
+      expect(mockCheckFieldFn.mock.calls[0]).toEqual([index]);
     });
 
     it("should call onGameOver", () => {
@@ -123,6 +124,7 @@ describe("Minesweeper Gameboard Field Component", () => {
       instance.handleClick();
 
       expect(mockOnGameOverFn.mock.calls.length).toBe(1);
+      expect(mockOnGameOverFn.mock.calls[0]).toEqual([index]);
     });
 
     it("should call NOT onGameOver", () => {

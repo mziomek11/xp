@@ -13,12 +13,13 @@ type State = {
   isGameOver: boolean;
   boardSize: Vector;
   fields: Field[];
+  destroyedBombIndex: number;
   bombsLeft: number;
 };
 
 type SetStateData = Partial<State>;
 type SetState = { setContext: (data: SetStateData) => void };
-type GameOver = { onGameOver: VoidFunction };
+type GameOver = { onGameOver: (index: number) => void };
 type CheckField = { checkField: (index: number) => void };
 export type Context = State & SetState & GameOver & CheckField;
 
@@ -29,6 +30,7 @@ export class ContextProvider extends Component<{}, State> {
     isGameOver: false,
     boardSize: msConfig.gameBoardOptions.easy.size,
     fields: generateStartFields(msConfig.gameBoardOptions.easy),
+    destroyedBombIndex: 0,
     bombsLeft: msConfig.gameBoardOptions.easy.bombCount
   };
 
@@ -41,8 +43,8 @@ export class ContextProvider extends Component<{}, State> {
     };
   };
 
-  onGameOver = () => {
-    this.setState({ isGameOver: true });
+  onGameOver = (index: number) => {
+    this.setState({ isGameOver: true, destroyedBombIndex: index });
   };
 
   checkField = (index: number) => {

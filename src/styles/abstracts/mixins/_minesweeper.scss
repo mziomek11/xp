@@ -1,0 +1,18 @@
+@mixin digital-numbers {
+  @for $i from 0 through 9 {
+    &--#{$i} {
+      background-image: url(../../../assets/minesweeper/digital/#{$i}.png);
+    }
+  }
+}
+
+@mixin minesweeper-image {
+  $images: "num1", "num2", "num3", "num4", "num5", "num6", "num7", "num8",
+    "bomb", "destroyed-bomb", "flag";
+
+  @each $image in $images {
+    &--#{$image} {
+      background-image: url(../../../assets/minesweeper/game/#{$image}.jpg);
+    }
+  }
+}

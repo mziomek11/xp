@@ -24,10 +24,12 @@ describe("Minesweeper Context Component", () => {
 
   describe("onGameOver", () => {
     it("should update state", () => {
-      instance.setState({ isGameOver: false });
-      instance.onGameOver();
+      const index = 123;
+      instance.setState({ isGameOver: false, destroyedBombIndex: 0 });
+      instance.onGameOver(index);
 
       expect(instance.state.isGameOver).toBe(true);
+      expect(instance.state.destroyedBombIndex).toBe(index);
     });
   });
 

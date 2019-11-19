@@ -66,8 +66,17 @@
 }
 
 .minesweeper__field {
-  background: $minesweeper-background-color;
+  @include minesweeper-image;
   @include border(2px, solid, $minesweeper-reversed-border-color-map);
+  background-color: $minesweeper-background-color;
+  background-size: cover;
+  background-repeat: no-repeat;
+
+  &--checked {
+    border: 0;
+    border-left: 1px solid $minesweeper-border-color;
+    border-top: 1px solid $minesweeper-border-color;
+  }
 
   &:focus {
     outline: none;
