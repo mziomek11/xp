@@ -27,7 +27,12 @@ export class TimeDigital extends Component<CtxProps, State> {
   componentDidUpdate(prev: CtxProps) {
     const { gameStarted, isGameOver } = this.props.minesweeper;
     if (!prev.minesweeper.gameStarted && gameStarted) this.startInterval();
-    else if (!prev.minesweeper.isGameOver && isGameOver) this.clearInterval();
+    else if (prev.minesweeper.gameStarted && !gameStarted) {
+      this.clearInterval();
+      this.resetTime();
+    }
+
+    if (!prev.minesweeper.isGameOver && isGameOver) this.clearInterval();
     else if (prev.minesweeper.isGameOver && !isGameOver) this.resetTime();
   }
 

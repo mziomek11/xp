@@ -69,7 +69,8 @@ export class ContextProvider extends Component<{}, State> {
       boardSize: options.size,
       gameStarted: false,
       fields: newFields,
-      bombsLeft: options.bombCount
+      bombsLeft: options.bombCount,
+      difficulty
     });
   };
 

@@ -1,10 +1,16 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import Menu from "./Menu";
+import { MinesweeperMenu } from "./Menu";
 import { findByTestAtrr } from "../../../../../testingUtils";
 
-const wrapper = shallow(<Menu />);
+const difficulty = "easy";
+const mockStartNewGameFn = jest.fn();
+const minesweeper = { startNewGame: mockStartNewGameFn, difficulty } as any;
+const props = { minesweeper, window: {} as any };
+
+const wrapper = shallow<MinesweeperMenu>(<MinesweeperMenu {...props} />);
+const instance = wrapper.instance();
 
 describe("Minesweeper Menu Component", () => {
   describe("render", () => {
@@ -14,6 +20,15 @@ describe("Minesweeper Menu Component", () => {
 
     it("should render Game component", () => {
       expect(findByTestAtrr(wrapper, "game").length).toBe(1);
+    });
+  });
+
+  describe("handleNewGameClick", () => {
+    it("should call startNewGame with current difficulty", () => {
+      instance.handleNewGameClick();
+
+      expect(mockStartNewGameFn.mock.calls.length).toBe(1);
+      expect(mockStartNewGameFn.mock.calls[0]).toEqual([difficulty]);
     });
   });
 });

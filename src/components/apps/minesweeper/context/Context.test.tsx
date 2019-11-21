@@ -47,7 +47,8 @@ describe("Minesweeper Context Component", () => {
         gameStarted: true,
         boardSize: new Vector(-2, -2),
         bombsLeft: -123,
-        fields: []
+        fields: [],
+        difficulty: "hard"
       });
       instance.startNewGame("easy");
 
@@ -56,12 +57,14 @@ describe("Minesweeper Context Component", () => {
         boardSize,
         bombsLeft,
         fields,
-        gameStarted
+        gameStarted,
+        difficulty
       } = instance.state;
       expect(isGameOver).toBe(false);
       expect(gameStarted).toBe(false);
       expect(boardSize).toEqual(msConfig.gameBoardOptions.easy.size);
       expect(bombsLeft).toEqual(msConfig.gameBoardOptions.easy.bombCount);
+      expect(difficulty).toBe("easy");
       expect(fields).not.toEqual([]);
     });
   });
