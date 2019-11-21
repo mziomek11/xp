@@ -32,7 +32,12 @@ describe("Minesweeper utils functions", () => {
 
   describe("createInitialFieldsArray", () => {
     it("should return 6 items array filled with initial fields", () => {
-      const initF = { isBomb: false, bombsNear: 0, checked: false };
+      const initF = {
+        isBomb: false,
+        bombsNear: 0,
+        checked: false,
+        flagged: false
+      };
       const expResult = [initF, initF, initF, initF, initF, initF];
 
       const res1 = createInitialFieldsArray(new Vector(3, 2));
@@ -47,6 +52,7 @@ describe("Minesweeper utils functions", () => {
     //Create field
     const cf = (isBomb: boolean = false): Field => ({
       isBomb,
+      flagged: false,
       checked: false,
       bombsNear: 0
     });

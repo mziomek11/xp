@@ -1,11 +1,9 @@
 import Vector from "../classes/Vector";
 import minesweeperConfig from "../components/apps/minesweeper/config";
 import menuConfig from "../components/menu/config";
-import { Field } from "../components/apps/minesweeper/models";
+import { Field, Difficulty } from "../components/apps/minesweeper/models";
 import { GameBoardOptions } from "../components/apps/minesweeper/models";
 import { pickRandomItemsFromArray } from ".";
-
-type Difficulty = "easy" | "medium" | "hard";
 
 export function getMinesweeperSize(difficulty: Difficulty): Vector {
   const { sizeWithoutTiles, tileSize, gameBoardOptions } = minesweeperConfig;
@@ -46,7 +44,8 @@ export function createInitialFieldsArray(size: Vector): Field[] {
   return new Array(size.x * size.y).fill(0).map(x => ({
     isBomb: false,
     bombsNear: 0,
-    checked: false
+    checked: false,
+    flagged: false
   }));
 }
 
@@ -87,7 +86,7 @@ export function convertIndexIntoFieldPosition(
 
 export function makeChecked(boardSize: Vector, fields: Field[], index: number) {
   const field = fields[index];
-  if (field.checked) return;
+  if (field.checked || field.flagged) return;
 
   field.checked = true;
   if (field.bombsNear === 0 && !field.isBomb) {
