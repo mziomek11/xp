@@ -1,14 +1,15 @@
 import React from "react";
 
-import Digital from "./Digital";
+import BombsDigital from "./digital/BombsDigital";
+import TimeDigital from "./digital/TimeDigital";
 import ResetButton from "./ResetButton";
 
 const ScoreBoard = () => {
   return (
     <div className="minesweeper__scoreboard" data-test="scoreboard">
-      <Digital number={456} data-test="digital" />
+      <BombsDigital data-test="bombs-digital" />
       <ResetButton data-test="btn" />
-      <Digital number={92} data-test="digital" />
+      <TimeDigital data-test="time-digital" />
     </div>
   );
 };

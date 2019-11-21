@@ -44,14 +44,22 @@ describe("Minesweeper Context Component", () => {
       const instance = createWrapper().instance();
       instance.setState({
         isGameOver: true,
+        gameStarted: true,
         boardSize: new Vector(-2, -2),
         bombsLeft: -123,
         fields: []
       });
       instance.startNewGame("easy");
 
-      const { isGameOver, boardSize, bombsLeft, fields } = instance.state;
+      const {
+        isGameOver,
+        boardSize,
+        bombsLeft,
+        fields,
+        gameStarted
+      } = instance.state;
       expect(isGameOver).toBe(false);
+      expect(gameStarted).toBe(false);
       expect(boardSize).toEqual(msConfig.gameBoardOptions.easy.size);
       expect(bombsLeft).toEqual(msConfig.gameBoardOptions.easy.bombCount);
       expect(fields).not.toEqual([]);
@@ -61,9 +69,11 @@ describe("Minesweeper Context Component", () => {
   describe("checkField", () => {
     it("should update state", () => {
       const instance = createWrapper().instance();
+      instance.setState({ gameStarted: false });
       instance.checkField(0);
 
       expect(instance.state.fields[0].checked).toBe(true);
+      expect(instance.state.gameStarted).toBe(true);
     });
   });
 

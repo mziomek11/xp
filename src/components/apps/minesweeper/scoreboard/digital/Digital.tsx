@@ -1,7 +1,7 @@
 import React from "react";
 
 import Digit from "./Digit";
-import { splitNumberIntoThreeStringDigits } from "../../../../utils/minesweeper";
+import { splitNumberIntoThreeStringDigits } from "../../../../../utils/minesweeper";
 
 type Props = {
   number: number;

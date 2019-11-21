@@ -12,6 +12,7 @@ import {
 type State = {
   difficulty: Difficulty;
   isGameOver: boolean;
+  gameStarted: boolean;
   boardSize: Vector;
   fields: Field[];
   destroyedBombIndex: number;
@@ -37,6 +38,7 @@ export class ContextProvider extends Component<{}, State> {
   readonly state: State = {
     difficulty: "easy",
     isGameOver: false,
+    gameStarted: false,
     boardSize: msConfig.gameBoardOptions.easy.size,
     fields: generateStartFields(msConfig.gameBoardOptions.easy),
     bombsLeft: msConfig.gameBoardOptions.easy.bombCount,
@@ -65,17 +67,21 @@ export class ContextProvider extends Component<{}, State> {
     this.setState({
       isGameOver: false,
       boardSize: options.size,
+      gameStarted: false,
       fields: newFields,
       bombsLeft: options.bombCount
     });
   };
 
   checkField = (index: number) => {
-    const { fields, boardSize } = this.state;
+    const { fields, boardSize, gameStarted } = this.state;
     const newFields = deepCopy<Field[]>(fields);
 
     makeChecked(boardSize, newFields, index);
-    this.setState({ fields: newFields });
+    const newState: Partial<State> = { fields: newFields };
+    if (!gameStarted) newState.gameStarted = true;
+
+    this.setState(newState as any);
   };
 
   toggleFlag = (index: number) => {
