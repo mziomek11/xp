@@ -9,24 +9,24 @@ const wrapper = shallow(comp);
 
 describe("FileList Component", () => {
   describe("render", () => {
+    const testRender = (testName: string) => {
+      it(`should render ${testName}`, () => {
+        expect(findByTestAtrr(wrapper, testName).length).toBe(1);
+      });
+    };
+
     it("should render without throwing an error", () => {
       expect(findByTestAtrr(wrapper, "file-list").length).toBe(1);
     });
 
-    it("should render computer", () => {
-      expect(findByTestAtrr(wrapper, "computer").length).toBe(1);
-    });
+    const filesToTest = [
+      "computer",
+      "notepad",
+      "paint",
+      "minesweeper",
+      "calculator"
+    ];
 
-    it("should render notepad", () => {
-      expect(findByTestAtrr(wrapper, "notepad").length).toBe(1);
-    });
-
-    it("should render paint", () => {
-      expect(findByTestAtrr(wrapper, "paint").length).toBe(1);
-    });
-
-    it("should render minesweeper", () => {
-      expect(findByTestAtrr(wrapper, "minesweeper").length).toBe(1);
-    });
+    filesToTest.forEach(file => testRender(file));
   });
 });

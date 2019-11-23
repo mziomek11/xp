@@ -5,14 +5,17 @@ import FileSystem from "./filesystem/FileSystem";
 import Notepad from "./notepad/Notepad";
 import Paint from "./paint/Paint";
 import Minesweeper from "./minesweeper/Minesweeper";
+import Calculator from "./calculator/Calculator";
 import WindowContainer from "../window/WindowContainer";
 import windowConfig from "../../config/window";
+import calculatorConfig from "./calculator/config";
 import { Provider as FilesystemContextProvider } from "./filesystem/context/Context";
 import { Provider as NotepadContextProvider } from "./notepad/context/Context";
 import { Provider as PaintContextProvider } from "./paint/context/Context";
 import { Provider as MinesweeperContextProvider } from "./minesweeper/context/Context";
 import { RootState } from "MyTypes";
 import { Window } from "../../store/window/models";
+import { getMinesweeperSize } from "../../utils/minesweeper";
 import {
   Provider as WindowContextProvider,
   MinMaxProps,
@@ -25,7 +28,6 @@ import {
   getWindowStartLeftAndTop,
   getWindowNoResizableMinMaxProps
 } from "../../utils/window";
-import { getMinesweeperSize } from "../../utils/minesweeper";
 
 type OwnProps = {
   id: string;
@@ -50,6 +52,8 @@ export class Application extends Component<Props, {}> {
         return this.getPaintApp();
       case "minesweeper":
         return this.getMinesweeperApp();
+      case "calculator":
+        return this.getCalculatorApp();
       default:
         throw Error(`${this.props.window.application} is not an application`);
     }
@@ -91,6 +95,10 @@ export class Application extends Component<Props, {}> {
     );
   };
 
+  getCalculatorApp = () => {
+    return <Calculator data-test="calculator" />;
+  };
+
   getWindowCtxProps = (): MinMaxProps & StartProps & OwnProps => {
     const windowMinMaxProps = this.getMinMaxProps();
     const startSize = this.getStartSize(windowMinMaxProps);
@@ -114,6 +122,7 @@ export class Application extends Component<Props, {}> {
       case "paint":
         return { startFullscreened: true };
       case "minesweeper":
+      case "calculator":
         return { resizable: false, hideFullscreen: true };
       default:
         return {};
@@ -127,6 +136,11 @@ export class Application extends Component<Props, {}> {
       case "minesweeper":
         const { x, y } = getMinesweeperSize("easy");
         return getWindowNoResizableMinMaxProps(x, y);
+      case "calculator":
+        return getWindowNoResizableMinMaxProps(
+          calculatorConfig.width,
+          calculatorConfig.height
+        );
       default:
         return getWindowDefaultMinMaxProps(screenWidth, screenHeight);
     }

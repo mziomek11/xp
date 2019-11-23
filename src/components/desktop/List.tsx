@@ -1,9 +1,9 @@
 import React from "react";
 
+import Basic from "./file/Basic";
 import Computer from "./file/Computer";
 import Notepad from "./file/Notepad";
 import Paint from "./file/Paint";
-import Minesweeper from "./file/Minesweeper";
 
 const FileList = () => {
   return (
@@ -11,7 +11,8 @@ const FileList = () => {
       <Computer data-test="computer" />
       <Notepad data-test="notepad" />
       <Paint data-test="paint" />
-      <Minesweeper data-test="minesweeper" />
+      <Basic app="minesweeper" data-test="minesweeper" />
+      <Basic app="calculator" data-test="calculator" />
     </div>
   );
 };

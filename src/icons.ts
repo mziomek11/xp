@@ -22,6 +22,9 @@ import imageFocused from "./assets/icons/image-focused.png";
 import minesweeper from "./assets/icons/minesweeper.png";
 import minesweeperFocused from "./assets/icons/minesweeper-focused.png";
 
+import calculator from "./assets/icons/calculator.png";
+import calculatorFocused from "./assets/icons/calculator-focused.png";
+
 import cursorPaintFill from "./assets/paint/cursors/fill.png";
 import cursorPaintAero from "./assets/paint/cursors/aero.png";
 import cursorPaintPencil from "./assets/paint/cursors/pencil.png";
@@ -58,6 +61,8 @@ const getNormalIcon = (type: Icon): string => {
       return image;
     case "minesweeper":
       return minesweeper;
+    case "calculator":
+      return calculator;
     default:
       throw Error(`${type} icon does not exists`);
   }
@@ -81,6 +86,8 @@ const getFocusedIcon = (type: Icon): string => {
       return imageFocused;
     case "minesweeper":
       return minesweeperFocused;
+    case "calculator":
+      return calculatorFocused;
     default:
       throw Error(`${type} icon does not exists`);
   }

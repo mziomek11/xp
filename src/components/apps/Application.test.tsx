@@ -1,6 +1,7 @@
 import React from "react";
 import { shallow } from "enzyme";
 
+import calculatorConfig from "./calculator/config";
 import { Application as App } from "../../store/models";
 import { OpenData } from "../../store/window/models";
 import { Application } from "./Application";
@@ -72,6 +73,12 @@ describe("Application Component", () => {
       const wrapper = createWrapper("minesweeper");
 
       expect(findByTestAtrr(wrapper, "minesweeper").length).toBe(1);
+    });
+
+    it("should render calculator app", () => {
+      const wrapper = createWrapper("calculator");
+
+      expect(findByTestAtrr(wrapper, "calculator").length).toBe(1);
     });
 
     it("should throw an error", () => {
@@ -167,7 +174,19 @@ describe("Application Component", () => {
         getWindowNoResizableMinMaxProps(easyVector.x, easyVector.y)
       );
     });
-    
+
+    it("should return getWindowNoResizableMinMaxProps with calculator size", () => {
+      const instance = createWrapper("calculator").instance();
+      const result = instance.getMinMaxProps();
+
+      expect(result).toEqual(
+        getWindowNoResizableMinMaxProps(
+          calculatorConfig.width,
+          calculatorConfig.height
+        )
+      );
+    });
+
     it("should return getWindowDefaultMinMaxProps result with proper props", () => {
       const result = instance.getMinMaxProps();
       expect(result).toEqual(

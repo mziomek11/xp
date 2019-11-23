@@ -400,3 +400,21 @@ $minesweeper-scoreboard-digital-height: 24px;
 //Minesweeper gameboard
 
 $minesweeper-gameboard-margin: 6px;
+
+//Calculator colors
+
+$calculator-background-color: #ece9d8;
+$calculator-display-border-color: #7f9db9;
+$calculator-rect-border-color-map: (
+  top: $dropdown-border-color,
+  left: $dropdown-border-color,
+  right: #ffffff,
+  bottom: #ffffff
+);
+
+//Calculator distances
+
+$calculator-grid-gap: 5px;
+$calculator-display-margin: 8px;
+$calculator-buttons-horizontal-margin: 11px;
+$calculator-buttons-vertical-margin: 7px;
