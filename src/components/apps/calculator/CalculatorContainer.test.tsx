@@ -286,4 +286,66 @@ describe("CalculatorContainer Component", () => {
       expect(instance.state.displayText).toBe("2.01");
     });
   });
+
+  describe("backspace", () => {
+    const instance = createWrapper().instance();
+
+    describe("with minus", () => {
+      it("should remove one digit", () => {
+        instance.setState({ displayText: "-123" });
+        instance.backspace();
+
+        expect(instance.state.displayText).toBe("-12");
+      });
+
+      it("should change to zero", () => {
+        instance.setState({ displayText: "-1" });
+        instance.backspace();
+
+        expect(instance.state.displayText).toBe("0");
+      });
+    });
+
+    describe("without minus", () => {
+      it("should remove one digit", () => {
+        instance.setState({ displayText: "123" });
+        instance.backspace();
+
+        expect(instance.state.displayText).toBe("12");
+      });
+
+      it("should change to zero", () => {
+        instance.setState({ displayText: "1" });
+        instance.backspace();
+
+        expect(instance.state.displayText).toBe("0");
+      });
+    });
+  });
+
+  describe("clearAll", () => {
+    it("should resetState", () => {
+      instance.setState({
+        displayText: "123",
+        triedToDivideByZero: true,
+        wrongFunctionArgument: true
+      });
+      instance.clearAll();
+
+      expect(instance.state).toEqual({
+        displayText: "0",
+        triedToDivideByZero: false,
+        wrongFunctionArgument: false
+      });
+    });
+  });
+
+  describe("clear", () => {
+    it("should set displayText to zero", () => {
+      instance.setState({ displayText: "123" });
+      instance.clear();
+
+      expect(instance.state.displayText).toBe("0");
+    });
+  });
 });

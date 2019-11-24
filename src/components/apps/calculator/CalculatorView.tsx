@@ -83,10 +83,10 @@ const CalculatorView: React.FC<Props> = ({
               <Button onClick={onBackspaceClick} isRed>
                 Backspace
               </Button>
-              <Button onClick={onClearAllClick} isRed>
+              <Button onClick={onClearClick} isRed>
                 CE
               </Button>
-              <Button onClick={onClearClick} isRed>
+              <Button onClick={onClearAllClick} isRed>
                 C
               </Button>
             </div>

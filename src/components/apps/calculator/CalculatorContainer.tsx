@@ -16,17 +16,19 @@ type State = {
   wrongFunctionArgument: boolean;
 };
 
+const initState: State = {
+  displayText: "0",
+  triedToDivideByZero: false,
+  wrongFunctionArgument: false
+};
+
 class CalculatorContainer extends Component<{}, State> {
   private wasTextCleared: boolean = true;
 
   private lastOperation: Operation | null = null;
   private lastNumber: number = 0;
 
-  readonly state: State = {
-    displayText: "0",
-    triedToDivideByZero: false,
-    wrongFunctionArgument: false
-  };
+  readonly state: State = initState;
 
   clearMemory = () => {};
 
@@ -36,11 +38,29 @@ class CalculatorContainer extends Component<{}, State> {
 
   memoryAdd = () => {};
 
-  backspace = () => {};
+  backspace = () => {
+    if (!this.wasTextCleared) return;
 
-  clearAll = () => {};
+    const { displayText } = this.state;
+    const { length } = displayText;
+    const isMinus = displayText[0] === "-";
 
-  clear = () => {};
+    if ((length > 2 && isMinus) || (length > 1 && !isMinus)) {
+      const newDisplayText = displayText.substring(0, length - 1);
+      this.setState({ displayText: newDisplayText });
+    } else this.setState({ displayText: "0" });
+  };
+
+  clearAll = () => {
+    this.wasTextCleared = true;
+    this.lastOperation = null;
+    this.lastNumber = 0;
+    this.setState(initState);
+  };
+
+  clear = () => {
+    this.setState({ displayText: "0" });
+  };
 
   handleValueClick = (e?: React.MouseEvent<HTMLButtonElement>) => {
     const { textContent } = e!.currentTarget;
@@ -180,7 +200,7 @@ class CalculatorContainer extends Component<{}, State> {
         onAddClick={this.add}
         onBackspaceClick={this.backspace}
         onClearAllClick={this.clearAll}
-        onClearClick={this.clearAll}
+        onClearClick={this.clear}
         onClearMemoryClick={this.clearMemory}
         onDivideClick={this.divide}
         onDotClick={this.dot}
