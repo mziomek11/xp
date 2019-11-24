@@ -5,7 +5,7 @@ import FileSystem from "./filesystem/FileSystem";
 import Notepad from "./notepad/Notepad";
 import Paint from "./paint/Paint";
 import Minesweeper from "./minesweeper/Minesweeper";
-import Calculator from "./calculator/Calculator";
+import Calculator from "./calculator/CalculatorContainer";
 import WindowContainer from "../window/WindowContainer";
 import windowConfig from "../../config/window";
 import calculatorConfig from "./calculator/config";
