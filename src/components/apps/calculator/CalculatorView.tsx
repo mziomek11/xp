@@ -8,6 +8,7 @@ type Props = {
   triedToDivideByZero: boolean;
   wrongFunctionArgument: boolean;
   displayText: string;
+  memory: string | null;
   onValueClick: (e?: React.MouseEvent<HTMLButtonElement>) => void;
   onClearMemoryClick: VoidFunction;
   onMemoryRecallClick: VoidFunction;
@@ -32,6 +33,7 @@ const CalculatorView: React.FC<Props> = ({
   triedToDivideByZero,
   wrongFunctionArgument,
   displayText,
+  memory,
   onValueClick,
   onClearMemoryClick,
   onMemoryRecallClick,
@@ -62,7 +64,9 @@ const CalculatorView: React.FC<Props> = ({
         />
         <div className="calculator__buttons">
           <div className="calculator__left">
-            <div className="calculator__rect" />
+            <div className="calculator__rect" data-test="memory">
+              {memory !== null ? "M" : ""}
+            </div>
             <div className="calculator__left__bottom">
               <Button onClick={onClearMemoryClick} isRed>
                 MC

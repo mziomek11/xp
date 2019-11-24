@@ -12,12 +12,14 @@ export enum Operation {
 
 type State = {
   displayText: string;
+  memory: string | null;
   triedToDivideByZero: boolean;
   wrongFunctionArgument: boolean;
 };
 
 const initState: State = {
   displayText: "0",
+  memory: null,
   triedToDivideByZero: false,
   wrongFunctionArgument: false
 };
@@ -30,13 +32,30 @@ class CalculatorContainer extends Component<{}, State> {
 
   readonly state: State = initState;
 
-  clearMemory = () => {};
+  clearMemory = () => {
+    this.setState({ memory: null });
+  };
 
-  memoryRecall = () => {};
+  memoryRecall = () => {
+    const { memory } = this.state;
 
-  memoryStore = () => {};
+    if (memory === null) this.setState({ displayText: "0" });
+    else this.setState({ displayText: memory });
+  };
 
-  memoryAdd = () => {};
+  memoryStore = () => {
+    this.setState(({ displayText }) => ({ memory: displayText }));
+  };
+
+  memoryAdd = () => {
+    const { memory, displayText } = this.state;
+
+    if (memory === null) this.setState({ memory: displayText });
+    else {
+      const added: number = parseFloat(displayText) + parseFloat(memory);
+      this.setState({ memory: added.toString() });
+    }
+  };
 
   backspace = () => {
     if (!this.wasTextCleared) return;
@@ -55,7 +74,9 @@ class CalculatorContainer extends Component<{}, State> {
     this.wasTextCleared = true;
     this.lastOperation = null;
     this.lastNumber = 0;
-    this.setState(initState);
+
+    const { memory, ...rest } = initState;
+    this.setState({ ...rest });
   };
 
   clear = () => {

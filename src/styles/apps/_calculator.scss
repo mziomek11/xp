@@ -29,8 +29,10 @@
 }
 
 .calculator__rect {
+  @include flex-centered;
   @include border(1px, solid, $calculator-rect-border-color-map);
   margin-right: 4px;
+  font-size: 1.2rem;
 }
 
 .calculator__left__bottom,

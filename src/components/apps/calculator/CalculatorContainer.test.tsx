@@ -324,18 +324,20 @@ describe("CalculatorContainer Component", () => {
   });
 
   describe("clearAll", () => {
-    it("should resetState", () => {
+    it("should resetState expect memory", () => {
       instance.setState({
         displayText: "123",
         triedToDivideByZero: true,
-        wrongFunctionArgument: true
+        wrongFunctionArgument: true,
+        memory: "12345"
       });
       instance.clearAll();
 
       expect(instance.state).toEqual({
         displayText: "0",
         triedToDivideByZero: false,
-        wrongFunctionArgument: false
+        wrongFunctionArgument: false,
+        memory: "12345"
       });
     });
   });
@@ -346,6 +348,58 @@ describe("CalculatorContainer Component", () => {
       instance.clear();
 
       expect(instance.state.displayText).toBe("0");
+    });
+  });
+
+  describe("memory", () => {
+    describe("clearMemory", () => {
+      it("should set state memory to null", () => {
+        instance.setState({ memory: "123" });
+        instance.clearMemory();
+
+        expect(instance.state.memory).toBe(null);
+      });
+    });
+
+    describe("memoryRecall", () => {
+      it("should set state display text to '0'", () => {
+        instance.setState({ displayText: "123", memory: null });
+        instance.memoryRecall();
+
+        expect(instance.state.displayText).toBe("0");
+      });
+
+      it("should set state display text to memory", () => {
+        instance.setState({ displayText: "123", memory: "-15" });
+        instance.memoryRecall();
+
+        expect(instance.state.displayText).toBe("-15");
+      });
+    });
+
+    describe("memoryStore", () => {
+      it("should set state memory to display text", () => {
+        instance.setState({ displayText: "123", memory: null });
+        instance.memoryStore();
+
+        expect(instance.state.memory).toBe("123");
+      });
+    });
+
+    describe("memoryAdd", () => {
+      it("should add displayText to existing memory", () => {
+        instance.setState({ displayText: "2", memory: "1" });
+        instance.memoryAdd();
+
+        expect(instance.state.memory).toBe("3");
+      });
+
+      it("should set display text to memory", () => {
+        instance.setState({ displayText: "2", memory: null });
+        instance.memoryAdd();
+
+        expect(instance.state.memory).toBe("2");
+      });
     });
   });
 });
