@@ -4,8 +4,12 @@ import { shallow } from "enzyme";
 import Display from "./Display";
 import { findByTestAtrr } from "../../../../testingUtils";
 
-const createWrapper = (text: string, triedToDivideByZero: boolean = false) => {
-  const props = { text, triedToDivideByZero };
+const createWrapper = (
+  text: string,
+  triedToDivideByZero: boolean = false,
+  wrongFunctionArgument: boolean = false
+) => {
+  const props = { text, triedToDivideByZero, wrongFunctionArgument };
   return shallow(<Display {...props} />);
 };
 
@@ -47,6 +51,14 @@ describe("Calculator Display Component", () => {
 
       expect(findByTestAtrr(wrapper, "display").text()).toBe(
         "Cannot be divided by zero"
+      );
+    });
+
+    it("should have text 'Wrong function argument'", () => {
+      const wrapper = createWrapper("123", false, true);
+
+      expect(findByTestAtrr(wrapper, "display").text()).toBe(
+        "Wrong function argument"
       );
     });
   });

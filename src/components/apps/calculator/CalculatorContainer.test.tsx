@@ -1,13 +1,15 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import Container, { Operiation } from "./CalculatorContainer";
+import Container, { Operation } from "./CalculatorContainer";
 import config from "./config";
 import { findByTestAtrr } from "../../../../testingUtils";
 
 const createWrapper = () => shallow<Container>(<Container />);
 const wrapper = createWrapper();
 const instance = wrapper.instance();
+
+const ev = (s: string) => ({ currentTarget: { textContent: s } } as any);
 
 describe("CalculatorContainer Component", () => {
   describe("render", () => {
@@ -68,9 +70,7 @@ describe("CalculatorContainer Component", () => {
         instance.add();
 
         expect(mockHandleOperationClick.mock.calls.length).toBe(1);
-        expect(mockHandleOperationClick.mock.calls[0]).toEqual([
-          Operiation.Add
-        ]);
+        expect(mockHandleOperationClick.mock.calls[0]).toEqual([Operation.Add]);
       });
     });
 
@@ -80,7 +80,7 @@ describe("CalculatorContainer Component", () => {
 
         expect(mockHandleOperationClick.mock.calls.length).toBe(1);
         expect(mockHandleOperationClick.mock.calls[0]).toEqual([
-          Operiation.Subtract
+          Operation.Subtract
         ]);
       });
     });
@@ -91,7 +91,7 @@ describe("CalculatorContainer Component", () => {
 
         expect(mockHandleOperationClick.mock.calls.length).toBe(1);
         expect(mockHandleOperationClick.mock.calls[0]).toEqual([
-          Operiation.Multiple
+          Operation.Multiple
         ]);
       });
     });
@@ -102,7 +102,7 @@ describe("CalculatorContainer Component", () => {
 
         expect(mockHandleOperationClick.mock.calls.length).toBe(1);
         expect(mockHandleOperationClick.mock.calls[0]).toEqual([
-          Operiation.Divide
+          Operation.Divide
         ]);
       });
     });
@@ -136,7 +136,6 @@ describe("CalculatorContainer Component", () => {
   });
 
   describe("making operations", () => {
-    const ev = (s: string) => ({ currentTarget: { textContent: s } } as any);
     const instance = createWrapper().instance();
 
     it("should add numbers", () => {
@@ -202,6 +201,89 @@ describe("CalculatorContainer Component", () => {
       instance.setState({ displayText: "123.1" });
       instance.dot();
       expect(instance.state.displayText).toBe("123.1");
+    });
+  });
+
+  describe("number manipulation", () => {
+    let instance: Container;
+    let mockSetFloatIntoText: jest.Mock;
+
+    beforeEach(() => {
+      mockSetFloatIntoText = jest.fn();
+      instance = createWrapper().instance();
+      instance.setFloatPointNumberIntoDisplayText = mockSetFloatIntoText;
+    });
+
+    describe("squareRoot", () => {
+      it("should call setFloatPointNumberIntoDisplayText with root", () => {
+        instance.setState({ displayText: "4" });
+        instance.squareRoot();
+
+        expect(mockSetFloatIntoText.mock.calls.length).toBe(1);
+        expect(mockSetFloatIntoText.mock.calls[0]).toEqual([2]);
+      });
+
+      it("should wrongArgumentFunction to true", () => {
+        instance.setState({ displayText: "-1", wrongFunctionArgument: false });
+        instance.squareRoot();
+
+        expect(instance.state.wrongFunctionArgument).toBe(true);
+      });
+    });
+
+    describe("opposite", () => {
+      it("should call update displayText with - at start", () => {
+        instance.setState({ displayText: "4" });
+        instance.opposite();
+
+        expect(instance.state.displayText).toBe("-4");
+      });
+
+      it("should call displayText without - at start", () => {
+        instance.setState({ displayText: "-4" });
+        instance.opposite();
+
+        expect(instance.state.displayText).toBe("4");
+      });
+    });
+
+    describe("inverse", () => {
+      it("should call setFloatPointNumberIntoDisplayText with inversed num", () => {
+        instance.setState({ displayText: "2" });
+        instance.inverse();
+
+        expect(mockSetFloatIntoText.mock.calls.length).toBe(1);
+        expect(mockSetFloatIntoText.mock.calls[0]).toEqual([0.5]);
+      });
+
+      it("should set triedToDivideByZero to true", () => {
+        instance.setState({ displayText: "0", triedToDivideByZero: false });
+        instance.inverse();
+
+        expect(instance.state.triedToDivideByZero).toBe(true);
+      });
+    });
+
+    describe("percent", () => {
+      it("should call setFloatPointNumberIntoDisplayText with percent of last num", () => {
+        instance.handleValueClick(ev("5"));
+        instance.handleValueClick(ev("0"));
+        instance.add();
+        instance.handleValueClick(ev("10"));
+        instance.percent();
+
+        expect(mockSetFloatIntoText.mock.calls.length).toBe(1);
+        expect(mockSetFloatIntoText.mock.calls[0]).toEqual([5]);
+      });
+    });
+  });
+
+  describe("setFloatPointNumberIntoDisplayText", () => {
+    it("should update state", () => {
+      instance.setState({ displayText: "1" });
+      instance.setFloatPointNumberIntoDisplayText(2.01);
+
+      expect(instance.state.displayText).toBe("2.01");
     });
   });
 });

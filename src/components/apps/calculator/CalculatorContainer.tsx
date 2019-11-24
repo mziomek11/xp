@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import CalculatorView from "./CalculatorView";
 import config from "./config";
 
-export enum Operiation {
+export enum Operation {
   Add = 1,
   Subtract = 2,
   Multiple = 3,
@@ -13,17 +13,19 @@ export enum Operiation {
 type State = {
   displayText: string;
   triedToDivideByZero: boolean;
+  wrongFunctionArgument: boolean;
 };
 
 class CalculatorContainer extends Component<{}, State> {
-  private wasTextClearned: boolean = true;
+  private wasTextCleared: boolean = true;
 
-  private lastOperation: Operiation | null = null;
+  private lastOperation: Operation | null = null;
   private lastNumber: number = 0;
 
   readonly state: State = {
     displayText: "0",
-    triedToDivideByZero: false
+    triedToDivideByZero: false,
+    wrongFunctionArgument: false
   };
 
   clearMemory = () => {};
@@ -43,7 +45,7 @@ class CalculatorContainer extends Component<{}, State> {
   handleValueClick = (e?: React.MouseEvent<HTMLButtonElement>) => {
     const { textContent } = e!.currentTarget;
 
-    if (this.wasTextClearned) this.addDigitToDisplayText(textContent!);
+    if (this.wasTextCleared) this.addDigitToDisplayText(textContent!);
     else this.startNewDisplayText(textContent!);
   };
 
@@ -63,30 +65,30 @@ class CalculatorContainer extends Component<{}, State> {
     const parsedDisplay = parseFloat(this.state.displayText);
 
     this.lastNumber = parsedDisplay;
-    this.wasTextClearned = true;
+    this.wasTextCleared = true;
 
     this.setState({ displayText: buttonValue });
   };
 
-  add = () => this.handleOperationClick(Operiation.Add);
+  add = () => this.handleOperationClick(Operation.Add);
 
-  subtract = () => this.handleOperationClick(Operiation.Subtract);
+  subtract = () => this.handleOperationClick(Operation.Subtract);
 
-  multiple = () => this.handleOperationClick(Operiation.Multiple);
+  multiple = () => this.handleOperationClick(Operation.Multiple);
 
-  divide = () => this.handleOperationClick(Operiation.Divide);
+  divide = () => this.handleOperationClick(Operation.Divide);
 
-  handleOperationClick = (operation: Operiation) => {
+  handleOperationClick = (operation: Operation) => {
     this.equal();
     this.lastOperation = operation;
-    this.wasTextClearned = false;
+    this.wasTextCleared = false;
   };
 
   equal = () => {
-    if (!this.lastOperation || !this.wasTextClearned) return;
+    if (!this.lastOperation || !this.wasTextCleared) return;
 
     const newNumber = this.getOperationResult();
-    this.wasTextClearned = false;
+    this.wasTextCleared = false;
     this.lastOperation = null;
 
     const newNumberAsString = newNumber!.toString();
@@ -97,16 +99,16 @@ class CalculatorContainer extends Component<{}, State> {
     const currentNumber = parseFloat(this.state.displayText);
     let result = 0;
     switch (this.lastOperation) {
-      case Operiation.Add:
+      case Operation.Add:
         result = this.lastNumber + currentNumber;
         break;
-      case Operiation.Subtract:
+      case Operation.Subtract:
         result = this.lastNumber - currentNumber;
         break;
-      case Operiation.Multiple:
+      case Operation.Multiple:
         result = this.lastNumber * currentNumber;
         break;
-      case Operiation.Divide:
+      case Operation.Divide:
         if (currentNumber === 0) {
           this.setState({ triedToDivideByZero: true });
           result = 0;
@@ -116,16 +118,53 @@ class CalculatorContainer extends Component<{}, State> {
         throw Error("Operation failed");
     }
 
-    return parseFloat(result.toFixed(10));
+    return parseFloat(result.toFixed(config.fixedDigits));
   };
 
-  squareRoot = () => {};
+  squareRoot = () => {
+    const { displayText } = this.state;
+    const displayNumber = parseFloat(displayText);
+    const sqaureRooted = Math.sqrt(displayNumber);
+    if (displayNumber < 0) this.setState({ wrongFunctionArgument: true });
+    this.setFloatPointNumberIntoDisplayText(sqaureRooted);
+  };
 
-  opposite = () => {};
+  opposite = () => {
+    let newDisplayText = this.state.displayText;
 
-  inverse = () => {};
+    if (newDisplayText[0] === "-") newDisplayText = newDisplayText.substring(1);
+    else newDisplayText = "-" + newDisplayText;
 
-  percent = () => {};
+    this.setState({ displayText: newDisplayText });
+  };
+
+  inverse = () => {
+    const { displayText } = this.state;
+    const displayNumber = parseFloat(displayText);
+    const inversed = 1 / displayNumber;
+    if (displayNumber === 0) this.setState({ triedToDivideByZero: true });
+    this.setFloatPointNumberIntoDisplayText(inversed);
+  };
+
+  percent = () => {
+    const { lastOperation, wasTextCleared, lastNumber } = this;
+    const { Add, Subtract } = Operation;
+    const isOperProper = lastOperation === Add || lastOperation === Subtract;
+
+    if (wasTextCleared && isOperProper) {
+      const currentNumber = parseFloat(this.state.displayText);
+      const newNumber = lastNumber * (currentNumber / 100);
+      this.setFloatPointNumberIntoDisplayText(newNumber);
+    }
+  };
+
+  setFloatPointNumberIntoDisplayText = (num: number) => {
+    const newDisplayText = parseFloat(
+      num.toFixed(config.fixedDigits)
+    ).toString();
+
+    this.setState({ displayText: newDisplayText });
+  };
 
   dot = () => {
     const { displayText } = this.state;
@@ -137,8 +176,7 @@ class CalculatorContainer extends Component<{}, State> {
   render() {
     return (
       <CalculatorView
-        triedToDivideByZero={this.state.triedToDivideByZero}
-        displayText={this.state.displayText}
+        {...this.state}
         onAddClick={this.add}
         onBackspaceClick={this.backspace}
         onClearAllClick={this.clearAll}

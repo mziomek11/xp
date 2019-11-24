@@ -6,6 +6,7 @@ import Button from "./Button";
 
 type Props = {
   triedToDivideByZero: boolean;
+  wrongFunctionArgument: boolean;
   displayText: string;
   onValueClick: (e?: React.MouseEvent<HTMLButtonElement>) => void;
   onClearMemoryClick: VoidFunction;
@@ -29,6 +30,7 @@ type Props = {
 
 const CalculatorView: React.FC<Props> = ({
   triedToDivideByZero,
+  wrongFunctionArgument,
   displayText,
   onValueClick,
   onClearMemoryClick,
@@ -53,7 +55,11 @@ const CalculatorView: React.FC<Props> = ({
     <div className="calculator" data-test="calculator">
       <Menu />
       <div className="calculator__content">
-        <Display text={displayText} triedToDivideByZero={triedToDivideByZero} />
+        <Display
+          text={displayText}
+          triedToDivideByZero={triedToDivideByZero}
+          wrongFunctionArgument={wrongFunctionArgument}
+        />
         <div className="calculator__buttons">
           <div className="calculator__left">
             <div className="calculator__rect" />
