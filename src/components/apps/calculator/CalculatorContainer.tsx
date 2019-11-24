@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 
+import withContext from "../../../hoc/withContext";
 import CalculatorView from "./CalculatorView";
 import config from "./config";
+import { WindowContextType } from "ContextType";
+import { areObjectsEqual } from "../../../utils";
 
 export enum Operation {
   Add = 1,
@@ -9,6 +12,10 @@ export enum Operation {
   Multiple = 3,
   Divide = 4
 }
+
+type CtxProps = {
+  window: WindowContextType;
+};
 
 type State = {
   displayText: string;
@@ -24,13 +31,57 @@ const initState: State = {
   wrongFunctionArgument: false
 };
 
-class CalculatorContainer extends Component<{}, State> {
+const nums = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+
+export class CalculatorContainer extends Component<CtxProps, State> {
   private wasTextCleared: boolean = true;
 
   private lastOperation: Operation | null = null;
   private lastNumber: number = 0;
 
   readonly state: State = initState;
+
+  shouldComponentUpdate(_: CtxProps, nextState: State) {
+    return !areObjectsEqual(this.state, nextState, Object.keys(this.state));
+  }
+
+  componentDidMount() {
+    window.addEventListener("keydown", this.keyListener);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("keydown", this.keyListener);
+  }
+
+  keyListener = ({ key, ctrlKey }: KeyboardEvent) => {
+    const { window } = this.props;
+    if (!window.focused || window.disabled) return;
+
+    if (ctrlKey) {
+      if (key === "p" || key === "P") this.memoryAdd();
+      else if (key === "l" || key === "L") this.clearMemory();
+      else if (key === "r" || key === "R") this.memoryRecall();
+      else if (key === "m" || key === "M") this.memoryStore();
+
+      return;
+    }
+
+    if (nums.indexOf(key) > -1) {
+      this.handleValueClick({ currentTarget: { textContent: key } } as any);
+    } else if (key === "," || key === ".") this.dot();
+    else if (key === "Enter") this.equal();
+    else if (key === "+") this.add();
+    else if (key === "-") this.subtract();
+    else if (key === "*") this.multiple();
+    else if (key === "/") this.divide();
+    else if (key === "%") this.percent();
+    else if (key === "r" || key === "R") this.inverse();
+    else if (key === "F9") this.opposite();
+    else if (key === "@") this.squareRoot();
+    else if (key === "Backspace") this.backspace();
+    else if (key === "c" || key === "C") this.clearAll();
+    else if (key === "Delete") this.clear();
+  };
 
   clearMemory = () => {
     this.setState({ memory: null });
@@ -208,7 +259,13 @@ class CalculatorContainer extends Component<{}, State> {
   };
 
   dot = () => {
+    if (!this.wasTextCleared) {
+      this.startNewDisplayText("0.");
+      return;
+    }
+
     const { displayText } = this.state;
+
     if (displayText.indexOf(".") === -1) {
       this.setState({ displayText: displayText + "." });
     }
@@ -242,4 +299,4 @@ class CalculatorContainer extends Component<{}, State> {
   }
 }
 
-export default CalculatorContainer;
+export default withContext(CalculatorContainer, "window");

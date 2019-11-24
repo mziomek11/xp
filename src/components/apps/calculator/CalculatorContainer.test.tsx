@@ -1,11 +1,13 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import Container, { Operation } from "./CalculatorContainer";
+import { Operation, CalculatorContainer } from "./CalculatorContainer";
 import config from "./config";
 import { findByTestAtrr } from "../../../../testingUtils";
 
-const createWrapper = () => shallow<Container>(<Container />);
+const createWrapper = () => {
+  return shallow<CalculatorContainer>(<CalculatorContainer {...({} as any)} />);
+};
 const wrapper = createWrapper();
 const instance = wrapper.instance();
 
@@ -56,7 +58,7 @@ describe("CalculatorContainer Component", () => {
   });
 
   describe("operations", () => {
-    let instance: Container;
+    let instance: CalculatorContainer;
     let mockHandleOperationClick: jest.Mock;
 
     beforeEach(() => {
@@ -205,7 +207,7 @@ describe("CalculatorContainer Component", () => {
   });
 
   describe("number manipulation", () => {
-    let instance: Container;
+    let instance: CalculatorContainer;
     let mockSetFloatIntoText: jest.Mock;
 
     beforeEach(() => {
