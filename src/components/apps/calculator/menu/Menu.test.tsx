@@ -4,7 +4,9 @@ import { shallow } from "enzyme";
 import Menu from "./Menu";
 import { findByTestAtrr } from "../../../../../testingUtils";
 
-const wrapper = shallow<Menu>(<Menu />);
+const wrapper = shallow<Menu>(
+  <Menu groupingNumbers={false} onGroupingNumberClick={jest.fn()} />
+);
 
 describe("Calculator Menu Component", () => {
   describe("render", () => {

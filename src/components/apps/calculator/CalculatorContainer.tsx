@@ -22,13 +22,15 @@ type State = {
   memory: string | null;
   triedToDivideByZero: boolean;
   wrongFunctionArgument: boolean;
+  groupNumbers: boolean;
 };
 
 const initState: State = {
   displayText: "0",
   memory: null,
   triedToDivideByZero: false,
-  wrongFunctionArgument: false
+  wrongFunctionArgument: false,
+  groupNumbers: false
 };
 
 const nums = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
@@ -126,7 +128,7 @@ export class CalculatorContainer extends Component<CtxProps, State> {
     this.lastOperation = null;
     this.lastNumber = 0;
 
-    const { memory, ...rest } = initState;
+    const { memory, groupNumbers, ...rest } = initState;
     this.setState({ ...rest });
   };
 
@@ -271,6 +273,10 @@ export class CalculatorContainer extends Component<CtxProps, State> {
     }
   };
 
+  toggleGroupNumbers = () => {
+    this.setState(({ groupNumbers }) => ({ groupNumbers: !groupNumbers }));
+  };
+
   render() {
     return (
       <CalculatorView
@@ -293,6 +299,7 @@ export class CalculatorContainer extends Component<CtxProps, State> {
         onSquareRootClick={this.squareRoot}
         onSubtractClick={this.subtract}
         onValueClick={this.handleValueClick}
+        onGroupNumberClick={this.toggleGroupNumbers}
         data-test="view"
       />
     );

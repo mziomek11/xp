@@ -326,11 +326,12 @@ describe("CalculatorContainer Component", () => {
   });
 
   describe("clearAll", () => {
-    it("should resetState expect memory", () => {
+    it("should resetState expect memory and grouping", () => {
       instance.setState({
         displayText: "123",
         triedToDivideByZero: true,
         wrongFunctionArgument: true,
+        groupNumbers: true,
         memory: "12345"
       });
       instance.clearAll();
@@ -339,6 +340,7 @@ describe("CalculatorContainer Component", () => {
         displayText: "0",
         triedToDivideByZero: false,
         wrongFunctionArgument: false,
+        groupNumbers: true,
         memory: "12345"
       });
     });
@@ -402,6 +404,22 @@ describe("CalculatorContainer Component", () => {
 
         expect(instance.state.memory).toBe("2");
       });
+    });
+  });
+
+  describe("toggleGroupNumbers", () => {
+    it("should set groupNumbers to true", () => {
+      instance.setState({ groupNumbers: false });
+      instance.toggleGroupNumbers();
+
+      expect(instance.state.groupNumbers).toBe(true);
+    });
+
+    it("should set groupNumbers to false", () => {
+      instance.setState({ groupNumbers: true });
+      instance.toggleGroupNumbers();
+
+      expect(instance.state.groupNumbers).toBe(false);
     });
   });
 });

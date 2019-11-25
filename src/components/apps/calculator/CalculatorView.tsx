@@ -9,6 +9,7 @@ type Props = {
   wrongFunctionArgument: boolean;
   displayText: string;
   memory: string | null;
+  groupNumbers: boolean;
   onValueClick: (e?: React.MouseEvent<HTMLButtonElement>) => void;
   onClearMemoryClick: VoidFunction;
   onMemoryRecallClick: VoidFunction;
@@ -27,6 +28,7 @@ type Props = {
   onInverseClick: VoidFunction;
   onDotClick: VoidFunction;
   onOppositeClick: VoidFunction;
+  onGroupNumberClick: VoidFunction;
 };
 
 const CalculatorView: React.FC<Props> = ({
@@ -34,6 +36,7 @@ const CalculatorView: React.FC<Props> = ({
   wrongFunctionArgument,
   displayText,
   memory,
+  groupNumbers,
   onValueClick,
   onClearMemoryClick,
   onMemoryRecallClick,
@@ -51,16 +54,21 @@ const CalculatorView: React.FC<Props> = ({
   onSquareRootClick,
   onInverseClick,
   onDotClick,
-  onOppositeClick
+  onOppositeClick,
+  onGroupNumberClick
 }) => {
   return (
     <div className="calculator" data-test="calculator">
-      <Menu />
+      <Menu
+        onGroupingNumberClick={onGroupNumberClick}
+        groupingNumbers={groupNumbers}
+      />
       <div className="calculator__content">
         <Display
           text={displayText}
           triedToDivideByZero={triedToDivideByZero}
           wrongFunctionArgument={wrongFunctionArgument}
+          groupingNumber={groupNumbers}
         />
         <div className="calculator__buttons">
           <div className="calculator__left">

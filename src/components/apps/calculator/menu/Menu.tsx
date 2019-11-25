@@ -1,21 +1,30 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
 import Menu from "../../../menu/Menu";
 import MenuItem from "../../../menu/Item";
-import { DropDown, Option } from "../../../dropdown";
+import { DropDown, OptionCheckBox } from "../../../dropdown";
 
-class CalculatorMenu extends Component {
+type Props = {
+  groupingNumbers: boolean;
+  onGroupingNumberClick: () => void;
+};
+
+class CalculatorMenu extends PureComponent<Props> {
   render() {
+    const { groupingNumbers, onGroupingNumberClick } = this.props;
     const dropdown = (
-      <DropDown withShortcuts>
-        <Option name="Copy" shortcut={["Crtl", "C"]} />
-        <Option name="Paste" shortcut={["Ctrl", "V"]} />
+      <DropDown>
+        <OptionCheckBox
+          name="Grouping numbers"
+          onClick={onGroupingNumberClick}
+          isChecked={groupingNumbers}
+        />
       </DropDown>
     );
 
     return (
       <Menu data-test="menu">
-        <MenuItem name="Edit" dropdown={dropdown} />
+        <MenuItem name="View" dropdown={dropdown} />
       </Menu>
     );
   }
