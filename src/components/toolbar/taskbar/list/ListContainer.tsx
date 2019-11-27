@@ -5,7 +5,7 @@ import ApplicationList from "./List";
 import { RootState } from "MyTypes";
 import { WindowById } from "../../../../store/window/models";
 import { toolbarConfig } from "../../../../config";
-import {  areArraysValuesEqual } from "../../../../utils";
+import { areArraysValuesEqual } from "../../../../utils";
 
 type AppNamesWithIds = { [appName: string]: string[] };
 
@@ -120,10 +120,15 @@ export class ApplicationsListContainer extends React.Component<
     single: string[],
     multi: AppNamesWithIds
   ): number => {
-    if (!anyAppOver) return toolbarConfig.APP_WIDTH;
+    const { spaceForApps } = this.state;
+    if (!anyAppOver) {
+      return spaceForApps < toolbarConfig.APP_WIDTH
+        ? spaceForApps
+        : toolbarConfig.APP_WIDTH;
+    }
 
     const appsCount = single.length + Object.keys(multi).length;
-    return this.state.spaceForApps / appsCount;
+    return spaceForApps / appsCount;
   };
 
   render() {
