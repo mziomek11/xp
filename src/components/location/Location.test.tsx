@@ -127,12 +127,12 @@ describe("Location Component", () => {
 
   describe("changePathToLocationText", () => {
     describe("should change state", () => {
-      it("to Computer", () => {
+      it("to My computer", () => {
         const wrapper = createWrapper({ path: [] });
-        wrapper.instance().setState({ text: "Computer\\sdfsdfsdfsdf" });
+        wrapper.instance().setState({ text: "My computer\\sdfsdfsdfsdf" });
 
         wrapper.instance().changePathToLocationText();
-        expect(wrapper.instance().state.text).toBe("Computer");
+        expect(wrapper.instance().state.text).toBe("My computer");
       });
     });
 

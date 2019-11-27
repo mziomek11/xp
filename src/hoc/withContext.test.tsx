@@ -1,54 +1,32 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import withContext from "./withContext";
+import withContext, { ContextType } from "./withContext";
 import { findByTestAtrr } from "../../testingUtils";
+import { capitalize } from "../utils";
 
 const BaseComp = () => <div>Base Comp</div>;
 
 describe("Higher Order Component withContext", () => {
-  describe("Window", () => {
-    it("should render without throwing an error", () => {
-      const Enchanced = withContext(BaseComp, "window");
-      const wrapper = shallow(<Enchanced />);
+  const testRender = (type: ContextType) => {
+    describe(capitalize(type), () => {
+      it("should render without throwing an error", () => {
+        const Enchanced = withContext(BaseComp, type);
+        const wrapper = shallow(<Enchanced />);
 
-      expect(findByTestAtrr(wrapper, "window").length).toBe(1);
+        expect(findByTestAtrr(wrapper, type).length).toBe(1);
+      });
     });
-  });
+  };
 
-  describe("Filesystem", () => {
-    it("should render without throwing an error", () => {
-      const Enchanced = withContext(BaseComp, "filesystem");
-      const wrapper = shallow(<Enchanced />);
+  const contextsToTest: ContextType[] = [
+    "window",
+    "filesystem",
+    "notepad",
+    "paint",
+    "minesweeper",
+    "desktop"
+  ];
 
-      expect(findByTestAtrr(wrapper, "filesystem").length).toBe(1);
-    });
-  });
-
-  describe("Notepad", () => {
-    it("should render without throwing an error", () => {
-      const Enchanced = withContext(BaseComp, "notepad");
-      const wrapper = shallow(<Enchanced />);
-
-      expect(findByTestAtrr(wrapper, "notepad").length).toBe(1);
-    });
-  });
-
-  describe("Paint", () => {
-    it("should render without throwing an error", () => {
-      const Enchanced = withContext(BaseComp, "paint");
-      const wrapper = shallow(<Enchanced />);
-
-      expect(findByTestAtrr(wrapper, "paint").length).toBe(1);
-    });
-  });
-
-  describe("Minesweeper", () => {
-    it("should render without throwing an error", () => {
-      const Enchanced = withContext(BaseComp, "minesweeper");
-      const wrapper = shallow(<Enchanced />);
-
-      expect(findByTestAtrr(wrapper, "minesweeper").length).toBe(1);
-    });
-  });
+  contextsToTest.forEach(type => testRender(type));
 });

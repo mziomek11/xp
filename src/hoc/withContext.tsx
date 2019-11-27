@@ -5,13 +5,15 @@ import FilesystemContext from "../components/apps/filesystem/context/Context";
 import NotepadContext from "../components/apps/notepad/context/Context";
 import PaintContext from "../components/apps/paint/context/Context";
 import MinesweeperContext from "../components/apps/minesweeper/context/Context";
+import DesktopContext from "../components/desktop/context/Context";
 
-type ContextType =
+export type ContextType =
   | "window"
   | "filesystem"
   | "notepad"
   | "paint"
-  | "minesweeper";
+  | "minesweeper"
+  | "desktop";
 
 const getContext = (type: ContextType): React.Context<any> => {
   switch (type) {
@@ -25,6 +27,8 @@ const getContext = (type: ContextType): React.Context<any> => {
       return PaintContext;
     case "minesweeper":
       return MinesweeperContext;
+    case "desktop":
+      return DesktopContext;
     default:
       throw Error("Unknown context type");
   }

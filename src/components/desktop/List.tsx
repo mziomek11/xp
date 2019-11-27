@@ -1,6 +1,7 @@
-import React from "react";
+import React, { Component } from "react";
 
-import File from "./File";
+import withContext from "../../hoc/withContext";
+import { DesktopContextType } from "ContextType";
 import {
   notepadStartData,
   paintStartData,
@@ -8,16 +9,52 @@ import {
   getBasicStartData
 } from "../../fileStartData";
 
-const FileList = () => {
-  return (
-    <div className="desktop__file__list" data-test="file-list">
-      <File {...filesystemStartData} data-test="computer" />
-      <File {...notepadStartData} data-test="notepad" />
-      <File {...paintStartData} data-test="paint" />
-      <File {...getBasicStartData("minesweeper")} data-test="minesweeper" />
-      <File {...getBasicStartData("calculator")} data-test="calculator" />
-    </div>
-  );
+import File from "./File";
+import DesktopFocusRect from "./FocusRect";
+import { getWindowPosition } from "../../utils";
+
+type CtxProps = {
+  desktop: DesktopContextType;
 };
 
-export default FileList;
+export class FileList extends Component<CtxProps> {
+  private baseClassName = "desktop__file__list";
+  shouldComponentUpdate({ desktop }: CtxProps) {
+    return this.props.desktop.focusingRect !== desktop.focusingRect;
+  }
+
+  handleMouseDown = (
+    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
+  ) => {
+    if (!(e.target as Element).classList.contains(this.baseClassName)) return;
+
+    this.props.desktop.setContext({
+      focusedIds: [],
+      focusingRect: true,
+      startFocusPosition: getWindowPosition(e)
+    });
+  };
+
+  render() {
+    return (
+      <div
+        className={this.baseClassName}
+        onMouseDown={this.handleMouseDown}
+        onTouchStart={this.handleMouseDown}
+        data-test="list"
+      >
+        <File {...filesystemStartData} id={0} />
+        <File {...notepadStartData} id={1} />
+        <File {...paintStartData} id={2} />
+        <File {...getBasicStartData("minesweeper")} id={3} />
+        <File {...getBasicStartData("calculator")} id={4} />
+
+        {this.props.desktop.focusingRect && (
+          <DesktopFocusRect data-test="rect" />
+        )}
+      </div>
+    );
+  }
+}
+
+export default withContext(FileList, "desktop");

@@ -34,6 +34,6 @@ function createFileArray(obj: FileTree) {
 }
 
 export function pathArrayToString(path: string[]): string {
-  if (path.length === 0) return "Computer";
+  if (path.length === 0) return "My computer";
   return path.reduce((prev, curr) => prev + `\\` + curr);
 }

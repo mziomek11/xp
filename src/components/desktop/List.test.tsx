@@ -1,32 +1,56 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import FileList from "./List";
+import { FileList } from "./List";
 import { findByTestAtrr } from "../../../testingUtils";
 
-const comp = <FileList />;
-const wrapper = shallow(comp);
+let mockSetContextFn: jest.Mock;
 
-describe("FileList Component", () => {
+const createWrapper = (focusingRect: boolean = false) => {
+  mockSetContextFn = jest.fn();
+  const props = {
+    desktop: { setContext: mockSetContextFn, focusingRect } as any
+  };
+
+  return shallow<FileList>(<FileList {...props} />);
+};
+
+const wrapper = createWrapper();
+const instance = wrapper.instance();
+
+describe("DesktopFileList Component", () => {
   describe("render", () => {
-    const testRender = (testName: string) => {
-      it(`should render ${testName}`, () => {
-        expect(findByTestAtrr(wrapper, testName).length).toBe(1);
-      });
-    };
-
     it("should render without throwing an error", () => {
-      expect(findByTestAtrr(wrapper, "file-list").length).toBe(1);
+      expect(findByTestAtrr(wrapper, "list").length).toBe(1);
     });
 
-    const filesToTest = [
-      "computer",
-      "notepad",
-      "paint",
-      "minesweeper",
-      "calculator"
-    ];
+    it("should render FocusRect", () => {
+      const wrapper = createWrapper(false);
 
-    filesToTest.forEach(file => testRender(file));
+      expect(findByTestAtrr(wrapper, "rect").length).toBe(0);
+    });
+
+    it("should NOT render FocusRect", () => {
+      const wrapper = createWrapper(true);
+
+      expect(findByTestAtrr(wrapper, "rect").length).toBe(1);
+    });
+  });
+
+  describe("handleMouseDown", () => {
+    const ev: any = (contains: boolean) => ({
+      type: "mousemove",
+      target: {
+        classList: {
+          contains: () => contains
+        }
+      }
+    });
+
+    it("should NOT call setContext", () => {
+      instance.handleMouseDown(ev(false));
+
+      expect(mockSetContextFn.mock.calls.length).toBe(0);
+    });
   });
 });

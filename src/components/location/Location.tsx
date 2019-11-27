@@ -45,7 +45,7 @@ export class Location extends Component<Props, State> {
       ? pathArrayToString(this.props.path)
       : this.props.path.length > 0
       ? this.props.path[this.props.path.length - 1]
-      : "Computer",
+      : "My computer",
     open: false,
     isClickOpening: true
   };
@@ -69,7 +69,7 @@ export class Location extends Component<Props, State> {
     if (!areArraysEqual(path, prevPros.path)) {
       let newText: string;
       if (editable) newText = pathArrayToString(path);
-      else newText = path.length === 0 ? "Computer" : path[path.length - 1];
+      else newText = path.length === 0 ? "My computer" : path[path.length - 1];
 
       this.setState({ text: newText });
     }
@@ -106,7 +106,7 @@ export class Location extends Component<Props, State> {
 
     let newPath = text.split("\\");
 
-    if (newPath[0] === "Computer") newPath = [];
+    if (newPath[0] === "My computer") newPath = [];
 
     const [, newPossiblePath] = objectPropFromPath(fileTree, newPath);
 

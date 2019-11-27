@@ -13,14 +13,6 @@ describe("Desktop Component", () => {
     it("should render without throwing an error", () => {
       expect(findByTestAtrr(wrapper, "desktop").length).toBe(1);
     });
-
-    it("should render FileList Component", () => {
-      expect(findByTestAtrr(wrapper, "file-list").length).toBe(1);
-    });
-
-    it("should render  WindowList Component", () => {
-      expect(findByTestAtrr(wrapper, "window-list").length).toBe(1);
-    });
   });
 
   describe("styles", () => {

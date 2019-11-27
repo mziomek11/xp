@@ -20,8 +20,8 @@ export const paintStartData: StartData = {
 };
 
 export const filesystemStartData: StartData = {
-  name: "Computer",
-  startWindowName: "Computer",
+  name: "My computer",
+  startWindowName: "My computer",
   application: "filesystem"
 };
 

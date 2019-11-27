@@ -58,8 +58,8 @@ describe("Filesystem utils funtions", () => {
   });
 
   describe("pathArrayToString", () => {
-    it("should return Computer", () => {
-      expect(pathArrayToString([])).toBe("Computer");
+    it("should return My computer", () => {
+      expect(pathArrayToString([])).toBe("My computer");
     });
 
     it("should add \\ beetwen items", () => {

@@ -229,7 +229,7 @@ describe("Filesystem ContextProvider Component", () => {
 
       wrapper.instance().setWindowNameAndIcon(path);
       expect(mockRenameFn.mock.calls.length).toBe(2);
-      expect(mockRenameFn.mock.calls[1]).toEqual(["Computer", "filesystem"]);
+      expect(mockRenameFn.mock.calls[1]).toEqual(["My computer", "filesystem"]);
     });
   });
 
@@ -304,7 +304,7 @@ describe("Filesystem ContextProvider Component", () => {
       wrapper.instance().setState({ history: [["1"], [], ["1", "3"]] });
 
       const { name } = wrapper.instance().getLocationOption(1);
-      expect(name).toEqual("Computer");
+      expect(name).toEqual("My computer");
     });
   });
 

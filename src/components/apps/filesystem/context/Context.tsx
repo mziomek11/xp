@@ -180,7 +180,7 @@ export class ContextProvider extends Component<Props, State> {
       const newName = path[path.length - 1];
       const newIcon = path.length === 1 ? "disk" : "folder";
       this.props.renameWindow(newName, newIcon);
-    } else this.props.renameWindow("Computer", "filesystem");
+    } else this.props.renameWindow("My computer", "filesystem");
   };
 
   calculateHistory = (
@@ -252,7 +252,7 @@ export class ContextProvider extends Component<Props, State> {
     const onClick = () => this.setPath(pathOnHistoryPoint, historyPos);
 
     let lastPathName = pathOnHistoryPoint[pathOnHistoryPoint.length - 1];
-    if (!lastPathName || lastPathName === "") lastPathName = "Computer";
+    if (!lastPathName || lastPathName === "") lastPathName = "My computer";
 
     return { name: lastPathName, onClick };
   };

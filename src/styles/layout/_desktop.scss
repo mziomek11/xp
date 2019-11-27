@@ -4,21 +4,45 @@
 }
 
 .desktop__file__list {
+  background-image: url("../../assets/desktop/wallpaper.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100%;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  position: relative;
 }
 
 .desktop__file {
+  display: flex;
+  flex-direction: column;
   position: relative;
-  width: $desktop-file-size;
-  height: $desktop-file-size;
-  margin: $desktop-file-margin;
-  background: black;
   color: white;
   @include flex-centered;
+}
 
-  &:hover {
-    cursor: pointer;
-    background: aquamarine;
+.desktop__file__image-container {
+  width: $desktop-file-image-size;
+  height: $desktop-file-image-size;
+}
+
+.desktop__file__image {
+  width: 100%;
+  height: auto;
+}
+
+.desktop__file__text {
+  margin-top: 5px;
+  text-align: center;
+  text-shadow: 1px 2px black;
+
+  .desktop__file--focused & {
+    background: $focus-color;
   }
+}
+
+.desktop__focus-rect {
+  position: absolute;
+  border: 1px dashed #482f07;
 }

@@ -16,15 +16,17 @@ function withDoubleClick<T>(
       lastClickTime: -Infinity
     };
 
-    checkForDoubleClick = (onDoubleClick: () => void) => {
+    checkForDoubleClick = (onDoubleClick: () => void): boolean => {
       const currentTime: number = Date.now();
       const { lastClickTime } = this.state;
 
       if (currentTime - lastClickTime < timeBetweenClick) {
         this.setState({ lastClickTime: -Infinity });
         onDoubleClick();
+        return true;
       } else {
         this.setState({ lastClickTime: currentTime });
+        return false;
       }
     };
 
