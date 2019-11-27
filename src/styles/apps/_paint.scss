@@ -10,6 +10,7 @@
 }
 
 .paint__toolbar {
+  @include all-widths($paint-toolbar-width);
   background: map-get($menu, "main");
   padding: $paint-toolbar-padding;
   border-right: 1px solid $dropdown-border-color;
