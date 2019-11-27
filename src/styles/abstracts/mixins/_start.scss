@@ -1,0 +1,18 @@
+@mixin start-background($direction) {
+  @include linear-gradient-from-main(
+    $start-background,
+    $direction,
+    8%,
+    16%,
+    24%,
+    32%,
+    40%,
+    49%,
+    57%,
+    65%,
+    75%,
+    84%,
+    90%,
+    96%
+  );
+}

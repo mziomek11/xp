@@ -84,6 +84,7 @@ export class ContextProvider extends Component<Props, State> {
     const [files, possiblePath] = objectPropFromPath(fileTree, startPath);
     const sortedFiles = this.getSortedFiles(files);
 
+    this.setWindowNameAndIcon(possiblePath);
     this.setState({
       path: possiblePath,
       files: sortedFiles,

@@ -40,6 +40,12 @@
   &--right-aligned {
     right: 0;
   }
+
+  &--start {
+    border-left: 4px solid #307fe5;
+    padding: 0;
+    grid-template-columns: $dropdown-start-box-width auto auto $dropdown-start-box-width 0;
+  }
 }
 
 .dropdown__shortcut {
@@ -70,6 +76,10 @@
 
 .dropdown__text {
   padding: $dropdown-text-padding;
+
+  .dropdown--start & {
+    padding: 4px 0;
+  }
 }
 
 .dropdown__arrow-container,
@@ -82,6 +92,12 @@
 .dropdown__check-container,
 .dropdown__icon {
   padding-right: $dropdown-box-padding;
+}
+
+.dropdown__icon > img {
+  padding: $dropdown-start-image-padding;
+  width: 100%;
+  height: auto;
 }
 
 .dropdown__arrow-container {

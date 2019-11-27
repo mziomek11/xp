@@ -1,18 +1,21 @@
 import React from "react";
 
-import Basic from "./file/Basic";
-import Computer from "./file/Computer";
-import Notepad from "./file/Notepad";
-import Paint from "./file/Paint";
+import File from "./File";
+import {
+  notepadStartData,
+  paintStartData,
+  filesystemStartData,
+  getBasicStartData
+} from "../../fileStartData";
 
 const FileList = () => {
   return (
     <div className="desktop__file__list" data-test="file-list">
-      <Computer data-test="computer" />
-      <Notepad data-test="notepad" />
-      <Paint data-test="paint" />
-      <Basic app="minesweeper" data-test="minesweeper" />
-      <Basic app="calculator" data-test="calculator" />
+      <File {...filesystemStartData} data-test="computer" />
+      <File {...notepadStartData} data-test="notepad" />
+      <File {...paintStartData} data-test="paint" />
+      <File {...getBasicStartData("minesweeper")} data-test="minesweeper" />
+      <File {...getBasicStartData("calculator")} data-test="calculator" />
     </div>
   );
 };

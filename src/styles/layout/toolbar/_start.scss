@@ -1,5 +1,6 @@
 .start {
   @include flex-centered;
+  position: relative;
   height: 100%;
   margin-right: $start-margin;
   border-right: red;
@@ -7,7 +8,182 @@
   background-size: cover;
 
   &:hover {
-    background: url("../../../assets/toolbar/start-hover.png");
-    background-size: cover;
+    background-image: url("../../../assets/toolbar/start-hover.png");
+  }
+
+  &--open,
+  &--open:hover {
+    background-image: url("../../../assets/toolbar/start-open.png");
+  }
+}
+
+.start__content {
+  @include border(3px, solid, $start-border-color-map);
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  width: $start-width;
+  max-width: 100vw;
+  background: grey;
+  box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.85);
+}
+
+.start__top {
+  @include start-background(to top);
+  display: flex;
+  align-items: center;
+  font-size: 1.6rem;
+  font-weight: bold;
+  text-shadow: 1px 1px black;
+}
+
+.start__top__image {
+  width: $start-top-profile-image-size;
+  height: $start-top-profile-image-size;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-image: url("../../../assets/toolbar/profile-image.png");
+  margin: 5px;
+  margin-right: 8px;
+}
+
+.start__orange-divider {
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(to right, #ffffff, #de761a, #ffffff);
+}
+
+.start__center {
+  background: $start-center-background;
+
+  border-top: 1px solid $start-center-border;
+  border-bottom: 1px solid $start-center-border;
+}
+
+.start__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 1px;
+}
+
+.start__left {
+  background: white;
+  padding: 8px 6px;
+
+  & > * {
+    margin-bottom: 5px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.start__right {
+  background: $start-right-background;
+  padding: 6px 5px;
+
+  & > * {
+    margin-bottom: 4px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.start__application,
+.start__all-programs {
+  display: flex;
+  align-items: center;
+  color: $start-application-color;
+  font-size: 1.3rem;
+
+  &:hover {
+    background: $focus-color;
+    color: white;
+  }
+}
+
+.start__application--right {
+  color: $start-application-right-color;
+  font-size: 1.15rem;
+}
+
+.start__application__icon-container {
+  width: $start-application-size;
+  height: $start-application-size;
+  margin: 3px;
+
+  .start__application--right & {
+    width: $start-application-right-size;
+    height: $start-application-right-size;
+  }
+}
+
+.start__application__icon {
+  width: 100%;
+  height: auto;
+}
+
+.start__application__text {
+  &--bold {
+    font-weight: bold;
+  }
+}
+
+.start__all-programs {
+  position: relative;
+  flex-direction: row-reverse;
+}
+
+.start__all-programs-text {
+  font-weight: bold;
+}
+
+.start__all-programs__arrow {
+  margin: 2px;
+  margin-left: 12px;
+}
+
+.start__divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(to right, #ffffff, #d3d3c8, #ffffff);
+}
+
+.start__bottom {
+  @include start-background(to bottom);
+  display: flex;
+  flex-direction: row-reverse;
+  padding: $start-bottom-padding 0;
+}
+
+.start__bottom__action {
+  display: flex;
+  align-items: center;
+  padding-right: 10px;
+  font-size: 1.1rem;
+
+  &:hover {
+    background: $focus-color;
+  }
+}
+
+.start__bottom__icon {
+  width: $start-bottom-icon-size;
+  height: $start-bottom-icon-size;
+  background-size: cover;
+  background-repeat: no-repeat;
+  margin: 3px;
+
+  &--shutdown {
+    background-image: url("../../../assets/toolbar/shutdown.png");
+
+    .start__bottom__action:hover & {
+      background-image: url("../../../assets/toolbar/shutdown-hover.png");
+    }
   }
 }

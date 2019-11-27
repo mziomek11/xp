@@ -59,15 +59,21 @@ export class Application extends Component<Props, {}> {
     }
   };
 
-  getFilesystemApp = () => (
-    <FilesystemContextProvider
-      id={this.props.id}
-      startPath={[]}
-      defaultDisplay="tiles"
-    >
-      <FileSystem data-test="filesystem" />
-    </FilesystemContextProvider>
-  );
+  getFilesystemApp = () => {
+    const { openData } = this.props.window;
+    let startPath: string[] = [];
+    if (openData && openData.path) startPath = openData.path;
+
+    return (
+      <FilesystemContextProvider
+        id={this.props.id}
+        startPath={startPath}
+        defaultDisplay="tiles"
+      >
+        <FileSystem data-test="filesystem" />
+      </FilesystemContextProvider>
+    );
+  };
 
   getNotepadApp = () => {
     const { content, path } = this.props.window.openData!;

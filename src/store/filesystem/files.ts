@@ -13,7 +13,30 @@ const initFileTree: FileTree = {
       "Documents and settings": {
         name: "Documents and settings",
         type: "folder",
-        content: {}
+        content: {
+          User: {
+            name: "User",
+            type: "folder",
+            content: {
+              "My documents": {
+                name: "My documents",
+                type: "folder",
+                content: {
+                  "My pictures": {
+                    name: "My pictures",
+                    type: "folder",
+                    content: {}
+                  },
+                  "My music": {
+                    name: "My music",
+                    type: "folder",
+                    content: {}
+                  }
+                }
+              }
+            }
+          }
+        }
       },
       TEXTFILE: {
         name: "TEXTFILE",

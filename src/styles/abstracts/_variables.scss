@@ -137,6 +137,43 @@ $taskbar-item-border-colors-hover: (
 
 $start-border-radius: 7px;
 $start-margin: 9px;
+$start-width: 400px;
+$start-border-color-map: (
+  top: #225cc5,
+  left: #1854c2,
+  right: #1854c2,
+  bottom: #1b3a77
+);
+
+$start-background: (
+  "main-1": #438be3,
+  "main-2": #408ae3,
+  "main-3": #3a86e3,
+  "main-4": #3481e3,
+  "main-5": #2a7be2,
+  "main-6": #2073de,
+  "main-7": #196ddb,
+  "main-8": #1568d6,
+  "main-9": #1164d1,
+  "main-10": #0f60cc,
+  "main-11": #0d5bc7,
+  "main-12": #0c56c0
+);
+
+$start-top-profile-image-size: 50px;
+
+$start-center-background: #95bdee;
+$start-center-border: #1865cd;
+
+$start-right-background: #d3e5fa;
+
+$start-bottom-padding: 4px;
+$start-bottom-icon-size: 24px;
+
+$start-application-size: 30px;
+$start-application-color: #373738;
+$start-application-right-size: 24px;
+$start-application-right-color: #0a246a;
 
 //Time
 
@@ -184,6 +221,9 @@ $dropdown-box-padding: 2px;
 $dropdown-size-arrow: 3px;
 $dropdown-size-check: 2px;
 $dropdown-size-circle: 6px;
+
+$dropdown-start-box-width: 22px;
+$dropdown-start-image-padding: 2px;
 
 //Button
 

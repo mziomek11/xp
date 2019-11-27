@@ -7,11 +7,13 @@ type Props = {
   name: string;
   dropdown: React.ReactNode;
   arrowDirection?: ArrowDirection;
+  icon?: string;
 };
 
 const Option: React.FC<Props> = ({
   name,
   dropdown,
+  icon,
   arrowDirection = "right"
 }) => {
   const [showDropDown, setShowDropDown] = useState<boolean>(false);
@@ -21,6 +23,7 @@ const Option: React.FC<Props> = ({
   return (
     <DefaultOption
       name={name}
+      icon={icon}
       additionalDropdown={dropdown}
       arrowDirection={arrowDirection}
       showDropDown={showDropDown}

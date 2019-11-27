@@ -210,8 +210,8 @@ describe("Filesystem ContextProvider Component", () => {
       const path = ["a", "b"];
 
       wrapper.instance().setWindowNameAndIcon(path);
-      expect(mockRenameFn.mock.calls.length).toBe(1);
-      expect(mockRenameFn.mock.calls[0]).toEqual(["b", "folder"]);
+      expect(mockRenameFn.mock.calls.length).toBe(2);
+      expect(mockRenameFn.mock.calls[1]).toEqual(["b", "folder"]);
     });
 
     it("path is equal 1", () => {
@@ -219,8 +219,8 @@ describe("Filesystem ContextProvider Component", () => {
       const path = ["a"];
 
       wrapper.instance().setWindowNameAndIcon(path);
-      expect(mockRenameFn.mock.calls.length).toBe(1);
-      expect(mockRenameFn.mock.calls[0]).toEqual(["a", "disk"]);
+      expect(mockRenameFn.mock.calls.length).toBe(2);
+      expect(mockRenameFn.mock.calls[1]).toEqual(["a", "disk"]);
     });
 
     it("path is equal 0", () => {
@@ -228,8 +228,8 @@ describe("Filesystem ContextProvider Component", () => {
       const path: string[] = [];
 
       wrapper.instance().setWindowNameAndIcon(path);
-      expect(mockRenameFn.mock.calls.length).toBe(1);
-      expect(mockRenameFn.mock.calls[0]).toEqual(["Computer", "filesystem"]);
+      expect(mockRenameFn.mock.calls.length).toBe(2);
+      expect(mockRenameFn.mock.calls[1]).toEqual(["Computer", "filesystem"]);
     });
   });
 
