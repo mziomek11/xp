@@ -150,11 +150,5 @@ const mapDispatchToProps = (
 };
 
 export default withDoubleClick(
-  withContext(
-    connect(
-      null,
-      mapDispatchToProps
-    )(FileContainer),
-    "filesystem"
-  )
+  withContext(connect(null, mapDispatchToProps)(FileContainer), "filesystem")
 );

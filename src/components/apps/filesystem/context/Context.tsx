@@ -126,22 +126,59 @@ export class ContextProvider extends Component<Props, State> {
       newState.files = this.getSortedFiles(this.state.files);
     }
 
-    if (Object.keys(newState).length > 0) this.setState(newState as State);
+    if (Object.keys(newState).length > 0) {
+      this.setState(newState as State);
+    }
   }
 
   areFileContentsDifferent = (oldFiles: File[], newFiles: File[]) => {
-    const skipTypes = ["disk", "computer", "folder", "image"];
+    const sortedOld = this.getSortedFiles(oldFiles);
+    const sortedNew = this.getSortedFiles(newFiles);
+
     for (let i = 0; i < newFiles.length; i++) {
-      const oldFile = oldFiles[i];
-      const newFile = newFiles[i];
+      const oldFile = sortedOld[i];
+      const newFile = sortedNew[i];
 
-      if (skipTypes.indexOf(oldFile.type) !== -1) continue;
-      if (skipTypes.indexOf(newFile.type) !== -1) continue;
-
-      if (oldFile.content !== newFile.content) return true;
+      switch (newFile.type) {
+        case "text":
+          if (!this.isNotepadContentTheSame(oldFile, newFile)) return true;
+          break;
+        case "image":
+          if (!this.isPaintContentTheSame(oldFile, newFile)) return true;
+          break;
+        default:
+          continue;
+      }
     }
 
     return false;
+  };
+
+  isPaintContentTheSame = (oldFile: File, newFile: File) => {
+    if (!oldFile.content) {
+      if (newFile.content) return false;
+      else return true;
+    }
+
+    if (!newFile.content) {
+      if (oldFile.content) return false;
+      else return true;
+    }
+
+    const oldWidth = (oldFile.content as any).width;
+    const oldHeight = (oldFile.content as any).height;
+    const oldData = (oldFile.content as any).data;
+
+    const newWidth = (newFile.content as any).width;
+    const newHeight = (newFile.content as any).height;
+    const newData = (newFile.content as any).data;
+
+    if (oldWidth !== newWidth || oldHeight !== newHeight) return false;
+    return areArraysEqual(newData, oldData);
+  };
+
+  isNotepadContentTheSame = (oldFile: File, newFile: File) => {
+    return oldFile.content === newFile.content;
   };
 
   componentWillUnmount() {

@@ -3,7 +3,7 @@ import { ActionType } from "typesafe-actions";
 
 import * as actions from "./actions";
 import * as FileSystemAction from "./constants";
-import initFiles from "./files";
+import initFiles from "../../files";
 import { FileTree } from "./models";
 
 type FileSystemAction = ActionType<typeof actions>;

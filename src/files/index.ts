@@ -1,12 +1,12 @@
-import { FileTree } from "./models";
+import { FileTree } from "../store/filesystem/models";
 
 const initFileTree: FileTree = {
   "Local Disk (C:)": {
     name: "Local Disk (C:)",
     type: "disk",
     content: {
-      image: {
-        name: "image",
+      "empty image": {
+        name: "empty image",
         type: "image",
         content: undefined
       },
@@ -38,10 +38,10 @@ const initFileTree: FileTree = {
           }
         }
       },
-      TEXTFILE: {
-        name: "TEXTFILE",
+      "text file": {
+        name: "text file",
         type: "text",
-        content: "content text file"
+        content: "some text inside text file"
       },
       "Program files": {
         name: "Program files",
@@ -65,7 +65,7 @@ const initFileTree: FileTree = {
               PASSWORDS: {
                 name: "PASSWORDS",
                 type: "text",
-                content: ":)"
+                content: "qwerty123\nabcde321"
               }
             }
           }
